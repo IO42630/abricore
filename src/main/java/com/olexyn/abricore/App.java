@@ -7,6 +7,8 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
@@ -20,32 +22,37 @@ public class App {
     static double sigma = 0.38; // volatility %p.a.
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello World!");
-        double part1 = Math.log(S0 / X);
-        double part2 = Math.pow(sigma, 2);
-        double part3 = t * (r - q + part2);
-        double part4 = sigma * Math.sqrt(t);
-        double d1 = (part1 + part3) / part4;
 
-        double d2 = d1 - part4;
-
-        NormalDistribution normalDistribution = new NormalDistribution();
-        double n1 = normalDistribution.cumulativeProbability(d1);
-        double n2 = normalDistribution.cumulativeProbability(d2);
-
-        double part5 = Math.exp(-q*t);
-        double part6 = S0 * part5 * n1;
-
-        double part7 = Math.exp(-r*t);
-        double part8 = X * part7 * n2;
-
-        double C = part6 - part8;
-
-        int br = 0;
+        OptionDto optionDto = new OptionDto();
+        optionDto.setS0(24.6);
+        optionDto.setX(23);
+        optionDto.setT(0.3);
+        optionDto.setR(0);
+        optionDto.setQ(0);
+        optionDto.setSigma(0.38);
 
 
-        double[] xData = new double[] { 0.0, 1.0, 2.0 };
-        double[] yData = new double[] { 2.0, 1.0, 0.0 };
+        int points = 10;
+        double delta = 0.1;
+
+        double[] xData = new double[points];
+        double[] yData = new double[points];
+
+        double startPoint = optionDto.getS0() + points * delta / 2;
+
+        for(int i = 0 ; i<points; i++){
+
+            xData[i] = startPoint - i * delta;
+            if(xData[i] >=0){
+                optionDto.setS0(xData[i]);
+                yData[i] = new CallCalculator(optionDto).getPrice();
+            }else{
+                xData[i] = 0;
+                yData[i] = 0;
+            }
+        }
+
+
 
 // Create Chart
         XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
