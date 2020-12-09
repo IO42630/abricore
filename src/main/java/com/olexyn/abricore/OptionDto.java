@@ -2,28 +2,28 @@ package com.olexyn.abricore;
 
 public class OptionDto {
 
-    private double S0 = 24.6; // asset price
-    private double X = 23; // strike
+    private double s = 24.6; // asset price
+    private double x = 23; // strike
     private double t = 0.3; // time % of year
     private double r = 0; // risk free interest %p.a.
     private double q = 0; // dividend yield %p.a.
     private double sigma = 0.38; // volatility %p.a.
 
 
-    public double getS0() {
-        return S0;
+    public double getS() {
+        return s;
     }
 
-    public void setS0(double s0) {
-        S0 = s0;
+    public void setS(double s) {
+        this.s = s;
     }
 
     public double getX() {
-        return X;
+        return x;
     }
 
     public void setX(double x) {
-        X = x;
+        this.x = x;
     }
 
     public double getT() {

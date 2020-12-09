@@ -1,14 +1,11 @@
 package com.olexyn.abricore;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Hello world!
@@ -16,36 +13,48 @@ import java.util.List;
 public class App {
     static double S0 = 24.6; // asset price
     static double X = 23; // strike
-    static double t = 0.3; // time % of year
+    static double t = 33; // time % of year
     static double r = 0; // risk free interest %p.a.
     static double q = 0; // dividend yield %p.a.
     static double sigma = 0.38; // volatility %p.a.
 
     public static void main(String[] args) throws IOException {
 
-        OptionDto optionDto = new OptionDto();
-        optionDto.setS0(24.6);
-        optionDto.setX(23);
-        optionDto.setT(0.3);
-        optionDto.setR(0);
-        optionDto.setQ(0);
-        optionDto.setSigma(0.38);
+        OptionDto optionDtoLow = new OptionDto();
+        optionDtoLow.setS(23);
+        optionDtoLow.setX(23);
+        optionDtoLow.setT(0.23);
+        optionDtoLow.setR(0);
+        optionDtoLow.setQ(0);
+        optionDtoLow.setSigma(0.38);
+
+        OptionDto optionDtoHigh = new OptionDto();
+        optionDtoHigh.setS(23);
+        optionDtoHigh.setX(25);
+        optionDtoHigh.setT(0.23);
+        optionDtoHigh.setR(0);
+        optionDtoHigh.setQ(0);
+        optionDtoHigh.setSigma(0.38);
 
 
-        int points = 10;
+        int points = 40;
         double delta = 0.1;
 
         double[] xData = new double[points];
         double[] yData = new double[points];
 
-        double startPoint = optionDto.getS0() + points * delta / 2;
+        double startPoint = 27;
 
         for(int i = 0 ; i<points; i++){
 
             xData[i] = startPoint - i * delta;
             if(xData[i] >=0){
-                optionDto.setS0(xData[i]);
-                yData[i] = new CallCalculator(optionDto).getPrice();
+                optionDtoLow.setS(xData[i]);
+                double optionLowPrice = new CallCalculator(optionDtoLow).calculatePrice();
+                optionDtoHigh.setS(xData[i]);
+                double optionHighPrice = new CallCalculator(optionDtoHigh).calculatePrice();
+
+                yData[i] = optionLowPrice / optionHighPrice;
             }else{
                 xData[i] = 0;
                 yData[i] = 0;
