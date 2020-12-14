@@ -3,9 +3,9 @@ package com.olexyn.abricore;
 public class OptionDto {
 
     private double s = 24.6; // asset price
-    private double x = 23; // strike
-    private double t = 0.3; // time % of year
-    private double r = 0; // risk free interest %p.a.
+    private double x = 23;
+    private double t = 0.3;
+    private double r = 0;
     private double q = 0; // dividend yield %p.a.
     private double sigma = 0.38; // volatility %p.a.
 
@@ -18,26 +18,44 @@ public class OptionDto {
         this.s = s;
     }
 
+    /**
+     * @return strike price
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * @param x strike price
+     */
     public void setX(double x) {
         this.x = x;
     }
 
+    /***
+     * @return time till expiry in % of year
+     */
     public double getT() {
         return t;
     }
 
+    /***
+     * @return time till expiry in % of year
+     */
     public void setT(double t) {
         this.t = t;
     }
 
+    /**
+     * @return risk free interest %p.a.
+     */
     public double getR() {
         return r;
     }
 
+    /**
+     * @param r risk free interest %p.a.
+     */
     public void setR(double r) {
         this.r = r;
     }
