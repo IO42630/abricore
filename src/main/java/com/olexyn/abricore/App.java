@@ -9,12 +9,6 @@ import java.io.IOException;
  * Hello world!
  */
 public class App {
-    static double S0 = 24.6; // asset price
-    static double X = 23; // strike
-    static double t = 33; // time % of year
-    static double r = 0; // risk free interest %p.a.
-    static double q = 0; // dividend yield %p.a.
-    static double sigma = 0.38; // volatility %p.a.
 
     public static void main(String[] args) throws IOException {
 

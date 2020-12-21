@@ -36,14 +36,14 @@ public class CallCalculator {
         return price;
     }
 
-    public double calculteIntrinsicValue(){
+    public double calculateIntrinsicValue(){
         double intrinsicValue = optionDto.getS() - optionDto.getX();
         intrinsicValue = intrinsicValue >= 0 ? intrinsicValue : 0;
         return intrinsicValue;
     }
 
     public double calculateTimeValue(){
-        double timeValue = calculatePrice() - calculteIntrinsicValue();
+        double timeValue = calculatePrice() - calculateIntrinsicValue();
         timeValue = timeValue >= 0 ? timeValue : 0;
         return timeValue;
     }
