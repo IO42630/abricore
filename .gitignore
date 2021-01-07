@@ -1,0 +1,5 @@
+*/target/
+*.iml
+/lib/
+*.csv
+.idea
