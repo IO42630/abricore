@@ -1,21 +1,23 @@
 package com.olexyn.abricore;
 
+import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.model.options.OptionSnapshot;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 public class CallCalculator {
 
-    private final OptionDto optionDto;
+    private final OptionSnapshot option;
 
-    public CallCalculator(OptionDto optionDto){
+    public CallCalculator(OptionSnapshot option){
 
-        this.optionDto = optionDto;
+        this.option = option;
     }
 
     public double calculatePrice() {
-        double lnSX = Math.log(optionDto.getS() / optionDto.getX());
-        double sigmaTwo = Math.pow(optionDto.getSigma(), 2) / 2;
-        double trqSigma = optionDto.getT() * (optionDto.getR() - optionDto.getQ() + sigmaTwo);
-        double sigmaSqrtT = optionDto.getSigma() * Math.sqrt(optionDto.getT());
+        double lnSX = Math.log(option.getAssetPrice() / option.getStrike());
+        double sigmaTwo = Math.pow(option.getVolatilityPA(), 2) / 2;
+        double trqSigma = option.getTimeTillExpiry() * (option.getRiskFreeInterestPA() - option.getDividendPA() + sigmaTwo);
+        double sigmaSqrtT = option.getVolatilityPA() * Math.sqrt(option.getTimeTillExpiry());
         double d1 = (lnSX + trqSigma) / sigmaSqrtT;
 
         double d2 = d1 - sigmaSqrtT;
@@ -24,11 +26,11 @@ public class CallCalculator {
         double n1 = normalDistribution.cumulativeProbability(d1);
         double n2 = normalDistribution.cumulativeProbability(d2);
 
-        double part5 = Math.exp(-optionDto.getQ()*optionDto.getT());
-        double part6 = optionDto.getS() * part5 * n1;
+        double part5 = Math.exp(-option.getDividendPA()* option.getTimeTillExpiry());
+        double part6 = option.getAssetPrice() * part5 * n1;
 
-        double part7 = Math.exp(-optionDto.getR()*optionDto.getT());
-        double part8 = optionDto.getX() * part7 * n2;
+        double part7 = Math.exp(-option.getRiskFreeInterestPA()* option.getTimeTillExpiry());
+        double part8 = option.getStrike() * part7 * n2;
 
         double price = part6 - part8;
         price = price >=0 ? price : 0;
@@ -37,7 +39,7 @@ public class CallCalculator {
     }
 
     public double calculateIntrinsicValue(){
-        double intrinsicValue = optionDto.getS() - optionDto.getX();
+        double intrinsicValue = option.getAssetPrice() - option.getStrike();
         intrinsicValue = intrinsicValue >= 0 ? intrinsicValue : 0;
         return intrinsicValue;
     }

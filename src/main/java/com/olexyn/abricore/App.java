@@ -1,5 +1,9 @@
 package com.olexyn.abricore;
 
+import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.model.options.OptionSnapshot;
+import com.olexyn.abricore.model.options.VanillaOption;
+import com.olexyn.abricore.model.options.VanillaOptionSnapshot;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 
@@ -12,21 +16,21 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        OptionDto optionDtoLow = new OptionDto();
-        optionDtoLow.setS(23);
-        optionDtoLow.setX(23);
-        optionDtoLow.setT(0.23);
-        optionDtoLow.setR(0);
-        optionDtoLow.setQ(0);
-        optionDtoLow.setSigma(0.38);
+        OptionSnapshot optionLow = new VanillaOptionSnapshot();
+        optionLow.setAssetPrice(23);
+        optionLow.setStrike(23);
+        optionLow.setTimeTillExpiry(0.23);
+        optionLow.setRiskFreeInterestPA(0);
+        optionLow.setDividendPA(0);
+        optionLow.setVolatilityPA(0.38);
 
-        OptionDto optionDtoHigh = new OptionDto();
-        optionDtoHigh.setS(23);
-        optionDtoHigh.setX(25);
-        optionDtoHigh.setT(0.23);
-        optionDtoHigh.setR(0);
-        optionDtoHigh.setQ(0);
-        optionDtoHigh.setSigma(0.38);
+        OptionSnapshot optionHigh = new VanillaOptionSnapshot();
+        optionHigh.setAssetPrice(23);
+        optionHigh.setStrike(25);
+        optionHigh.setTimeTillExpiry(0.23);
+        optionHigh.setRiskFreeInterestPA(0);
+        optionHigh.setDividendPA(0);
+        optionHigh.setVolatilityPA(0.38);
 
 
         int points = 40;
@@ -41,10 +45,10 @@ public class App {
 
             xData[i] = startPoint - i * delta;
             if(xData[i] >=0){
-                optionDtoLow.setS(xData[i]);
-                double optionLowPrice = new CallCalculator(optionDtoLow).calculatePrice();
-                optionDtoHigh.setS(xData[i]);
-                double optionHighPrice = new CallCalculator(optionDtoHigh).calculatePrice();
+                optionLow.setAssetPrice(xData[i]);
+                double optionLowPrice = new CallCalculator(optionLow).calculatePrice();
+                optionHigh.setAssetPrice(xData[i]);
+                double optionHighPrice = new CallCalculator(optionHigh).calculatePrice();
 
                 yData[i] = optionLowPrice / optionHighPrice;
             }else{
