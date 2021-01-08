@@ -45,14 +45,9 @@ public abstract class Asset {
     double calculateMA(Interval interval, int amount, Instant lastInstant) throws Exception {
 
         TreeMap<Instant, AssetSnapshot> snapshots = getSnapShots(interval);
-        Entry<Instant, AssetSnapshot> currentSnapshotEntry = null;
+        Entry<Instant, AssetSnapshot> currentSnapshotEntry = getEntryFromInstant(snapshots, lastInstant);
 
-        for (Entry<Instant, AssetSnapshot> entry : snapshots.entrySet()) {
-            if (entry.getKey().equals(lastInstant)) {
-                currentSnapshotEntry = entry;
-                break;
-            }
-        }
+
         if (currentSnapshotEntry == null) throw new Exception("Instant of desired MA not available in snapshots.");
 
         BigDecimal sum = new BigDecimal(0);
@@ -64,4 +59,61 @@ public abstract class Asset {
         }
         return sum.divide(BigDecimal.valueOf(amount), RoundingMode.HALF_EVEN).doubleValue();
     }
+
+    enum Extreme {
+        MIN,
+        MAX
+    }
+
+    Entry<Instant, AssetSnapshot> getEntryFromInstant(TreeMap<Instant, AssetSnapshot> snapshots, Instant instant) {
+        for (Entry<Instant, AssetSnapshot> entry : snapshots.entrySet()) {
+            if (entry.getKey().equals(instant)) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    TreeMap<Instant, AssetSnapshot> calculateExtremes(Interval interval, int radius, Instant seriesStart, Instant seriesEnd, Extreme extremeType) {
+
+        TreeMap<Instant, AssetSnapshot> snapshots = getSnapShots(interval);
+        TreeMap<Instant, AssetSnapshot> extremes = new TreeMap<>();
+
+        double flip;
+        if (extremeType == Extreme.MAX) { flip = 1; } else { flip = -1; }
+
+        Entry<Instant, AssetSnapshot> candidateSnapshotEntry = getEntryFromInstant(snapshots, seriesStart);
+        boolean isExtreme = true;
+
+        while (candidateSnapshotEntry.getKey().isBefore(seriesEnd)) {
+            Entry<Instant, AssetSnapshot> ceilingRadiusSnapshotEntry = candidateSnapshotEntry;
+            Entry<Instant, AssetSnapshot> floorRadiusSnapshotEntry = candidateSnapshotEntry;
+
+            for (int i = 0; i < radius; i++) {
+                try {
+                    if (candidateSnapshotEntry.getValue().getPrice() * flip >= flip * ceilingRadiusSnapshotEntry.getValue().getPrice()
+                        && candidateSnapshotEntry.getValue().getPrice() * flip >= flip * floorRadiusSnapshotEntry.getValue().getPrice()) {
+                        ceilingRadiusSnapshotEntry = snapshots.higherEntry(ceilingRadiusSnapshotEntry.getKey());
+                        floorRadiusSnapshotEntry = snapshots.lowerEntry(floorRadiusSnapshotEntry.getKey());
+                    } else {
+                        isExtreme = false;
+                    }
+                } catch (NullPointerException ignored) {}
+            }
+
+            if (isExtreme) {
+                extremes.put(candidateSnapshotEntry.getKey(), candidateSnapshotEntry.getValue());
+            }
+
+            try {
+                candidateSnapshotEntry = snapshots.higherEntry(ceilingRadiusSnapshotEntry.getKey());
+            } catch (NullPointerException e) {
+                break;
+            }
+        }
+        return extremes;
+    }
+
+
+
 }
