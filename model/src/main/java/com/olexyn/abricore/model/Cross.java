@@ -8,6 +8,7 @@ public class Cross {
 
     Asset risingAsset;
     Asset fallingAsset;
+    Instant crossingInstant;
 
     /**
      * Represents two asset quotes crossing on the chart.
@@ -28,6 +29,7 @@ public class Cross {
         && asset1Prev.getValue().getPrice() < asset2Prev.getValue().getPrice()) {
             this.risingAsset = asset1;
             this.fallingAsset = asset2;
+            this.crossingInstant = instant;
         }
     }
 }
