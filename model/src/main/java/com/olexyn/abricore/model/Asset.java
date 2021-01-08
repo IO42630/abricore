@@ -11,6 +11,7 @@ import java.util.TreeMap;
 public abstract class Asset {
 
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
+    private String name;
 
     public Asset() {
         for (Interval interval : Interval.values()) {
@@ -39,8 +40,6 @@ public abstract class Asset {
         }
         return series;
     }
-
-
 
     double calculateMA(Interval interval, int amount, Instant lastInstant) throws Exception {
 
@@ -112,6 +111,14 @@ public abstract class Asset {
             }
         }
         return extremes;
+    }
+
+    void mergeFromDisk(String filename) {
+        // merge data from home/user/docs/abricore/store/<filename>.csv
+    }
+
+    void writeToDisk() {
+        // write to /home/user/docs/abricore/store/name.csv
     }
 
 
