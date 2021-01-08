@@ -1,11 +1,5 @@
 package com.olexyn.abricore.flow;
 
-import java.util.Scanner;
-
-/**
- * Hello world!
- *
- */
 public class Main
 {
     /**

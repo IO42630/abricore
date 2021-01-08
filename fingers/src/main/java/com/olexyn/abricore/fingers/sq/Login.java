@@ -1,4 +1,4 @@
-package com.olexyn.abricore.fingers.swissquote;
+package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.App;
 import org.json.JSONException;

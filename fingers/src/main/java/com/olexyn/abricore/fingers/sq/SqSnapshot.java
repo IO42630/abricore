@@ -1,8 +1,7 @@
-package com.olexyn.abricore.fingers.swissquote;
+package com.olexyn.abricore.fingers.sq;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 
 /**
  * This represents a Sq fullquote table.
