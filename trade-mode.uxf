@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>320</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Data Provider
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>290</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+fingers.view
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>210</x>
+      <y>130</y>
+      <w>130</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>halign=left
+asset
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>480</x>
+      <y>320</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+fingers.action
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>460</x>
+      <y>120</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>store/*.csv</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>490</x>
+      <y>230</y>
+      <w>130</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>halign=left
+logic
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>260</x>
+      <y>20</y>
+      <w>90</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue
+1: start</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>220</y>
+      <w>130</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue
+
+
+3: fetch 
+live data</panel_attributes>
+    <additional_attributes>10.0;70.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>110</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue
+
+
+2: retrieve
+stored data</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>210</y>
+      <w>180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue
+4: check rule</panel_attributes>
+    <additional_attributes>160.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>260</x>
+      <y>220</y>
+      <w>240</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=blue
+
+
+5: init 
+action</panel_attributes>
+    <additional_attributes>220.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>60</y>
+      <w>200</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Sequence: 12-&gt;345{1,n}
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>30</y>
+      <w>200</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Trade Mode
+
+fg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>480</x>
+      <y>380</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+read.result
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>480</x>
+      <y>350</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+place.order
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

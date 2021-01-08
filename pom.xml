@@ -18,6 +18,7 @@
         <module>notifications</module>
         <module>fingers</module>
         <module>model</module>
+        <module>flow</module>
     </modules>
     <dependencies>
         <dependency>

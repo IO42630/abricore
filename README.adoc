@@ -1,0 +1,17 @@
+=== Abricore
+An investing bot in progress...
+
+{empty} +
+
+==== TODO
+===== 1. Scrape Mode
+
+image::scrape-mode.png[]
+
+===== 2. Trade Mode
+
+image::trade-mode.png[]
+
+===== 3. Train Mode
+
+image::train-mode.png[]

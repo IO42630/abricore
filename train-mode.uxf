@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>140</y>
+      <w>130</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>halign=left
+asset
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>550</x>
+      <y>130</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>store/*.csv</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>440</x>
+      <y>330</y>
+      <w>130</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>halign=left
+logic
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>560</x>
+      <y>230</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>rules/*.json</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>20</y>
+      <w>90</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+1: start</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>120</y>
+      <w>210</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+
+2: retrieve 
+stored data</panel_attributes>
+    <additional_attributes>190.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>230</y>
+      <w>180</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+
+
+
+
+
+3: 
+check 
+rule</panel_attributes>
+    <additional_attributes>160.0;200.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>80</x>
+      <y>230</y>
+      <w>180</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+4: init action</panel_attributes>
+    <additional_attributes>10.0;100.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>60</y>
+      <w>230</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>halign=left
+A: 34{1,n}-&gt;56
+Sequence: 12-&gt;A{1,n}-&gt;7
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>30</y>
+      <w>230</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Train Mode
+
+fg=#00897B</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>330</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+paper.action
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>360</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+place.order
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>390</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+read.result
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>30</x>
+      <y>420</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>paper-result/*.json</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>190</x>
+      <y>230</y>
+      <w>110</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+5: check 
+result</panel_attributes>
+    <additional_attributes>10.0;190.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>230</y>
+      <w>180</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+6: adjust rule</panel_attributes>
+    <additional_attributes>80.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>220</y>
+      <w>220</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#00897B
+7: store rule</panel_attributes>
+    <additional_attributes>200.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+</diagram>

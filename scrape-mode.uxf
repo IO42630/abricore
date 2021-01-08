@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>300</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Data Provider
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>270</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+fingers.view
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>140</y>
+      <w>130</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>halign=left
+asset
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>440</x>
+      <y>150</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>store/*.csv</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>240</x>
+      <y>20</y>
+      <w>90</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red
+1: start</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>150</x>
+      <y>230</y>
+      <w>170</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red
+  2: fetch 
+  historical data</panel_attributes>
+    <additional_attributes>10.0;40.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>140</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=red
+
+
+  3: store 
+data</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>60</y>
+      <w>190</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Sequence: 1-&gt;23{1,n}
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>30</y>
+      <w>190</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Scrape Mode
+
+fg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
