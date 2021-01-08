@@ -1,2 +1,6 @@
-IDEA:
-* get data as .csv and save to disk.
+### About
+
+* Login
+    * Fetch 
+        * Transform
+            * call `StoreData`

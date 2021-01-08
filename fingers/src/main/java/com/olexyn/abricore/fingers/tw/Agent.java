@@ -1,17 +1,22 @@
 package com.olexyn.abricore.fingers.tw;
 
+import com.olexyn.abricore.fingers.StoreData;
+
 public class Agent {
 
+    final StoreData storeData = StoreData.getInstance();
 
-    // Thread start.
+    void start() throws InterruptedException {
 
+        Login login = new Login();
+        login.login();
 
-    void save(){
-        String name = "name";
-        String start = "start";
-        String end = "end";
-        String increment = "increment";
-        String fileName = name + "_" + start + "_" + end + "_" + increment + ".csv";
-        String path = System.getProperty("user.home") + "/docs/swissquote/quotes/" + fileName;
+        Fetch fetch = new Fetch();
+        while (true) {
+            fetch.fetch();
+            fetch.transform();
+            storeData.store();
+            Thread.sleep(100);
+        }
     }
 }
