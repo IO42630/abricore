@@ -7,4 +7,7 @@ public abstract class Option extends Asset {
     private Asset underlyingAsset;
 
 
+    public Option(String name) {
+        super(name);
+    }
 }

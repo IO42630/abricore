@@ -9,4 +9,7 @@ public abstract class OptionableAsset extends Asset{
 
     public Map<String, VanillaOption> options = new HashMap<>();
 
+    public OptionableAsset(String name) {
+        super(name);
+    }
 }

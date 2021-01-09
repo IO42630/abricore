@@ -11,4 +11,8 @@ public class Commodity extends Asset{
 
     Map<String, Etf> etfs = new HashMap<>();
     Map<String, OtcOption> options = new HashMap<>();
+
+    public Commodity(String name) {
+        super(name);
+    }
 }
