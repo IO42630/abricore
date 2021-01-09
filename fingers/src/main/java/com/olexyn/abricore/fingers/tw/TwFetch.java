@@ -2,12 +2,14 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
+import org.openqa.selenium.WebDriver;
 
-public class TwFetch implements Fetch {
+public class TwFetch extends Fetch {
 
     final Asset assetToScrape;
 
-    TwFetch(Asset assetToScrape) {
+    TwFetch(Asset assetToScrape, WebDriver webDriver) {
+        super(webDriver);
         this.assetToScrape = assetToScrape;
     }
 

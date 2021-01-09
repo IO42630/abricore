@@ -23,12 +23,12 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class SqLogin implements Login {
+public class SqLogin extends Login {
 
     private WebDriver driver;
 
-    public void init(){
-
+    @Override
+    protected WebDriver init(){
         try {
             String path = App.class.getClassLoader().getResource("chromedriver_83").getPath();
             System.setProperty("webdriver.chrome.driver", path);
@@ -36,11 +36,14 @@ public class SqLogin implements Login {
 
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        return driver;
     }
 
-    public void cleanup(){
+    @Override
+    protected boolean cleanup(WebDriver driver){
         if(driver !=null)
             driver.quit();
+        return true;
     }
 
     private static final String PREFIX = "swiss_iol_";
@@ -148,14 +151,11 @@ public class SqLogin implements Login {
     }
 
 
-    public static void main(String... args) throws InterruptedException {
-        SqLogin login = new SqLogin();
-        login.init();
-        login.doLogin();
-        login.cleanup();
-    }
+    @Override
+    public WebDriver  doLogin() {
 
-    public void  doLogin() throws InterruptedException {
+        init();
+
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.swissquote.ch/");
 
@@ -173,10 +173,15 @@ public class SqLogin implements Login {
         String key = keyHolder.getText();
         driver.findElement(By.className("js-l3Code L3CodeDialog__l3Code Input Field Field__input")).sendKeys(credentials.get(key));
         driver.findElement(By.className("js-authenticate Button Button--primary")).click();
+
+        return driver;
      }
 
-
-
+    @Override
+    public boolean doLogout(WebDriver webDriver) {
+        cleanup(webDriver);
+        return true;
+    }
 
     Map<String,String> fetchCredentials() {
         Map<String,String> credentialMap = new HashMap<>();

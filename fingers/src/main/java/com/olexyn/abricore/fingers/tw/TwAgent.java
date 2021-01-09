@@ -2,6 +2,7 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Agent;
 import com.olexyn.abricore.model.Asset;
+import org.openqa.selenium.WebDriver;
 
 public class TwAgent implements Agent {
 
@@ -14,12 +15,15 @@ public class TwAgent implements Agent {
     public void start() throws InterruptedException {
 
         TwLogin login = new TwLogin();
-        login.login();
+        WebDriver driver = login.doLogin();
 
-        TwFetch fetch = new TwFetch(assetToScrape);
-        while (true) {
+        TwFetch fetch = new TwFetch(assetToScrape, driver);
+        boolean stop = false;
+        while (!stop) {
             assetToScrape.mergeFromAsset(fetch.fetchAsset());
             Thread.sleep(100);
+            stop = true;
         }
+        login.doLogout(driver);
     }
 }
