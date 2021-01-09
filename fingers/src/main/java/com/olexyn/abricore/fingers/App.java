@@ -34,7 +34,7 @@ public class App
 
     @Test(testName = "downloadCharts")
     public void tstHelloWorldGoogle() throws InterruptedException {
-        // Step 1 Login
+        // Step 1 TwLogin
 
         driver.get("https://www.tradingview.com/symbols/AMEX-UNG/");
         WebElement fullChartButton = driver.findElement(By.linkText("Full-featured chart"));

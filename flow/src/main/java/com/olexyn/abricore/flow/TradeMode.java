@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-public class TradeMode extends Mode{
+public class TradeMode extends AbstractMode {
 
     ActionMode actionMode = ActionMode.LIVE;
 

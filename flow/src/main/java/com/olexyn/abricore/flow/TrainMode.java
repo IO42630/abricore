@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-public class TrainMode extends Mode{
+public class TrainMode extends AbstractMode {
 
     ActionMode actionMode = ActionMode.PAPER;
 

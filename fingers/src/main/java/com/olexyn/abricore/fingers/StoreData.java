@@ -1,5 +1,7 @@
 package com.olexyn.abricore.fingers;
 
+import com.olexyn.abricore.model.Asset;
+
 public class StoreData {
 
     private static StoreData instance = null;
@@ -14,7 +16,7 @@ public class StoreData {
     }
 
 
-    public boolean store() {
+    public boolean store(Asset assetToStore) {
 
         return false;
     }

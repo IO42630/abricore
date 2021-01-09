@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class Login {
+public class TwLogin {
 
     private WebDriver driver;
 
@@ -155,7 +155,7 @@ public class Login {
         driver.get("https://www.swissquote.ch/");
 
         getWhere("mn-Dropdown__trigger", "LOGIN").click();
-        followContainedLink(driver, getWhere("mn-Dropdown__text", "Login Bank"));
+        followContainedLink(driver, getWhere("mn-Dropdown__text", "TwLogin Bank"));
 
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);

@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public abstract class Asset {
+public class Asset {
 
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
     private String name;
 
-    public Asset() {
+    public Asset(String name) {
+        this.name = name;
+
         for (Interval interval : Interval.values()) {
             snapshots.put(interval, new TreeMap<>());
         }
@@ -122,5 +124,8 @@ public abstract class Asset {
     }
 
 
+    public boolean mergeFromAsset(Asset otherAsset) {
+        return false;
+    }
 
 }

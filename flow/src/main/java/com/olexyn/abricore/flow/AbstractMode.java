@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-public abstract class Mode {
+public abstract class AbstractMode {
 
     ActionMode actionMode;
 
