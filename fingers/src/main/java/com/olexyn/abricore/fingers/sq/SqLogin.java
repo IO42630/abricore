@@ -1,6 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.App;
+import com.olexyn.abricore.fingers.Login;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -22,11 +23,10 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class TwLogin {
+public class SqLogin implements Login {
 
     private WebDriver driver;
 
-    @BeforeClass
     public void init(){
 
         try {
@@ -38,7 +38,6 @@ public class TwLogin {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
-    @AfterClass
     public void cleanup(){
         if(driver !=null)
             driver.quit();
@@ -149,13 +148,19 @@ public class TwLogin {
     }
 
 
-    @Test(testName = "do_login")
+    public static void main(String... args) throws InterruptedException {
+        SqLogin login = new SqLogin();
+        login.init();
+        login.doLogin();
+        login.cleanup();
+    }
+
     public void  doLogin() throws InterruptedException {
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.swissquote.ch/");
 
         getWhere("mn-Dropdown__trigger", "LOGIN").click();
-        followContainedLink(driver, getWhere("mn-Dropdown__text", "TwLogin Bank"));
+        followContainedLink(driver, getWhere("mn-Dropdown__text", "Login Bank"));
 
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
