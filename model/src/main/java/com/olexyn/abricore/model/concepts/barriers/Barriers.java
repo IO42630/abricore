@@ -1,8 +1,8 @@
 package com.olexyn.abricore.model.concepts.barriers;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.AssetSnapshot;
-import com.olexyn.abricore.model.StockSnapshot;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.StockSnapshot;
 
 import java.time.Instant;
 import java.util.Map.Entry;

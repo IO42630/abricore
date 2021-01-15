@@ -1,5 +1,7 @@
 package com.olexyn.abricore.model;
 
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -8,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class Asset {
+public abstract class Asset {
 
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
     private String name;

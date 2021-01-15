@@ -1,5 +1,9 @@
-package com.olexyn.abricore.model;
+package com.olexyn.abricore.model.concepts;
 
+
+import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.Interval;
 
 import java.time.Instant;
 import java.util.Map.Entry;
@@ -19,7 +23,7 @@ public class Cross {
      */
     Cross(Asset asset1, Asset asset2, Interval interval, Instant instant) {
 
-        Entry<Instant,AssetSnapshot> asset1Next = asset1.getSnapShots(interval).higherEntry(instant);
+        Entry<Instant, AssetSnapshot> asset1Next = asset1.getSnapShots(interval).higherEntry(instant);
         Entry<Instant,AssetSnapshot> asset1Prev= asset1.getSnapShots(interval).lowerEntry(instant);
 
         Entry<Instant,AssetSnapshot> asset2Next = asset2.getSnapShots(interval).higherEntry(instant);

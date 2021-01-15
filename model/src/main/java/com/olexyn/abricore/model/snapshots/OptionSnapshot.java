@@ -1,4 +1,4 @@
-package com.olexyn.abricore.model.options;
+package com.olexyn.abricore.model.snapshots;
 
 public abstract class OptionSnapshot {
 
