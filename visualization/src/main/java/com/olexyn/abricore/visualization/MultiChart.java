@@ -1,10 +1,17 @@
-package com.olexyn.abricore;
+package com.olexyn.abricore.visualization;
 
-import org.knowm.xchart.*;
+
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
 
 public class MultiChart {
 

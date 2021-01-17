@@ -13,13 +13,13 @@
         <maven.compiler.target>1.11</maven.compiler.target>
     </properties>
     <modules>
-        <module>tws-api</module>
         <module>datasets</module>
         <module>notifications</module>
         <module>fingers</module>
         <module>model</module>
         <module>flow</module>
         <module>evaluate</module>
+        <module>visualization</module>
     </modules>
     <dependencies>
         <dependency>

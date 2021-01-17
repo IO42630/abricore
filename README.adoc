@@ -6,12 +6,12 @@ An investing bot in progress...
 ==== TODO
 ===== 1. Scrape Mode
 
-image::scrape-mode.png[]
+image::img/scrape-mode.png[]
 
 ===== 2. Trade Mode
 
-image::trade-mode.png[]
+image::img/trade-mode.png[]
 
 ===== 3. Train Mode
 
-image::train-mode.png[]
+image::img/train-mode.png[]

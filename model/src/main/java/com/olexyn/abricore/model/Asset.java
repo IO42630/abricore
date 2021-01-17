@@ -15,9 +15,13 @@ public abstract class Asset {
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
     private String name;
 
+    private Double dividend = 0d;
 
 
 
+    public Double getDividend() {
+        return dividend;
+    }
 
     public Asset(String name) {
 

@@ -1,10 +1,20 @@
-package com.olexyn.abricore;
+package com.olexyn.abricore.visualization;
 
 import com.olexyn.abricore.model.snapshots.OptionSnapshot;
 import com.olexyn.abricore.model.snapshots.VanillaOptionSnapshot;
-import org.knowm.xchart.*;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
 import java.io.IOException;
 
 /**
@@ -12,10 +22,10 @@ import java.io.IOException;
  */
 public class App {
 
+
     public static void main(String[] args) throws IOException {
 
         OptionSnapshot optionLow = new VanillaOptionSnapshot();
-        optionLow.setAssetPrice(23);
         optionLow.setStrike(23);
         optionLow.setTimeTillExpiry(0.23);
         optionLow.setRiskFreeInterestPA(0);
@@ -23,7 +33,7 @@ public class App {
         optionLow.setVolatilityPA(0.38);
 
         OptionSnapshot optionHigh = new VanillaOptionSnapshot();
-        optionHigh.setAssetPrice(23);
+        optionHigh.setPrice(23d);
         optionHigh.setStrike(25);
         optionHigh.setTimeTillExpiry(0.23);
         optionHigh.setRiskFreeInterestPA(0);
@@ -39,17 +49,17 @@ public class App {
 
         double startPoint = 27;
 
-        for(int i = 0 ; i<points; i++){
+        for (int i = 0; i < points; i++) {
 
             xData[i] = startPoint - i * delta;
-            if(xData[i] >=0){
-                optionLow.setAssetPrice(xData[i]);
-                double optionLowPrice = new CallCalculator(optionLow).calculatePrice();
-                optionHigh.setAssetPrice(xData[i]);
-                double optionHighPrice = new CallCalculator(optionHigh).calculatePrice();
+            if (xData[i] >= 0) {
+                optionLow.setPrice(xData[i]);
+                double optionLowPrice = 0d;
+                optionHigh.setPrice(xData[i]);
+                double optionHighPrice = 0d;
 
                 yData[i] = optionLowPrice / optionHighPrice;
-            }else{
+            } else {
                 xData[i] = 0;
                 yData[i] = 0;
             }
@@ -57,20 +67,20 @@ public class App {
 
 
 
-// Create Chart
+        // Create Chart
         XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
 
 
 
 
 
-// Show it
+        // Show it
         new SwingWrapper(chart).displayChart();
 
-// Save it
+        // Save it
         BitmapEncoder.saveBitmap(chart, "./Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
 
-// or save it in high-res
+        // or save it in high-res
         BitmapEncoder.saveBitmapWithDPI(chart, "./Sample_Chart_300_DPI", BitmapEncoder.BitmapFormat.PNG, 300);
 
         //XYChart exampleChart = new XYChart();
@@ -92,10 +102,13 @@ public class App {
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
 
         // Series
-        chart.addSeries("a", new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
-        chart.addSeries("b", new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
-        chart.addSeries("c", new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+        chart.addSeries("a", new double[]{0, 3, 5, 7, 9}, new double[]{-3, 5, 9, 6, 5});
+        chart.addSeries("b", new double[]{0, 2, 4, 6, 9}, new double[]{-1, 6, 4, 0, 4});
+        chart.addSeries("c", new double[]{0, 1, 3, 8, 9}, new double[]{-2, -1, 1, 0, 1});
 
         return chart;
     }
 }
+
+
+

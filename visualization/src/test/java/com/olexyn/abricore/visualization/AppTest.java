@@ -1,4 +1,4 @@
-package com.olexyn;
+package com.olexyn.abricore.visualization;
 
 import static org.junit.Assert.assertTrue;
 
