@@ -15,3 +15,12 @@ image::img/trade-mode.png[]
 ===== 3. Train Mode
 
 image::img/train-mode.png[]
+
+
+{empty} +
+{empty} +
+
+=== Module Dependencies
+
+image::img/module-dep.png[]
+

@@ -8,11 +8,11 @@
     <groupId>com.olexyn.abricore</groupId>
     <version>0.1</version>
   </parent>
-  <groupId>com.olexyn.abricore.action</groupId>
-  <artifactId>action</artifactId>
+  <groupId>com.olexyn.abricore.fingers</groupId>
+  <artifactId>fingers</artifactId>
   <version>0.1</version>
 
-  <name>action</name>
+  <name>fingers</name>
 
   <properties>
   </properties>
