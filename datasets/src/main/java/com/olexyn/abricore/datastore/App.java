@@ -1,6 +1,10 @@
-package com.olexyn.abricore.datasets;
+package com.olexyn.abricore.datastore;
 
 
+import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.Stock;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.StockSnapshot;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -18,7 +22,6 @@ public class App {
     private static Tools tools = new Tools();
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
 
 
         String configPath = System.getProperty("user.dir") + "/datasets/src/main/resources/alphavantage-ibm-fullsample.json";
@@ -38,15 +41,15 @@ public class App {
         JSONObject jsonObject = rootJson.getJSONObject("Time Series (5min)");
         Set<String> keyset = jsonObject.keySet();
 
-        Map<ZonedDateTime, BarDto> map = new HashMap<>();
+        Map<ZonedDateTime, AssetSnapshot> map = new HashMap<>();
 
         for (String key : keyset){
             JSONObject jsonBar = jsonObject.getJSONObject(key);
 
-            BarDto barDto = new BarDto();
+            AssetSnapshot barDto = new StockSnapshot(new Stock("test"), Interval.M_30);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(key + " " + zoneDataString, dateTimeFormatter);
-            barDto.setZonedDateTime(zonedDateTime);
+            //barDto.setZonedDateTime(zonedDateTime);
             barDto.setOpen(tools.getFirstMatchingAsDouble(jsonBar, "open"));
             barDto.setHigh(tools.getFirstMatchingAsDouble(jsonBar, "high"));
             barDto.setLow(tools.getFirstMatchingAsDouble(jsonBar, "low"));

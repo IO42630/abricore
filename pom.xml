@@ -19,6 +19,7 @@
         <module>fingers</module>
         <module>model</module>
         <module>flow</module>
+        <module>evaluate</module>
     </modules>
     <dependencies>
         <dependency>

@@ -1,8 +1,10 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.Stock;
 
 public class Main {
+
 
     /**
      * -m mode target
@@ -20,7 +22,7 @@ public class Main {
                 case "-m":
                     modeEnumString = (args[i + 1] + "_" + args[i + 2]).toUpperCase();
                 case "-a":
-                    asset = new Asset(args[i + 1]);
+                    asset = new Stock(args[i + 1]);
             }
         }
 

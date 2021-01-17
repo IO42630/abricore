@@ -1,7 +1,6 @@
 package com.olexyn.abricore;
 
-import com.olexyn.abricore.model.options.Option;
-import com.olexyn.abricore.model.options.OptionSnapshot;
+import com.olexyn.abricore.model.snapshots.OptionSnapshot;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 public class CallCalculator {

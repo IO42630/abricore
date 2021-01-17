@@ -1,9 +1,7 @@
 package com.olexyn.abricore;
 
-import com.olexyn.abricore.model.options.Option;
-import com.olexyn.abricore.model.options.OptionSnapshot;
-import com.olexyn.abricore.model.options.VanillaOption;
-import com.olexyn.abricore.model.options.VanillaOptionSnapshot;
+import com.olexyn.abricore.model.snapshots.OptionSnapshot;
+import com.olexyn.abricore.model.snapshots.VanillaOptionSnapshot;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 

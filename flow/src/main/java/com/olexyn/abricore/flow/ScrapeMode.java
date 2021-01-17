@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-import com.olexyn.abricore.fingers.StoreData;
+import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.fingers.tw.TwAgent;
 import com.olexyn.abricore.model.Asset;
 
@@ -19,7 +19,8 @@ public class ScrapeMode extends AbstractMode {
 
         while (true) {
             fetchHistoricalData();
-            StoreData.getInstance().store(assetToScrape);
+            // actually save .csv file to disk
+            StoreCsv.getInstance().update(assetToScrape);
             Thread.sleep(100);
         }
     }

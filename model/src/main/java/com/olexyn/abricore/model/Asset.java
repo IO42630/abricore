@@ -15,7 +15,15 @@ public abstract class Asset {
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
     private String name;
 
+
+
+
+
     public Asset(String name) {
+
+
+        String configPath = System.getProperty("user.dir") + "/datasets/src/main/resources/alphavantage-ibm-fullsample.json";
+
         this.name = name;
 
         for (Interval interval : Interval.values()) {
@@ -28,8 +36,9 @@ public abstract class Asset {
     }
 
 
-
-
+    public String getName() {
+        return name;
+    }
 
     public TreeMap<Instant, Double> calculateMASeries(
         Interval interval,

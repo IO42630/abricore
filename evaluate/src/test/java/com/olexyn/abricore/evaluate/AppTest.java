@@ -1,4 +1,4 @@
-package com.olexyn.abricore.datasets;
+package com.olexyn.abricore.evaluate;
 
 import static org.junit.Assert.assertTrue;
 

@@ -1,6 +1,8 @@
 package com.olexyn.abricore.model.concepts.barriers;
 
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.Stock;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.StockSnapshot;
 
@@ -75,7 +77,7 @@ public abstract class Barriers {
     }
 
     private AssetSnapshot merge(AssetSnapshot snapshot1, AssetSnapshot snapshot2) {
-        AssetSnapshot out = new StockSnapshot();
+        AssetSnapshot out = new StockSnapshot(new Stock("test"), Interval.M_30);
         out.setPrice((snapshot1.getPrice() + snapshot2.getPrice()) / 2);
         out.setInstant(snapshot1.getInstant().isBefore(snapshot2.getInstant()) ? snapshot2.getInstant() : snapshot1.getInstant());
         return out;

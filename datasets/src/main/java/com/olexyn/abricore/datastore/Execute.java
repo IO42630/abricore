@@ -1,4 +1,4 @@
-package com.olexyn.abricore.datasets;
+package com.olexyn.abricore.datastore;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

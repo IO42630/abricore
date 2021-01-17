@@ -26,4 +26,8 @@ public class TwAgent implements Agent {
         }
         login.doLogout(driver);
     }
+
+    public static void main(String... args) throws InterruptedException {
+        new TwAgent(null).start();
+    }
 }
