@@ -16,7 +16,6 @@ image::img/trade-mode.png[]
 
 image::img/train-mode.png[]
 
-
 {empty} +
 {empty} +
 
