@@ -1,5 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
+import com.olexyn.abricore.fingers.DriverTools;
+import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Login;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,8 +38,8 @@ public class SqLogin extends Login {
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.swissquote.ch/");
 
-        getWhere("mn-Dropdown__trigger", "LOGIN").click();
-        followContainedLink(driver, getWhere("mn-Dropdown__text", "Login Bank"));
+        DriverTools.getWhere(driver, "mn-Dropdown__trigger", CRITERIA.TEXT, "LOGIN").click();
+        DriverTools.followContainedLink(driver, DriverTools.getWhere(driver, "mn-Dropdown__text", CRITERIA.TEXT, "Login Bank"));
 
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
@@ -46,7 +48,7 @@ public class SqLogin extends Login {
         driver.findElement(By.id("loginText")).click();
         SleepFactory.sleep(2);
 
-        WebElement keyHolder = getWhere("L3CodeDialog__challengeCode");
+        WebElement keyHolder = DriverTools.getWhere(driver, "L3CodeDialog__challengeCode");
         String key = keyHolder.getText();
         driver.findElement(By.className("js-l3Code L3CodeDialog__l3Code Input Field Field__input")).sendKeys(credentials.get(key));
         driver.findElement(By.className("js-authenticate Button Button--primary")).click();
