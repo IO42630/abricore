@@ -14,6 +14,7 @@ public abstract class Asset {
 
     private final Map<Interval,TreeMap<Instant, AssetSnapshot>> snapshots = new HashMap<>();
     private String name;
+    private String isin;
 
     private Double dividend = 0d;
 
@@ -25,14 +26,9 @@ public abstract class Asset {
 
     public Asset(String name) {
 
-
-        String configPath = System.getProperty("user.dir") + "/datasets/src/main/resources/alphavantage-ibm-fullsample.json";
-
         this.name = name;
 
-        for (Interval interval : Interval.values()) {
-            snapshots.put(interval, new TreeMap<>());
-        }
+
     }
 
     public TreeMap<Instant, AssetSnapshot> getSnapShots(Interval interval) {

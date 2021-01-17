@@ -36,10 +36,13 @@ public class DriverTools {
                 case ID:
                     toEvaluate = element.getAttribute("id");
                     break;
+                case TITLE:
+                    toEvaluate = element.getAttribute("title");
+                    break;
                 case NONE:
                     toEvaluate = text;
             }
-            if (toEvaluate != null && toEvaluate.contains(text)) return element;
+            if (toEvaluate != null && toEvaluate.contains(text)) { return element; }
         }
         return  null;
     }
@@ -81,7 +84,8 @@ public class DriverTools {
         TAG,
         HREF,
         NONE,
-        ID
+        ID,
+        TITLE
     }
 
 

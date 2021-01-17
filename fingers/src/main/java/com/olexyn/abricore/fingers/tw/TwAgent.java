@@ -2,6 +2,7 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Agent;
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.Commodity;
 import org.openqa.selenium.WebDriver;
 
 public class TwAgent implements Agent {
@@ -28,6 +29,6 @@ public class TwAgent implements Agent {
     }
 
     public static void main(String... args) throws InterruptedException {
-        new TwAgent(null).start();
+        new TwAgent(new Commodity("XAGUSD")).start();
     }
 }
