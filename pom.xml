@@ -20,6 +20,7 @@
         <module>flow</module>
         <module>evaluate</module>
         <module>visualization</module>
+        <module>common</module>
     </modules>
     <dependencies>
         <dependency>

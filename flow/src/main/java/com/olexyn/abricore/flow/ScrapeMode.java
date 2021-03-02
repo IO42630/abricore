@@ -20,7 +20,7 @@ public class ScrapeMode extends AbstractMode {
         while (true) {
             fetchHistoricalData();
             // actually save .csv file to disk
-            StoreCsv.getInstance().update(assetToScrape);
+            // StoreCsv.getInstance().update(assetToScrape);
             Thread.sleep(100);
         }
     }

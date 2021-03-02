@@ -22,7 +22,8 @@ public class Batch {
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x.toString(), Symbols.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
-            .forEach(x -> StoreCsv.getInstance().read(x));
+            .map(x -> StoreCsv.getInstance().read(x))
+            .forEach(x -> StoreCsv.getInstance().update(x));
     }
 
     private static boolean containsAnyToken(String candidate, Set<String> tokens) {
@@ -34,4 +35,8 @@ public class Batch {
         return false;
     }
 
+
+    public static void main(String... args) throws IOException {
+        new Batch().parseTmpCsv();
+    }
 }

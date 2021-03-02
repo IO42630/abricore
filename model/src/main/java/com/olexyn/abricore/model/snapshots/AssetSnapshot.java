@@ -119,18 +119,18 @@ public abstract class AssetSnapshot implements Comparable{
 
 
     public void assign(String[] columnOrder, int i, String[] lineArray) {
-        String candidate = columnOrder[i].toUpperCase();
-        if (candidate.contains("TIME")) {
+        String candidate = columnOrder[i].toUpperCase().trim();
+        if (candidate.equals("TIME")) {
             setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
-        } else if (candidate.contains("OPEN")){
+        } else if (candidate.equals("OPEN")){
             setOpen(Double.parseDouble(lineArray[i]));
-        } else if (candidate.contains("HIGH")){
+        } else if (candidate.equals("HIGH")){
             setHigh(Double.parseDouble(lineArray[i]));
-        } else if (candidate.contains("LOW")){
+        } else if (candidate.equals("LOW")){
             setLow(Double.parseDouble(lineArray[i]));
-        } else if (candidate.contains("CLOSE")){
+        } else if (candidate.equals("CLOSE")){
             setClose(Double.parseDouble(lineArray[i]));
-        } else if (candidate.contains("VOLUME")){
+        } else if (candidate.equals("VOLUME")){
             setVolume(Double.parseDouble(lineArray[i]));
         }
     }

@@ -3,7 +3,7 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.Stock;
+import static com.olexyn.abricore.common.Constants.*;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.StockSnapshot;
 import com.opencsv.CSVReader;
@@ -62,7 +62,6 @@ public class StoreCsv {
                 throw new NullPointerException("");
             }
 
-
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot assetSnapshot = new StockSnapshot(protoAsset, protoInterval);
                 for (int i = 0; i < lineInArray.length; i++) {
@@ -71,7 +70,7 @@ public class StoreCsv {
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
-            e.printStackTrace();
+            out.clear();
         }
         return out;
     }
@@ -97,27 +96,27 @@ public class StoreCsv {
     /**
      * Write Map of AssetSnapshot to .csv.
      */
-    void write(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap, Interval interval) {
-        String assetName = assetSnapshotTreeMap.firstEntry().getValue().getAsset().getName();
-        String fileName = assetName + "_" + interval.name() + ".csv";
-        String path = StoreParameters.QUOTES_DIR_STORE + fileName;
+    void write(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
 
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path)))) {
-            String comma = ",";
-            String newline = "\n";
+        Asset asset = assetSnapshotTreeMap.firstEntry().getValue().getAsset();
+        Interval interval = assetSnapshotTreeMap.firstEntry().getValue().getInterval();
+        Path path = oldAssetPath(asset, interval);
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
+
+            bufferedWriter.write("time,open,high,low,close,volume\n");
             StringBuilder lineBuilder = new StringBuilder();
             int size = 0;
             for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
 
                 AssetSnapshot assetSnapshot = entry.getValue();
 
-                lineBuilder.append(assetSnapshot.getInstant().toEpochMilli() / 1000).append(comma);
-                lineBuilder.append(assetSnapshot.getInterval().name()).append(comma);
-                lineBuilder.append(assetSnapshot.getOpen()).append(comma);
-                lineBuilder.append(assetSnapshot.getHigh()).append(comma);
-                lineBuilder.append(assetSnapshot.getLow()).append(comma);
-                lineBuilder.append(assetSnapshot.getClose()).append(comma);
-                lineBuilder.append(assetSnapshot.getVolume()).append(newline);
+                lineBuilder.append(assetSnapshot.getInstant().toEpochMilli() / 1000).append(COMMA);
+                lineBuilder.append(assetSnapshot.getOpen()).append(COMMA);
+                lineBuilder.append(assetSnapshot.getHigh()).append(COMMA);
+                lineBuilder.append(assetSnapshot.getLow()).append(COMMA);
+                lineBuilder.append(assetSnapshot.getClose()).append(COMMA);
+                lineBuilder.append(assetSnapshot.getVolume()).append(NEWLINE);
                 size++;
 
                 if (size > 100) {
@@ -130,17 +129,18 @@ public class StoreCsv {
         } catch (IOException e) {
             //
         }
-
-
     }
 
     /**
      * Update .csv by adding new entries from Map of AssesSnapshot.
      */
-    public void update(TreeMap<Instant, AssetSnapshot> newEntries, Interval interval) {
-
+    public void update(TreeMap<Instant, AssetSnapshot> newEntries) {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
-        TreeMap<Instant, AssetSnapshot> oldMap = null; //StoreCsv.getInstance().read(asset, interval);
+        Interval interval = newEntries.firstEntry().getValue().getInterval();
+
+
+        TreeMap<Instant, AssetSnapshot> oldMap = read(oldAssetPath(asset, interval));
+
 
         for (Entry<Instant, AssetSnapshot> entry : newEntries.entrySet()) {
             Instant key = entry.getKey();
@@ -148,14 +148,11 @@ public class StoreCsv {
                 oldMap.put(key, entry.getValue());
             }
         }
-        StoreCsv.getInstance().write(oldMap, interval);
+        StoreCsv.getInstance().write(oldMap);
     }
 
-    /**
-     *
-     */
-    public void update(Asset asset ){
-        // Scan all new downloaded files matching asset, and update.
+    private Path oldAssetPath(Asset asset, Interval interval) {
+        return Paths.get(StoreParameters.QUOTES_DIR_STORE + asset.getName() + "_" + interval.getFileLabel()+ ".csv");
     }
 
 }
