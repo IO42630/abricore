@@ -1,43 +1,66 @@
 package com.olexyn.abricore.fingers.tw;
 
+import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.fingers.DriverTools;
 import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import org.openqa.selenium.JavascriptExecutor;
+import com.olexyn.abricore.model.Stock;
 import org.openqa.selenium.WebDriver;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.Period;
 
 public class TwFetch extends Fetch {
 
     final Asset assetToScrape;
+    boolean cont = true;
 
     TwFetch(Asset assetToScrape, WebDriver driver) {
         super(driver);
         this.assetToScrape = assetToScrape;
     }
 
-    Asset fetchAsset() {
+    void fetchAsset(Mode mode) throws InterruptedException {
+
         driver.get("https://www.tradingview.com/" + "chart?symbol=FX%3AXAGUSD");
-        DriverTools.getWhere(driver, "apply-common-tooltip", CRITERIA.TITLE, Interval.M_30.getTwLabel()).click();
-        DriverTools.getWhere(driver, "label-3Xqxy756", CRITERIA.TEXT, Interval.M_30.getTwLabel()).click();
 
 
-        DriverTools.getWhere(driver, "button-9U4gleap").click();
-        DriverTools.getWhere(driver, "labelRow-3Q0rdE8-", CRITERIA.TEXT, "Export chart").click();
+        Instant oldEarly = Instant.now();
+        if (mode.equals(Mode.DOWNLOAD)) {
+            setInterval(driver, Interval.M_30);
+            while (cont) {
 
-        DriverTools.getWhere(driver, "button-1iktpaT1").click();
+                download(driver);
 
-
-        //JavascriptExecutor js = (JavascriptExecutor) driver;
-        //js.executeScript("window.scrollBy(1000,0)");
-
-        return transform();
+                Instant newEarly = null; //StoreCsv.getInstance().read(new Stock(""), Interval.M_30).firstEntry().getKey();
+                if (newEarly.isBefore(oldEarly)) {
+                    oldEarly = newEarly;
+                    // TODO goto DATE - FOO (foo depends on Interval chosen)
+                } else {
+                    cont = false;
+                }
+            }
+        } else  if (mode.equals(Mode.OBSERVE)) {
+            setInterval(driver, Interval.M_1);
+            while (cont) {
+                download(driver);
+                Thread.sleep(Duration.ofMinutes(5L).toMillis());
+            }
+        }
     }
 
-    Asset transform() {
+    private static void setInterval(WebDriver driver, Interval interval) {
+        DriverTools.getWhere(driver, "apply-common-tooltip", CRITERIA.TITLE, interval.getTwLabel()).click();
+        DriverTools.getWhere(driver, "label-3Xqxy756", CRITERIA.TEXT, interval.getTwLabel()).click();
+    }
 
-        return assetToScrape;
+    private static void download(WebDriver driver) {
+        DriverTools.getWhere(driver, "button-9U4gleap").click();
+        DriverTools.getWhere(driver, "labelRow-3Q0rdE8-", CRITERIA.TEXT, "Export chart").click();
+        DriverTools.getWhere(driver, "submitButton-2lNICzl3").click();
     }
 
 }

@@ -9,4 +9,9 @@ public abstract class Fetch {
     protected Fetch(WebDriver driver) {
         this.driver = driver;
     }
+
+    public enum Mode{
+        DOWNLOAD,
+        OBSERVE
+    }
 }

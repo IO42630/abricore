@@ -1,5 +1,6 @@
 package com.olexyn.abricore.datastore;
 
+import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.Stock;
@@ -13,8 +14,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class StoreCsv {
@@ -33,13 +39,22 @@ public class StoreCsv {
     /**
      * Read Map of AssetSnapshot from .csv.
      */
-    public TreeMap<Instant, AssetSnapshot> read(Asset asset, Interval interval) {
+    public TreeMap<Instant, AssetSnapshot> read(Path path) {
         TreeMap<Instant, AssetSnapshot> out = new TreeMap<>();
-        try (CSVReader reader = new CSVReader(new FileReader(StoreParameters.QUOTES_DIR_TMP + "SPCFD_SPX, 30.csv"))) {
+        Asset protoAsset;
+        Interval protoInterval;
+
+        try {
+            protoAsset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
+            protoInterval = mapToFirstInterval(path.getFileName().toString());
+        } catch (StoreException e) {
+            return  out;
+        }
+
+        try (CSVReader reader = new CSVReader(new FileReader(path.toFile()))) {
 
             String[] columnOrder;
             String[] lineInArray;
-
 
             if ((lineInArray = reader.readNext()) != null) {
                 columnOrder = lineInArray;
@@ -49,24 +64,34 @@ public class StoreCsv {
 
 
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot assetSnapshot = new StockSnapshot(new Stock("test"), Interval.M_30);
+                AssetSnapshot assetSnapshot = new StockSnapshot(protoAsset, protoInterval);
                 for (int i = 0; i < lineInArray.length; i++) {
                     assetSnapshot.assign(columnOrder, i, lineInArray);
                 }
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
-            int br = 0;
         } catch (CsvValidationException | IOException e) {
             e.printStackTrace();
         }
         return out;
     }
 
+    private static Asset mapToFirstAsset(String candidate, Set<Asset> tokens) throws StoreException {
+        for (Asset asset : new ArrayList<>(tokens)) {
+            if (candidate.contains(asset.getName())) {
+                return asset;
+            }
+        }
+        throw new StoreException();
+    }
 
-    public static void main(String... args) {
-        TreeMap<Instant, AssetSnapshot> out = StoreCsv.getInstance().read(new Stock("test"), Interval.M_30);
-        StoreCsv.getInstance().write(out, Interval.M_30);
-
+    private static Interval mapToFirstInterval(String candidate) throws StoreException {
+        for (Interval interval : Interval.values()) {
+            if (candidate.contains(interval.getFileLabel())) {
+                return interval;
+            }
+        }
+        throw new StoreException();
     }
 
     /**
@@ -115,7 +140,7 @@ public class StoreCsv {
     public void update(TreeMap<Instant, AssetSnapshot> newEntries, Interval interval) {
 
         Asset asset = newEntries.firstEntry().getValue().getAsset();
-        TreeMap<Instant, AssetSnapshot> oldMap = StoreCsv.getInstance().read(asset, interval);
+        TreeMap<Instant, AssetSnapshot> oldMap = null; //StoreCsv.getInstance().read(asset, interval);
 
         for (Entry<Instant, AssetSnapshot> entry : newEntries.entrySet()) {
             Instant key = entry.getKey();

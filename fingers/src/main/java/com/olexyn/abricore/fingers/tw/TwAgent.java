@@ -1,6 +1,7 @@
 package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Agent;
+import com.olexyn.abricore.fingers.Fetch.Mode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Commodity;
 import org.openqa.selenium.WebDriver;
@@ -19,12 +20,7 @@ public class TwAgent implements Agent {
         WebDriver driver = login.doLogin();
 
         TwFetch fetch = new TwFetch(assetToScrape, driver);
-        boolean stop = false;
-        while (!stop) {
-            assetToScrape.mergeFromAsset(fetch.fetchAsset());
-            Thread.sleep(100);
-            stop = true;
-        }
+        fetch.fetchAsset(Mode.OBSERVE);
         login.doLogout(driver);
     }
 
