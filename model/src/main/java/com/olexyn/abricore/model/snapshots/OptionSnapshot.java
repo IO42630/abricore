@@ -1,6 +1,6 @@
 package com.olexyn.abricore.model.snapshots;
 
-public abstract class OptionSnapshot {
+public class OptionSnapshot {
 
 
     private double strike = 23;

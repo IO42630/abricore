@@ -6,16 +6,13 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import static com.olexyn.abricore.common.Constants.*;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.StockSnapshot;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -46,12 +43,12 @@ public class StoreCsv {
      */
     public TreeMap<Instant, AssetSnapshot> read(Path path) {
         TreeMap<Instant, AssetSnapshot> out = new TreeMap<>();
-        Asset protoAsset;
-        Interval protoInterval;
+        Asset asset;
+        Interval interval;
 
         try {
-            protoAsset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
-            protoInterval = mapToFirstInterval(path.getFileName().toString());
+            asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
+            interval = mapToFirstInterval(path.getFileName().toString());
         } catch (StoreException e) {
             return  out;
         }
@@ -68,7 +65,7 @@ public class StoreCsv {
             }
 
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot assetSnapshot = new StockSnapshot(protoAsset, protoInterval);
+                AssetSnapshot assetSnapshot = new AssetSnapshot(asset, interval);
                 for (int i = 0; i < lineInArray.length; i++) {
                     assetSnapshot.assign(columnOrder, i, lineInArray);
                 }

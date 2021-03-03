@@ -9,7 +9,7 @@ import java.time.Instant;
 /**
  *
  */
-public abstract class AssetSnapshot implements Comparable{
+public class AssetSnapshot implements Comparable{
 
     private Asset asset;
 
