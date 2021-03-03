@@ -19,7 +19,13 @@ public class Symbols {
      * Stub ...
      */
     public static Set<Asset> getList() {
+
         return SYMBOLS;
+
+    }
+
+    public static Asset getAsset(String symbol) {
+        return SYMBOLS.stream().filter(x -> x.getName().equals(symbol)).findAny().orElseThrow();
     }
 
     public static Set<String> getNames() {

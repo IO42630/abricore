@@ -50,11 +50,11 @@ public class App {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(key + " " + zoneDataString, dateTimeFormatter);
             //barDto.setZonedDateTime(zonedDateTime);
-            barDto.setOpen(tools.getFirstMatchingAsDouble(jsonBar, "open"));
-            barDto.setHigh(tools.getFirstMatchingAsDouble(jsonBar, "high"));
-            barDto.setLow(tools.getFirstMatchingAsDouble(jsonBar, "low"));
-            barDto.setClose(tools.getFirstMatchingAsDouble(jsonBar, "close"));
-            barDto.setVolume(tools.getFirstMatchingAsDouble(jsonBar, "volume"));
+            // barDto.setOpen(tools.getFirstMatchingAsDouble(jsonBar, "open"));
+            // barDto.setHigh(tools.getFirstMatchingAsDouble(jsonBar, "high"));
+            // barDto.setLow(tools.getFirstMatchingAsDouble(jsonBar, "low"));
+            // barDto.setClose(tools.getFirstMatchingAsDouble(jsonBar, "close"));
+            // barDto.setVolume(tools.getFirstMatchingAsDouble(jsonBar, "volume"));
 
 
 

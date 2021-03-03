@@ -1,5 +1,6 @@
 package com.olexyn.abricore.model.snapshots;
 
+import com.olexyn.abricore.calc.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 
@@ -13,11 +14,11 @@ public abstract class AssetSnapshot implements Comparable{
     private Asset asset;
 
     private Instant instant;
-    private Double open;
-    private Double high;
-    private Double low;
-    private Double close;
-    private Double volume;
+    private Long open;
+    private Long high;
+    private Long low;
+    private Long close;
+    private Long volume;
     private Interval interval;
 
     private double price;
@@ -73,47 +74,47 @@ public abstract class AssetSnapshot implements Comparable{
     }
 
 
-    public Double getOpen() {
+    public Long getOpen() {
         return open;
     }
 
-    public void setOpen(Double open) {
+    public void setOpen(Long open) {
         this.open = open;
         updatePrice();
     }
 
-    public Double getHigh() {
+    public Long getHigh() {
         return high;
     }
 
-    public void setHigh(Double high) {
+    public void setHigh(Long high) {
         this.high = high;
         updatePrice();
     }
 
-    public Double getLow() {
+    public Long getLow() {
         return low;
     }
 
-    public void setLow(Double low) {
+    public void setLow(Long low) {
         this.low = low;
         updatePrice();
     }
 
-    public Double getClose() {
+    public Long getClose() {
         return close;
     }
 
-    public void setClose(Double close) {
+    public void setClose(Long close) {
         this.close = close;
         updatePrice();
     }
 
-    public Double getVolume() {
+    public Long getVolume() {
         return volume;
     }
 
-    public void setVolume(Double volume) {
+    public void setVolume(Long volume) {
         this.volume = volume;
     }
 
@@ -123,15 +124,15 @@ public abstract class AssetSnapshot implements Comparable{
         if (candidate.equals("TIME")) {
             setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
         } else if (candidate.equals("OPEN")){
-            setOpen(Double.parseDouble(lineArray[i]));
+            setOpen(Calc.parseLong(lineArray[i]));
         } else if (candidate.equals("HIGH")){
-            setHigh(Double.parseDouble(lineArray[i]));
+            setHigh(Calc.parseLong(lineArray[i]));
         } else if (candidate.equals("LOW")){
-            setLow(Double.parseDouble(lineArray[i]));
+            setLow(Calc.parseLong(lineArray[i]));
         } else if (candidate.equals("CLOSE")){
-            setClose(Double.parseDouble(lineArray[i]));
+            setClose(Calc.parseLong(lineArray[i]));
         } else if (candidate.equals("VOLUME")){
-            setVolume(Double.parseDouble(lineArray[i]));
+            setVolume(Calc.parseLong(lineArray[i]));
         }
     }
 }

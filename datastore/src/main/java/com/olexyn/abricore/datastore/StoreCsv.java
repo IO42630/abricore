@@ -1,5 +1,6 @@
 package com.olexyn.abricore.datastore;
 
+import com.olexyn.abricore.calc.Calc;
 import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -34,6 +35,10 @@ public class StoreCsv {
             instance = new StoreCsv();
         }
         return instance;
+    }
+
+    public TreeMap<Instant, AssetSnapshot> read(Asset asset, Interval interval) {
+        return read(oldAssetPath(asset, interval));
     }
 
     /**
@@ -110,13 +115,12 @@ public class StoreCsv {
             for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
 
                 AssetSnapshot assetSnapshot = entry.getValue();
-
                 lineBuilder.append(assetSnapshot.getInstant().toEpochMilli() / 1000).append(COMMA);
-                lineBuilder.append(assetSnapshot.getOpen()).append(COMMA);
-                lineBuilder.append(assetSnapshot.getHigh()).append(COMMA);
-                lineBuilder.append(assetSnapshot.getLow()).append(COMMA);
-                lineBuilder.append(assetSnapshot.getClose()).append(COMMA);
-                lineBuilder.append(assetSnapshot.getVolume()).append(NEWLINE);
+                lineBuilder.append(Calc.parseString(assetSnapshot.getOpen())).append(COMMA);
+                lineBuilder.append(Calc.parseString(assetSnapshot.getHigh())).append(COMMA);
+                lineBuilder.append(Calc.parseString(assetSnapshot.getLow())).append(COMMA);
+                lineBuilder.append(Calc.parseString(assetSnapshot.getClose())).append(COMMA);
+                lineBuilder.append(Calc.parseString(assetSnapshot.getVolume())).append(NEWLINE);
                 size++;
 
                 if (size > 100) {

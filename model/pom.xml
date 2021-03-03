@@ -24,6 +24,12 @@
           <artifactId>commons-math3</artifactId>
           <version>3.2</version>
       </dependency>
+      <dependency>
+          <groupId>com.olexyn.abricore.calc</groupId>
+          <artifactId>calc</artifactId>
+          <version>0.1</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
 
   <build>

@@ -21,6 +21,7 @@
         <module>evaluate</module>
         <module>visualization</module>
         <module>common</module>
+        <module>calc</module>
     </modules>
     <dependencies>
         <dependency>
