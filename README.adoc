@@ -23,3 +23,25 @@ image::img/train-mode.png[]
 
 image::img/module-dep.png[]
 
+{empty} +
+
+== Calculations
+* We consider two types of calculations.
+
+{empty} +
+
+==== Continuous with fixed Parameters
+* E.g. MA20, Bolliger Bands
+* These are perfomred either
+** in Batches (for historical data)
+** with each incoming dataset (TODO)
+* They are stored to disk
+* `com.olexyn.abricore.datastore.batch`
+
+{empty} +
+
+==== Local or with variable Parameters
+* E.g. MA-Cross, Extrema, estimated Resistances / Supports
+* These are calcualted on request.
+* They are not stored to disk.
+* `com.olexyn.abricore.evaluate` (TODO)

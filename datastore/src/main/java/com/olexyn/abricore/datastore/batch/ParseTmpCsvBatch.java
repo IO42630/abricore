@@ -22,8 +22,8 @@ public class ParseTmpCsvBatch {
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x.toString(), Symbols.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
-            .map(x -> StoreCsv.getInstance().read(x))
-            .forEach(x -> StoreCsv.getInstance().update(x));
+            .map(StoreCsv::readFromStore)
+            .forEach(StoreCsv::update);
     }
 
     private static boolean containsAnyToken(String candidate, Set<String> tokens) {

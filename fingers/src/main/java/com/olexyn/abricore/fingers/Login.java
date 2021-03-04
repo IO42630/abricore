@@ -2,7 +2,7 @@ package com.olexyn.abricore.fingers;
 
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import com.olexyn.abricore.fingers.sq.Tools;
-import com.olexyn.abricore.datastore.StoreParameters;
+import com.olexyn.abricore.util.Parameters;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -38,7 +38,7 @@ public abstract class Login {
 
 
 
-        String downloadFilepath = StoreParameters.QUOTES_DIR_TMP;
+        String downloadFilepath = Parameters.QUOTES_DIR_TMP;
         HashMap<String, Object> chromePrefs = new HashMap<>();
         chromePrefs.put("profile.default_content_settings.popups", 0);
         chromePrefs.put("download.default_directory", downloadFilepath);

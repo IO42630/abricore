@@ -14,6 +14,7 @@ public abstract class Option extends Asset {
     private Asset underlyingAsset;
     private Integer strike;
     private Instant expiry;
+    private Double dividend; // TODO placeholder
 
 
 
@@ -24,7 +25,7 @@ public abstract class Option extends Asset {
     public double calculatePrice(AssetSnapshot assetSnapshot) {
         double lnSX = Math.log(assetSnapshot.getAverage() / getStrike());
         double sigmaTwo = Math.pow(calculateVolatilityPA(), 2) / 2;
-        double trqSigma = getTimeTillExpiry() * (getRiskFreeInterestPA() - underlyingAsset.getDividend() + sigmaTwo);
+        double trqSigma = getTimeTillExpiry() * (getRiskFreeInterestPA() - dividend + sigmaTwo);
         double sigmaSqrtT = calculateVolatilityPA() * Math.sqrt(getTimeTillExpiry());
         double d1 = (lnSX + trqSigma) / sigmaSqrtT;
 
@@ -34,7 +35,7 @@ public abstract class Option extends Asset {
         double n1 = normalDistribution.cumulativeProbability(d1);
         double n2 = normalDistribution.cumulativeProbability(d2);
 
-        double part5 = Math.exp(-underlyingAsset.getDividend()* getTimeTillExpiry());
+        double part5 = Math.exp(-dividend* getTimeTillExpiry());
         double part6 = assetSnapshot.getAverage()  * part5 * n1;
 
         double part7 = Math.exp(-getRiskFreeInterestPA()* getTimeTillExpiry());

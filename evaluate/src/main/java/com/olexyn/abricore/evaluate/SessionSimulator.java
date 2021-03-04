@@ -1,8 +1,10 @@
 package com.olexyn.abricore.evaluate;
 
+import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
 import java.util.Map.Entry;
@@ -17,7 +19,9 @@ public class SessionSimulator {
 
         Interval interval = Interval.H_1;
 
-        TreeMap<Instant, AssetSnapshot> treeMap = asset.getSnapShots(interval);
+
+
+        SnapShotSeries treeMap = StoreCsv.readFromCache(asset, interval);
 
         for (Entry<Instant,AssetSnapshot> entry: treeMap.entrySet()) {
             AssetSnapshot assetSnapshot = entry.getValue();

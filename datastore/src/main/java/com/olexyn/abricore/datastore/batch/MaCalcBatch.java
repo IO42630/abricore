@@ -5,6 +5,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.IndicatorRange;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
 import java.util.TreeMap;
@@ -18,7 +19,7 @@ public class MaCalcBatch {
     }
 
     public void calculateMa(Asset asset, Interval interval, IndicatorRange range) {
-        TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().readFromStore(asset, interval);
+        SnapShotSeries treeMap = StoreCsv.readFromCache(asset, interval);
         int rangeValue = range.getNum();
 
         //  move the frameEnd to its starting position
@@ -46,10 +47,10 @@ public class MaCalcBatch {
             frameStartKey = incrementKey(treeMap, frameStartKey);
             frameEndKey = incrementKey(treeMap, frameEndKey);
         }
-        StoreCsv.getInstance().update(treeMap);
+        StoreCsv.update(treeMap);
     }
 
-    private Instant incrementKey(TreeMap<Instant,AssetSnapshot> treeMap, Instant key) {
+    private Instant incrementKey(SnapShotSeries treeMap, Instant key) {
         return treeMap.higherKey(key);
     }
 }

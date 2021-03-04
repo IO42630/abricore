@@ -5,6 +5,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.IndicatorRange;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
 import java.util.TreeMap;
@@ -26,7 +27,7 @@ public class BolCalcBatch {
 
 
 
-        TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().readFromStore(asset, interval);
+        SnapShotSeries treeMap = StoreCsv.readFromCache(asset, interval);
         int range = indicatorRange.getNum();
 
         Instant firstKey = treeMap.firstKey();

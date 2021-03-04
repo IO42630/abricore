@@ -3,6 +3,7 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -17,7 +18,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 public class StoreCsv {
 
@@ -32,17 +32,36 @@ public class StoreCsv {
         return instance;
     }
 
-    public TreeMap<Instant, AssetSnapshot> readFromStore(Asset asset, Interval interval) {
-        return read(getStorePath(asset, interval));
+    public static SnapShotSeries readFromCache(Asset asset, Interval interval) {
+        if (StoreCache.getSnapShotSeries(asset,interval) == null) {
+            SnapShotSeries series = readFromStore(asset, interval);
+            StoreCache.cachedSnapShotSeries.add(series);
+            return series;
+        } else {
+            return StoreCache.getSnapShotSeries(asset,interval);
+        }
+    }
+
+    public static SnapShotSeries readFromStore(Path path) {
+        Asset asset;
+        Interval interval;
+        try {
+            asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
+            interval = mapToFirstInterval(path.getFileName().toString());
+            return readFromStore(asset, interval);
+        } catch (StoreException e) {
+            return null;
+        }
+
     }
 
     /**
      * Read Map of AssetSnapshot from .csv.
      */
-    public static TreeMap<Instant, AssetSnapshot> read(Path path) {
-        TreeMap<Instant, AssetSnapshot> out = new TreeMap<>();
-        Asset asset;
-        Interval interval;
+    public static SnapShotSeries readFromStore(Asset asset, Interval interval) {
+        Path path = getStorePath(asset, interval);
+        SnapShotSeries out = new SnapShotSeries(asset, interval);
+
 
         try {
             asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
@@ -93,7 +112,7 @@ public class StoreCsv {
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    void writeToStore(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
+    void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
 
         AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
 
@@ -128,11 +147,11 @@ public class StoreCsv {
     /**
      * Update .csv by adding new entries from Map of AssesSnapshot.
      */
-    public static void update(TreeMap<Instant, AssetSnapshot> newEntries) {
+    public static void update(SnapShotSeries newEntries) {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
         Interval interval = newEntries.firstEntry().getValue().getInterval();
 
-        TreeMap<Instant, AssetSnapshot> storedMap = read(getStorePath(asset, interval));
+        SnapShotSeries storedMap = readFromStore(asset, interval);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
             Instant key = newEntry.getKey();
