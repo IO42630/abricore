@@ -1,7 +1,7 @@
 package com.olexyn.abricore.evaluate;
 
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.datastore.symbols.Symbols;
+import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;

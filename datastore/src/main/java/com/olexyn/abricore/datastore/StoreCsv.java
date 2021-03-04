@@ -1,14 +1,11 @@
 package com.olexyn.abricore.datastore;
 
-import com.olexyn.abricore.calc.Calc;
-import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import static com.olexyn.abricore.common.Constants.*;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
 
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -42,7 +39,7 @@ public class StoreCsv {
     /**
      * Read Map of AssetSnapshot from .csv.
      */
-    public TreeMap<Instant, AssetSnapshot> read(Path path) {
+    public static TreeMap<Instant, AssetSnapshot> read(Path path) {
         TreeMap<Instant, AssetSnapshot> out = new TreeMap<>();
         Asset asset;
         Interval interval;
@@ -96,7 +93,7 @@ public class StoreCsv {
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    void write(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
+    void writeToStore(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
 
         AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
 
@@ -131,7 +128,7 @@ public class StoreCsv {
     /**
      * Update .csv by adding new entries from Map of AssesSnapshot.
      */
-    public void update(TreeMap<Instant, AssetSnapshot> newEntries) {
+    public static void update(TreeMap<Instant, AssetSnapshot> newEntries) {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
         Interval interval = newEntries.firstEntry().getValue().getInterval();
 
@@ -146,11 +143,11 @@ public class StoreCsv {
                 storedMap.put(key, newSnapshot);
             }
         }
-        StoreCsv.getInstance().write(storedMap);
+        StoreCsv.getInstance().writeToStore(storedMap);
     }
 
-    private Path getStorePath(Asset asset, Interval interval) {
-        return Paths.get(StoreParameters.QUOTES_DIR_STORE + asset.getName() + "_" + interval.getFileLabel()+ ".csv");
+    private static Path getStorePath(Asset asset, Interval interval) {
+        return Paths.get(Parameters.QUOTES_DIR_STORE + asset.getName() + "_" + interval.getFileLabel()+ ".csv");
     }
 
 }

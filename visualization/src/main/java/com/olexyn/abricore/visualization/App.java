@@ -1,6 +1,6 @@
 package com.olexyn.abricore.visualization;
 
-import com.olexyn.abricore.calc.Calc;
+import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.model.snapshots.OptionSnapshot;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
@@ -10,14 +10,8 @@ import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.stream.Collector;
 
 /**
  * Hello world!

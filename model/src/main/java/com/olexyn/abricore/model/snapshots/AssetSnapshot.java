@@ -1,12 +1,12 @@
 package com.olexyn.abricore.model.snapshots;
 
-import com.olexyn.abricore.calc.Calc;
+import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 
 import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
 
-import static com.olexyn.abricore.common.Constants.*;
+import static com.olexyn.abricore.util.Constants.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  *
  */
-public class AssetSnapshot implements Comparable<AssetSnapshot>{
+public class AssetSnapshot {
 
     private final Asset asset;
     private final Interval interval;
@@ -224,10 +224,5 @@ public class AssetSnapshot implements Comparable<AssetSnapshot>{
         for (IndicatorRange range : IndicatorRange.values()) {
             this.getMa().set(range, otherSnapshot.getMa().get(range));
         }
-    }
-
-    @Override
-    public int compareTo(AssetSnapshot assetSnapshot) {
-        return 0;
     }
 }

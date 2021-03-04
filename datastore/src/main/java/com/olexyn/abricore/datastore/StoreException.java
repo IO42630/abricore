@@ -1,4 +1,4 @@
 package com.olexyn.abricore.datastore;
 
-public class StoreException extends Exception {
+public class StoreException extends RuntimeException {
 }

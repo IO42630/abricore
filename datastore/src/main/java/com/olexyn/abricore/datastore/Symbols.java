@@ -1,4 +1,4 @@
-package com.olexyn.abricore.datastore.symbols;
+package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Commodity;
@@ -16,12 +16,9 @@ public class Symbols {
     }
 
     /**
-     * Stub ...
      */
     public static Set<Asset> getList() {
-
         return SYMBOLS;
-
     }
 
     public static Asset getAsset(String symbol) {

@@ -1,8 +1,8 @@
 package com.olexyn.abricore.datastore.batch;
 
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.datastore.StoreParameters;
-import com.olexyn.abricore.datastore.symbols.Symbols;
+import com.olexyn.abricore.util.Parameters;
+import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Interval;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class ParseTmpCsvBatch {
      * Stub ...
      */
     public void parseTmpCsv() throws IOException {
-        Path tmpQuotes = Paths.get(StoreParameters.QUOTES_DIR_TMP);
+        Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x.toString(), Symbols.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))

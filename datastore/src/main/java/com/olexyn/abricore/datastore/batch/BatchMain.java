@@ -1,6 +1,6 @@
 package com.olexyn.abricore.datastore.batch;
 
-import com.olexyn.abricore.datastore.symbols.Symbols;
+import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Interval;
 
 import java.io.IOException;

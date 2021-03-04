@@ -1,4 +1,4 @@
-package com.olexyn.abricore.calc;
+package com.olexyn.abricore.util;
 
 import org.junit.Assert;
 import org.junit.Test;
