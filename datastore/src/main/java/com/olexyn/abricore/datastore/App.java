@@ -4,7 +4,6 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.Stock;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.StockSnapshot;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -46,7 +45,7 @@ public class App {
         for (String key : keyset){
             JSONObject jsonBar = jsonObject.getJSONObject(key);
 
-            AssetSnapshot barDto = new StockSnapshot(new Stock("test"), Interval.M_30);
+            AssetSnapshot barDto = new AssetSnapshot(new Stock("test"), Interval.M_30);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(key + " " + zoneDataString, dateTimeFormatter);
             //barDto.setZonedDateTime(zonedDateTime);

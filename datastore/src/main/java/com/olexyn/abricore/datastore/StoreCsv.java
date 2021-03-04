@@ -8,6 +8,7 @@ import static com.olexyn.abricore.common.Constants.*;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
 
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -54,21 +55,17 @@ public class StoreCsv {
         }
 
         try (CSVReader reader = new CSVReader(new FileReader(path.toFile()))) {
-
-            String[] columnOrder;
+            String[] headerArray;
             String[] lineInArray;
 
-            if ((lineInArray = reader.readNext()) != null) {
-                columnOrder = lineInArray;
-            } else {
+            headerArray = reader.readNext();
+            if (headerArray == null) {
                 throw new NullPointerException("");
             }
 
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot assetSnapshot = new AssetSnapshot(asset, interval);
-                for (int i = 0; i < lineInArray.length; i++) {
-                    assetSnapshot.assign(columnOrder, i, lineInArray);
-                }
+                AssetSnapshot.loadData(assetSnapshot, headerArray, lineInArray);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
@@ -96,7 +93,8 @@ public class StoreCsv {
     }
 
     /**
-     * Write Map of AssetSnapshot to .csv.
+     * Write AssetSnapshots to Storage in .csv.
+     * The columns are manually mapped.
      */
     void write(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
 
@@ -112,12 +110,22 @@ public class StoreCsv {
             for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
 
                 AssetSnapshot assetSnapshot = entry.getValue();
-                lineBuilder.append(assetSnapshot.getInstant().toEpochMilli() / 1000).append(COMMA);
-                lineBuilder.append(Calc.parseString(assetSnapshot.getOpen())).append(COMMA);
-                lineBuilder.append(Calc.parseString(assetSnapshot.getHigh())).append(COMMA);
-                lineBuilder.append(Calc.parseString(assetSnapshot.getLow())).append(COMMA);
-                lineBuilder.append(Calc.parseString(assetSnapshot.getClose())).append(COMMA);
-                lineBuilder.append(Calc.parseString(assetSnapshot.getVolume())).append(NEWLINE);
+
+                buildLine(
+                    lineBuilder,
+                    assetSnapshot.getInstant(),
+                    assetSnapshot.getOpen(),
+                    assetSnapshot.getHigh(),
+                    assetSnapshot.getLow(),
+                    assetSnapshot.getClose(),
+                    assetSnapshot.getVolume(),
+                    assetSnapshot.getMa().get(R5),
+                    assetSnapshot.getMa().get(R10),
+                    assetSnapshot.getMa().get(R20),
+                    assetSnapshot.getMa().get(R50),
+                    assetSnapshot.getMa().get(R100),
+                    assetSnapshot.getMa().get(R200)
+                );
                 size++;
 
                 if (size > 100) {
@@ -129,6 +137,18 @@ public class StoreCsv {
             bufferedWriter.write(lineBuilder.toString());
         } catch (IOException e) {
             //
+        }
+    }
+
+    private void buildLine(StringBuilder lineBuilder, Instant instant, Long... values) {
+        lineBuilder.append(instant.toEpochMilli() / 1000).append(COMMA);
+        for (int i = 0 ; i< values.length; i++) {
+            lineBuilder.append(Calc.parseString(values[i]));
+                if (i + 1 < values.length) {
+                    lineBuilder.append(COMMA);
+                } else {
+                    lineBuilder.append(NEWLINE);
+                }
         }
     }
 

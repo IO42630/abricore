@@ -8,13 +8,13 @@ public class OptionSnapshot {
     private double riskFreeInterestPA = 0;
     private double dividendPA = 0;
     private double volatilityPA = 0.38;
-    private Double price ;
+    private Long price ;
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

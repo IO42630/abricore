@@ -4,24 +4,33 @@ import com.olexyn.abricore.calc.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 
+import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
+
 import java.time.Instant;
 
 /**
  *
  */
-public class AssetSnapshot implements Comparable{
+public class AssetSnapshot implements Comparable<AssetSnapshot>{
 
-    private Asset asset;
+    private final Asset asset;
+    private final Interval interval;
 
+    // mined fields
     private Instant instant;
     private Long open;
     private Long high;
     private Long low;
     private Long close;
     private Long volume;
-    private Interval interval;
 
-    private double price;
+    // locally calculated fields
+    private Long average;
+
+    // externally calculated fields
+    private Indicator ma;
+    private Indicator lowBol;
+    private Indicator highBol;
 
     public Asset getAsset() {
         return asset;
@@ -44,34 +53,7 @@ public class AssetSnapshot implements Comparable{
         this.instant = instant;
     }
 
-    public double getPrice() {
-        return price;
-    }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        // TODO
-        return 0;
-    }
-
-
-    private void updatePrice() {
-        boolean onz = open != null;
-        boolean cnz = close != null;
-        boolean lnz = low != null;
-        boolean hnz = high != null;
-        if (onz && cnz) {
-            price = (open + close) / 2;
-        } else if (onz) {
-            price = open;
-        } else if (cnz) {
-            price = close;
-        }
-    }
 
 
     public Long getOpen() {
@@ -80,7 +62,6 @@ public class AssetSnapshot implements Comparable{
 
     public void setOpen(Long open) {
         this.open = open;
-        updatePrice();
     }
 
     public Long getHigh() {
@@ -89,7 +70,6 @@ public class AssetSnapshot implements Comparable{
 
     public void setHigh(Long high) {
         this.high = high;
-        updatePrice();
     }
 
     public Long getLow() {
@@ -98,7 +78,6 @@ public class AssetSnapshot implements Comparable{
 
     public void setLow(Long low) {
         this.low = low;
-        updatePrice();
     }
 
     public Long getClose() {
@@ -107,7 +86,6 @@ public class AssetSnapshot implements Comparable{
 
     public void setClose(Long close) {
         this.close = close;
-        updatePrice();
     }
 
     public Long getVolume() {
@@ -118,21 +96,89 @@ public class AssetSnapshot implements Comparable{
         this.volume = volume;
     }
 
+    public Indicator getMa() {
+        return ma;
+    }
 
-    public void assign(String[] columnOrder, int i, String[] lineArray) {
-        String candidate = columnOrder[i].toUpperCase().trim();
-        if (candidate.equals("TIME")) {
-            setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
-        } else if (candidate.equals("OPEN")){
-            setOpen(Calc.parseLong(lineArray[i]));
-        } else if (candidate.equals("HIGH")){
-            setHigh(Calc.parseLong(lineArray[i]));
-        } else if (candidate.equals("LOW")){
-            setLow(Calc.parseLong(lineArray[i]));
-        } else if (candidate.equals("CLOSE")){
-            setClose(Calc.parseLong(lineArray[i]));
-        } else if (candidate.equals("VOLUME")){
-            setVolume(Calc.parseLong(lineArray[i]));
+    public void setMa(Indicator ma) {
+        this.ma = ma;
+    }
+
+    public Indicator getLowBol() {
+        return lowBol;
+    }
+
+    public void setLowBol(Indicator lowBol) {
+        this.lowBol = lowBol;
+    }
+
+    public Indicator getHighBol() {
+        return highBol;
+    }
+
+    public void setHighBol(Indicator highBol) {
+        this.highBol = highBol;
+    }
+
+
+    public Long getAverage() {
+        if (average != null) {
+            return average;
         }
+        if (low != null && high !=null && open != null && close != null) {
+            average = (low + high + open + close) / 4;
+        }
+        return average;
+    }
+
+
+
+    public static void loadData(AssetSnapshot snapshot, String[] headerArray, String[] lineArray) {
+
+        for (int i = 0; i < headerArray.length; i++) {
+            switch (headerArray[i].toUpperCase().trim()) {
+                case "TIME":
+                    snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
+                    break;
+                case "OPEN":
+                    snapshot.setOpen(Calc.parseLong(lineArray[i]));
+                    break;
+                case "HIGH":
+                    snapshot.setHigh(Calc.parseLong(lineArray[i]));
+                    break;
+                case "LOW":
+                    snapshot.setLow(Calc.parseLong(lineArray[i]));
+                    break;
+                case "CLOSE":
+                    snapshot.setClose(Calc.parseLong(lineArray[i]));
+                    break;
+                case "VOLUME":
+                    snapshot.setVolume(Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA5":
+                    snapshot.getMa().set(R5, Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA10":
+                    snapshot.getMa().set(R10, Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA20":
+                    snapshot.getMa().set(R20, Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA50":
+                    snapshot.getMa().set(R50, Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA100":
+                    snapshot.getMa().set(R100, Calc.parseLong(lineArray[i]));
+                    break;
+                case "MA200":
+                    snapshot.getMa().set(R200, Calc.parseLong(lineArray[i]));
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public int compareTo(AssetSnapshot assetSnapshot) {
+        return 0;
     }
 }

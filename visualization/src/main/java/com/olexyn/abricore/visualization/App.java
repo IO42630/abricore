@@ -1,5 +1,6 @@
 package com.olexyn.abricore.visualization;
 
+import com.olexyn.abricore.calc.Calc;
 import com.olexyn.abricore.model.snapshots.OptionSnapshot;
 import com.olexyn.abricore.model.snapshots.VanillaOptionSnapshot;
 import org.knowm.xchart.BitmapEncoder;
@@ -16,6 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collector;
 
 /**
  * Hello world!
@@ -25,15 +28,15 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        OptionSnapshot optionLow = new VanillaOptionSnapshot();
+        OptionSnapshot optionLow = new OptionSnapshot();
         optionLow.setStrike(23);
         optionLow.setTimeTillExpiry(0.23);
         optionLow.setRiskFreeInterestPA(0);
         optionLow.setDividendPA(0);
         optionLow.setVolatilityPA(0.38);
 
-        OptionSnapshot optionHigh = new VanillaOptionSnapshot();
-        optionHigh.setPrice(23d);
+        OptionSnapshot optionHigh = new OptionSnapshot();
+        optionHigh.setPrice(23L);
         optionHigh.setStrike(25);
         optionHigh.setTimeTillExpiry(0.23);
         optionHigh.setRiskFreeInterestPA(0);
@@ -42,33 +45,36 @@ public class App {
 
 
         int points = 40;
-        double delta = 0.1;
+        Long delta = 100L;
 
-        double[] xData = new double[points];
-        double[] yData = new double[points];
+        Long[] xData = new Long[points];
+        Long[] yData = new Long[points];
 
-        double startPoint = 27;
+        Long startPoint = 27L;
 
         for (int i = 0; i < points; i++) {
 
             xData[i] = startPoint - i * delta;
             if (xData[i] >= 0) {
                 optionLow.setPrice(xData[i]);
-                double optionLowPrice = 0d;
+                Long optionLowPrice = 0L;
                 optionHigh.setPrice(xData[i]);
-                double optionHighPrice = 0d;
+                Long optionHighPrice = 0L;
 
                 yData[i] = optionLowPrice / optionHighPrice;
             } else {
-                xData[i] = 0;
-                yData[i] = 0;
+                xData[i] = 0L;
+                yData[i] = 0L;
             }
         }
 
 
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+        double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
+        double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
+
+        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xxData, yyData);
 
 
 

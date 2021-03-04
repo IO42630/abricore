@@ -1,0 +1,33 @@
+=== Evaluate
+
+Strategy suggestions so far is ascending order of complexity:
+
+
+{empty} +
+
+==== MaCross
+* Calculate ma20 and ma50
+* Calculate Cross
+* Decisions
+** MA20 crosses above MA50 -> sell, enter long
+** MA20 crosses below MA50 -> sell, enter short
+
+
+{empty} +
+
+==== Bolliger
+* Calculate Bolliger Bands
+* Calculate Trend (via MA history)
+* Decisions:
+** if trend bullish
+*** and price below lower bolliger -> enter long
+*** and price above higher bolliger -> enter short
+** if trend bearish
+*** and price below lower bolliger -> enter short
+*** and price above higher bolliger -> enter long
+** if price reaches ma -> sell
+
+{empty} +
+
+==== Bolliger Trend
+*
