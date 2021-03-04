@@ -35,8 +35,8 @@ public class StoreCsv {
         return instance;
     }
 
-    public TreeMap<Instant, AssetSnapshot> read(Asset asset, Interval interval) {
-        return read(oldAssetPath(asset, interval));
+    public TreeMap<Instant, AssetSnapshot> readFromStore(Asset asset, Interval interval) {
+        return read(getStorePath(asset, interval));
     }
 
     /**
@@ -100,7 +100,7 @@ public class StoreCsv {
 
         Asset asset = assetSnapshotTreeMap.firstEntry().getValue().getAsset();
         Interval interval = assetSnapshotTreeMap.firstEntry().getValue().getInterval();
-        Path path = oldAssetPath(asset, interval);
+        Path path = getStorePath(asset, interval);
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
@@ -160,19 +160,19 @@ public class StoreCsv {
         Interval interval = newEntries.firstEntry().getValue().getInterval();
 
 
-        TreeMap<Instant, AssetSnapshot> oldMap = read(oldAssetPath(asset, interval));
+        TreeMap<Instant, AssetSnapshot> storedMap = read(getStorePath(asset, interval));
 
 
         for (Entry<Instant, AssetSnapshot> entry : newEntries.entrySet()) {
             Instant key = entry.getKey();
-            if (!oldMap.containsKey(key)) {
-                oldMap.put(key, entry.getValue());
+            if (!storedMap.containsKey(key)) {
+                storedMap.put(key, entry.getValue());
             }
         }
-        StoreCsv.getInstance().write(oldMap);
+        StoreCsv.getInstance().write(storedMap);
     }
 
-    private Path oldAssetPath(Asset asset, Interval interval) {
+    private Path getStorePath(Asset asset, Interval interval) {
         return Paths.get(StoreParameters.QUOTES_DIR_STORE + asset.getName() + "_" + interval.getFileLabel()+ ".csv");
     }
 

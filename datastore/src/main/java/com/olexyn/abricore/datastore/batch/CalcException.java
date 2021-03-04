@@ -1,4 +1,4 @@
-package com.olexyn.abricore.datastore.workers;
+package com.olexyn.abricore.datastore.batch;
 
 public class CalcException extends  RuntimeException {
 }

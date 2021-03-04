@@ -3,7 +3,6 @@ package com.olexyn.abricore.evaluate;
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Commodity;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 
@@ -15,7 +14,7 @@ public class Max {
 
     public static void main(String... args) {
         Asset asset = Symbols.getAsset("XAGUSD");
-        TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().read(asset, Interval.H_1);
+        TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().readFromStore(asset, Interval.H_1);
 
         Long max = 0L;
 

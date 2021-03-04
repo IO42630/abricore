@@ -1,5 +1,7 @@
-package com.olexyn.abricore.datastore;
+package com.olexyn.abricore.datastore.batch;
 
+import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.StoreParameters;
 import com.olexyn.abricore.datastore.symbols.Symbols;
 import com.olexyn.abricore.model.Interval;
 
@@ -10,9 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class Batch {
-
-
+public class ParseTmpCsvBatch {
 
     /**
      * Stub ...
@@ -33,10 +33,5 @@ public class Batch {
             }
         }
         return false;
-    }
-
-
-    public static void main(String... args) throws IOException {
-        new Batch().parseTmpCsv();
     }
 }
