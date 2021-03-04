@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class AssetSnapshot {
 
+    private SnapShotSeries series;
+
     private final Asset asset;
     private final Interval interval;
 
@@ -57,8 +59,13 @@ public class AssetSnapshot {
         this.instant = instant;
     }
 
+    public SnapShotSeries getSeries() {
+        return series;
+    }
 
-
+    public void setSeries(SnapShotSeries series) {
+        this.series = series;
+    }
 
     public Long getOpen() {
         return open;
