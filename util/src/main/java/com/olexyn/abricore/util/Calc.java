@@ -25,4 +25,13 @@ public class Calc {
         d = d * Math.pow(10, PRECISION);
         return Math.round(d);
     }
+
+
+    public static Long multiply(Long... values) {
+        long out = 1000L;
+        for (Long value : values) {
+            out = (out *value) / 1000;
+        }
+        return out;
+    }
 }

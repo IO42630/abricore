@@ -19,4 +19,10 @@ public class CalcTest {
         Assert.assertEquals(Long.valueOf(15290L), Calc.parseLong("15.2898"));
         Assert.assertEquals(Long.valueOf(17000L), Calc.parseLong("16.9995"));
     }
+
+    @Test
+    public void multiplyTest() {
+        Assert.assertEquals(Long.valueOf(8000L), Calc.multiply(2000L, 4000L));
+        Assert.assertEquals(Long.valueOf(8020L), Calc.multiply(2005L, 4000L));
+    }
 }
