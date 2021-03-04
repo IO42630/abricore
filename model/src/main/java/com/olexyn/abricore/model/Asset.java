@@ -66,7 +66,7 @@ public abstract class Asset {
 
         for (int i=0; i < amount; i++) {
             if (currentSnapshotEntry == null) throw new Exception("Not enough values to calculate MA.");
-            sum = sum.add(BigDecimal.valueOf(currentSnapshotEntry.getValue().getPrice()));
+            sum = sum.add(BigDecimal.valueOf(currentSnapshotEntry.getValue().getAverage()));
             currentSnapshotEntry = snapshots.lowerEntry(currentSnapshotEntry.getKey());
         }
         return sum.divide(BigDecimal.valueOf(amount), RoundingMode.HALF_EVEN).doubleValue();
@@ -103,8 +103,8 @@ public abstract class Asset {
 
             for (int i = 0; i < radius; i++) {
                 try {
-                    if (candidateSnapshotEntry.getValue().getPrice() * flip >= flip * ceilingRadiusSnapshotEntry.getValue().getPrice()
-                        && candidateSnapshotEntry.getValue().getPrice() * flip >= flip * floorRadiusSnapshotEntry.getValue().getPrice()) {
+                    if (candidateSnapshotEntry.getValue().getAverage() * flip >= flip * ceilingRadiusSnapshotEntry.getValue().getAverage()
+                        && candidateSnapshotEntry.getValue().getAverage() * flip >= flip * floorRadiusSnapshotEntry.getValue().getAverage()) {
                         ceilingRadiusSnapshotEntry = snapshots.higherEntry(ceilingRadiusSnapshotEntry.getKey());
                         floorRadiusSnapshotEntry = snapshots.lowerEntry(floorRadiusSnapshotEntry.getKey());
                     } else {

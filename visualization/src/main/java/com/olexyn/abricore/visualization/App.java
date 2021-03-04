@@ -2,7 +2,6 @@ package com.olexyn.abricore.visualization;
 
 import com.olexyn.abricore.calc.Calc;
 import com.olexyn.abricore.model.snapshots.OptionSnapshot;
-import com.olexyn.abricore.model.snapshots.VanillaOptionSnapshot;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;

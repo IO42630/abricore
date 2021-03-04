@@ -50,7 +50,7 @@ public abstract class Barriers {
         for (Entry<AssetSnapshot,Double> entry : barriers.entrySet()) {
             AssetSnapshot lowerBarrier = entry.getKey();
             AssetSnapshot higherBarrier = barriers.higherKey(entry.getKey());
-            if (lowerBarrier.getPrice() + distance > higherBarrier.getPrice()) {
+            if (lowerBarrier.getAverage() + distance > higherBarrier.getAverage()) {
                 AssetSnapshot clusteredBarrier = merge(lowerBarrier, higherBarrier);
 
                 Double clusteredConfidence = barriers.get(lowerBarrier) + barriers.get(higherBarrier);
@@ -77,13 +77,13 @@ public abstract class Barriers {
 
     private AssetSnapshot merge(AssetSnapshot snapshot1, AssetSnapshot snapshot2) {
         AssetSnapshot out = new AssetSnapshot(new Stock("test"), Interval.M_30);
-        out.setPrice((snapshot1.getPrice() + snapshot2.getPrice()) / 2);
+        //out.setPrice((snapshot1.getPrice() + snapshot2.getPrice()) / 2);
         out.setInstant(snapshot1.getInstant().isBefore(snapshot2.getInstant()) ? snapshot2.getInstant() : snapshot1.getInstant());
         return out;
     }
 
     private Long range() {
-        return barriers.lastKey().getPrice() - barriers.firstKey().getPrice();
+        return barriers.lastKey().getAverage() - barriers.firstKey().getAverage();
     }
 
     abstract BarrierType getBarrierType();

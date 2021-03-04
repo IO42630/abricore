@@ -29,8 +29,8 @@ public class Cross {
         Entry<Instant,AssetSnapshot> asset2Next = asset2.getSnapShots(interval).higherEntry(instant);
         Entry<Instant,AssetSnapshot> asset2Prev= asset2.getSnapShots(interval).lowerEntry(instant);
 
-        if (asset1Next.getValue().getPrice() > asset2Next.getValue().getPrice()
-        && asset1Prev.getValue().getPrice() < asset2Prev.getValue().getPrice()) {
+        if (asset1Next.getValue().getAverage() > asset2Next.getValue().getAverage()
+        && asset1Prev.getValue().getAverage() < asset2Prev.getValue().getAverage()) {
             this.risingAsset = asset1;
             this.fallingAsset = asset2;
             this.crossingInstant = instant;

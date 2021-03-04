@@ -98,34 +98,20 @@ public class StoreCsv {
      */
     void write(TreeMap<Instant, AssetSnapshot> assetSnapshotTreeMap) {
 
-        Asset asset = assetSnapshotTreeMap.firstEntry().getValue().getAsset();
-        Interval interval = assetSnapshotTreeMap.firstEntry().getValue().getInterval();
+        AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
+
+        Asset asset = firstSnapshot .getAsset();
+        Interval interval = firstSnapshot .getInterval();
         Path path = getStorePath(asset, interval);
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
-            bufferedWriter.write("time,open,high,low,close,volume\n");
+            bufferedWriter.write(firstSnapshot.getHeader());
             StringBuilder lineBuilder = new StringBuilder();
             int size = 0;
             for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
 
-                AssetSnapshot assetSnapshot = entry.getValue();
-
-                buildLine(
-                    lineBuilder,
-                    assetSnapshot.getInstant(),
-                    assetSnapshot.getOpen(),
-                    assetSnapshot.getHigh(),
-                    assetSnapshot.getLow(),
-                    assetSnapshot.getClose(),
-                    assetSnapshot.getVolume(),
-                    assetSnapshot.getMa().get(R5),
-                    assetSnapshot.getMa().get(R10),
-                    assetSnapshot.getMa().get(R20),
-                    assetSnapshot.getMa().get(R50),
-                    assetSnapshot.getMa().get(R100),
-                    assetSnapshot.getMa().get(R200)
-                );
+                entry.getValue().buildLine(lineBuilder);
                 size++;
 
                 if (size > 100) {
@@ -140,17 +126,7 @@ public class StoreCsv {
         }
     }
 
-    private void buildLine(StringBuilder lineBuilder, Instant instant, Long... values) {
-        lineBuilder.append(instant.toEpochMilli() / 1000).append(COMMA);
-        for (int i = 0 ; i< values.length; i++) {
-            lineBuilder.append(Calc.parseString(values[i]));
-                if (i + 1 < values.length) {
-                    lineBuilder.append(COMMA);
-                } else {
-                    lineBuilder.append(NEWLINE);
-                }
-        }
-    }
+
 
     /**
      * Update .csv by adding new entries from Map of AssesSnapshot.
@@ -159,14 +135,15 @@ public class StoreCsv {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
         Interval interval = newEntries.firstEntry().getValue().getInterval();
 
-
         TreeMap<Instant, AssetSnapshot> storedMap = read(getStorePath(asset, interval));
 
-
-        for (Entry<Instant, AssetSnapshot> entry : newEntries.entrySet()) {
-            Instant key = entry.getKey();
-            if (!storedMap.containsKey(key)) {
-                storedMap.put(key, entry.getValue());
+        for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
+            Instant key = newEntry.getKey();
+            AssetSnapshot newSnapshot = newEntry.getValue();
+            if (storedMap.containsKey(key)) {
+                storedMap.get(key).update(newSnapshot);
+            } else {
+                storedMap.put(key, newSnapshot);
             }
         }
         StoreCsv.getInstance().write(storedMap);

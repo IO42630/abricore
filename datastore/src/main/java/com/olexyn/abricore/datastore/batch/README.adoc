@@ -1,0 +1,11 @@
+=== Batch
+
+There are two types of CSV:
+
+* tmp CSV : downloaded from data providers.
+* store CSV : files with a specific format, that used by Abricore to store data.
+
+Currently, there are two type of batches:
+
+* ParseTmpCsv : loads data from tmp CSV to store CSV.
+* XYCalc : calculates some values, and stores them to store CSV.

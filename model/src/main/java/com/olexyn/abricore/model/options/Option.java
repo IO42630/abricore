@@ -22,7 +22,7 @@ public abstract class Option extends Asset {
     }
 
     public double calculatePrice(AssetSnapshot assetSnapshot) {
-        double lnSX = Math.log(assetSnapshot.getPrice() / getStrike());
+        double lnSX = Math.log(assetSnapshot.getAverage() / getStrike());
         double sigmaTwo = Math.pow(calculateVolatilityPA(), 2) / 2;
         double trqSigma = getTimeTillExpiry() * (getRiskFreeInterestPA() - underlyingAsset.getDividend() + sigmaTwo);
         double sigmaSqrtT = calculateVolatilityPA() * Math.sqrt(getTimeTillExpiry());
@@ -35,7 +35,7 @@ public abstract class Option extends Asset {
         double n2 = normalDistribution.cumulativeProbability(d2);
 
         double part5 = Math.exp(-underlyingAsset.getDividend()* getTimeTillExpiry());
-        double part6 = assetSnapshot.getPrice()  * part5 * n1;
+        double part6 = assetSnapshot.getAverage()  * part5 * n1;
 
         double part7 = Math.exp(-getRiskFreeInterestPA()* getTimeTillExpiry());
         double part8 = getStrike() * part7 * n2;
@@ -47,7 +47,7 @@ public abstract class Option extends Asset {
     }
 
     public double calculateIntrinsicValue(AssetSnapshot assetSnapshot){
-        double intrinsicValue = assetSnapshot.getPrice() - getStrike();
+        double intrinsicValue = assetSnapshot.getAverage() - getStrike();
         intrinsicValue = intrinsicValue >= 0 ? intrinsicValue : 0;
         return intrinsicValue;
     }

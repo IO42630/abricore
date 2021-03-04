@@ -6,7 +6,11 @@ import com.olexyn.abricore.model.Interval;
 
 import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
 
+import static com.olexyn.abricore.common.Constants.*;
+
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,9 +32,9 @@ public class AssetSnapshot implements Comparable<AssetSnapshot>{
     private Long average;
 
     // externally calculated fields
-    private Indicator ma;
-    private Indicator lowBol;
-    private Indicator highBol;
+    private Indicator ma = new Indicator();
+    private Indicator lowBol = new Indicator();
+    private Indicator highBol = new Indicator();
 
     public Asset getAsset() {
         return asset;
@@ -174,6 +178,51 @@ public class AssetSnapshot implements Comparable<AssetSnapshot>{
                     snapshot.getMa().set(R200, Calc.parseLong(lineArray[i]));
                     break;
             }
+        }
+    }
+
+    public void update(AssetSnapshot otherSnapshot) {
+        for (IndicatorRange range : IndicatorRange.values()) {
+            if (this.getMa().get(range) == null) {
+                this.getMa().set(range, otherSnapshot.getMa().get(range));
+            }
+        }
+    }
+
+
+    public String getHeader() {
+        return "TIME,OPEN,HIGH,LOW,CLOSE,VOLUME,MA5,MA10,MA20,MA50,MA100,MA200\n";
+    }
+
+    public void buildLine(StringBuilder lineBuilder) {
+        List<Long> values = new ArrayList<>();
+        values.add(getOpen());
+        values.add(getHigh());
+        values.add(getLow());
+        values.add(getClose());
+        values.add(getVolume());
+        values.add(getMa().get(R5));
+        values.add(getMa().get(R10));
+        values.add(getMa().get(R20));
+        values.add(getMa().get(R50));
+        values.add(getMa().get(R100));
+        values.add(getMa().get(R200));
+
+        lineBuilder.append(instant.toEpochMilli() / 1000).append(COMMA);
+        for (int i = 0 ; i< values.size(); i++) {
+            lineBuilder.append(Calc.parseString(values.get(i)));
+            if (i + 1 < values.size()) {
+                lineBuilder.append(COMMA);
+            } else {
+                lineBuilder.append(NEWLINE);
+            }
+        }
+    }
+
+
+    public void updateForced(AssetSnapshot otherSnapshot) {
+        for (IndicatorRange range : IndicatorRange.values()) {
+            this.getMa().set(range, otherSnapshot.getMa().get(range));
         }
     }
 

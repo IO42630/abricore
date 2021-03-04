@@ -27,7 +27,7 @@ public class BolCalcBatch {
 
 
         TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().readFromStore(asset, interval);
-        int range = indicatorRange.getValue();
+        int range = indicatorRange.getNum();
 
         Instant firstKey = treeMap.firstKey();
         Instant previousKey = treeMap.firstKey();

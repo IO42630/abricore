@@ -30,6 +30,12 @@
           <version>0.1</version>
           <scope>compile</scope>
       </dependency>
+    <dependency>
+      <groupId>com.olexyn.abricore.common</groupId>
+      <artifactId>common</artifactId>
+      <version>0.1</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

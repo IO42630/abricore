@@ -19,7 +19,7 @@ public class MaCalcBatch {
 
     public void calculateMa(Asset asset, Interval interval, IndicatorRange range) {
         TreeMap<Instant, AssetSnapshot> treeMap = StoreCsv.getInstance().readFromStore(asset, interval);
-        int rangeValue = range.getValue();
+        int rangeValue = range.getNum();
 
         //  move the frameEnd to its starting position
         Instant frameEndKey = treeMap.firstKey();
@@ -30,7 +30,7 @@ public class MaCalcBatch {
                 throw new CalcException();
             }
             sum += frameEndAvg;
-            incrementKey(treeMap, frameEndKey);
+            frameEndKey = incrementKey(treeMap, frameEndKey);
         }
 
         // move the frame and set the MAs
@@ -42,13 +42,14 @@ public class MaCalcBatch {
             sum = sum - frameStartAverage + frameEndAverage;
             treeMap.get(frameEndKey).getMa().set(range, sum / rangeValue);
 
-            incrementKey(treeMap, frameStartKey);
-            incrementKey(treeMap, frameEndKey);
+
+            frameStartKey = incrementKey(treeMap, frameStartKey);
+            frameEndKey = incrementKey(treeMap, frameEndKey);
         }
         StoreCsv.getInstance().update(treeMap);
     }
 
-    private void incrementKey(TreeMap<Instant,AssetSnapshot> treeMap, Instant key) {
-        key = treeMap.ceilingKey(key);
+    private Instant incrementKey(TreeMap<Instant,AssetSnapshot> treeMap, Instant key) {
+        return treeMap.higherKey(key);
     }
 }

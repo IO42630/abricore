@@ -8,13 +8,13 @@ public enum IndicatorRange {
     R100(100),
     R200(200);
 
-    private int value;
+    private final int num;
 
-    public int getValue() {
-        return this.value;
+    public int getNum() {
+        return this.num;
     }
 
     IndicatorRange(int range) {
-        this.value = range;
+        this.num = range;
     }
 }

@@ -20,6 +20,9 @@ public class Calc {
 
 
     public static String parseString(Long l) {
+        if (l == null) {
+            return "null";
+        }
         String full = l.toString();
         String whole = full.substring(0, full.length() - PRECISION);
         String floating = full.substring(full.length() - PRECISION);
@@ -27,7 +30,10 @@ public class Calc {
     }
 
 
-    public static long parseLong(String s) {
+    public static Long parseLong(String s) {
+        if (s.equals("null")) {
+            return null;
+        }
         double d = Double.parseDouble(s);
         d = d * Math.pow(10, PRECISION);
         return Math.round(d);
