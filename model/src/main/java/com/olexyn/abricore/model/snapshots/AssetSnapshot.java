@@ -232,4 +232,18 @@ public class AssetSnapshot {
             this.getMa().set(range, otherSnapshot.getMa().get(range));
         }
     }
+
+    //TODO complete
+    public AssetSnapshot copy(SnapShotSeries otherSeries) {
+
+        AssetSnapshot copy = new AssetSnapshot(asset,interval);
+        if (otherSeries != null) {
+            copy.setSeries(otherSeries);
+        }
+        copy.setOpen(open);
+        copy.setClose(close);
+        return copy;
+    }
+
+
 }

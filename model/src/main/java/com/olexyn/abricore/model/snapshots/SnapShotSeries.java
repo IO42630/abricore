@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 public class SnapShotSeries {
 
-    private TreeMap<Instant, AssetSnapshot> treeMap;
+    private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
 
     private Asset asset;
     private Interval interval;
@@ -32,6 +32,42 @@ public class SnapShotSeries {
         return treeMap.get(instant);
     }
 
+    public Instant getFirstAfter(Instant instant) {
+        // "lowerKey" "instant" "i"
+        for (Instant i : treeMap.keySet()) {
+            if (i.isAfter(instant) && treeMap.lowerKey(i).isBefore(instant)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    public Instant getFirstBefore(Instant instant) {
+        // "i" "instant" "higherKey"
+        for (Instant i : treeMap.keySet()) {
+            if (i.isBefore(instant) && treeMap.higherKey(i).isBefore(instant)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return returns a sequence of the Series between "from" and "to"
+     */
+    private SnapShotSeries limitSeries(Instant from, Instant to) {
+        SnapShotSeries limitedSeries = new SnapShotSeries(getAsset(), getInterval());
+        Instant first = getFirstAfter(from);
+        Instant last = getFirstBefore(to);
+        limitedSeries.put(first, limitedSeries.get(first));
+        while(higherKey(first) != last) {
+            first = higherKey(first);
+            limitedSeries.put(first, limitedSeries.get(first));
+        }
+        limitedSeries.put(last, limitedSeries.get(last));
+        return limitedSeries;
+    }
+
     public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
         return treeMap.put(instant, snapshot);
@@ -39,6 +75,10 @@ public class SnapShotSeries {
 
     public Set<Entry<Instant, AssetSnapshot>> entrySet() {
         return treeMap.entrySet();
+    }
+
+    public int size() {
+        return treeMap.size();
     }
 
     public Entry<Instant, AssetSnapshot> higherEntry(Instant key) {
