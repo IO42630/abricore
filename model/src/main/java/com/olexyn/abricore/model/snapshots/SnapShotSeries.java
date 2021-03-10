@@ -55,16 +55,16 @@ public class SnapShotSeries {
     /**
      * @return returns a sequence of the Series between "from" and "to"
      */
-    private SnapShotSeries limitSeries(Instant from, Instant to) {
+    public SnapShotSeries limitSeries(Instant from, Instant to) {
         SnapShotSeries limitedSeries = new SnapShotSeries(getAsset(), getInterval());
         Instant first = getFirstAfter(from);
         Instant last = getFirstBefore(to);
-        limitedSeries.put(first, limitedSeries.get(first));
-        while(higherKey(first) != last) {
+        limitedSeries.put(first, treeMap.get(first));
+        while(higherKey(first) != last && higherKey(first) != null) {
             first = higherKey(first);
-            limitedSeries.put(first, limitedSeries.get(first));
+            limitedSeries.put(first, treeMap.get(first));
         }
-        limitedSeries.put(last, limitedSeries.get(last));
+        limitedSeries.put(last, treeMap.get(last));
         return limitedSeries;
     }
 

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 public class Chart {
@@ -28,6 +29,8 @@ public class Chart {
         int resolution,
         GetFromSnapshot getFromSnapshot
     ) {
+
+        series = series.limitSeries(from, to);
         if (series.size() > resolution) {
             return makeMergedChart(series, from, to, resolution, getFromSnapshot);
         } else {
@@ -43,25 +46,28 @@ public class Chart {
         int resolution,
         GetFromSnapshot getFromSnapshot
     ) {
+
+
+
         int mergeSize = series.size() / resolution;
         List<Long> xList = new ArrayList<>();
         List<Long> yList = new ArrayList<>();
 
         int count = 0;
         Long amount = 0L;
-        long xCount = -1L;
+        long xCount = 1L;
         for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
 
             if (count == 0) {
-                xList.add(xCount);
-                xCount = xCount + 1;
                 amount = getFromSnapshot.get(entry.getValue());
                 count++;
             } else if ( count < mergeSize) {
                 amount += getFromSnapshot.get(entry.getValue());
                 count++;
             } else {
-                yList.add(amount);
+                xList.add(xCount);
+                xCount = xCount + 1;
+                yList.add(amount/mergeSize);
                 count = 0;
             }
         }
@@ -80,7 +86,7 @@ public class Chart {
     ) {
         List<Long> xList = new ArrayList<>();
         List<Long> yList = new ArrayList<>();
-        long xCount = -1L;
+        long xCount = 1L;
         for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
             xList.add(xCount);
             xCount = xCount + 1;
@@ -95,16 +101,16 @@ public class Chart {
 
     private static String makeTitle(SnapShotSeries series, Instant from, Instant to) {
         String title = "";
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm", Locale.US);
         title += series.getAsset().getName() + " ";
-        title += formatter.format(from) + " ";
-        title += formatter.format(to) + " ";
+        //title += formatter.format(from) + " ";
+        //title += formatter.format(to) + " ";
         return title;
     }
 
 
     private static XYChart makeXYChart (String title, long[] xData, long[] yData) {
-        double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
+        double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(Calc.parseString(1000*x))).toArray();
         double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
         return QuickChart.getChart(title, "t", "x", null, xxData, yyData);
     }
