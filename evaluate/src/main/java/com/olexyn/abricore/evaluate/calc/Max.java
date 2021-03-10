@@ -14,7 +14,7 @@ public class Max {
 
     public static void calcGlobalMax(String... args) {
         Asset asset = Symbols.getAsset("XAGUSD");
-        SnapShotSeries treeMap = StoreCsv.getInstance().readFromCache(asset, Interval.H_1);
+        SnapShotSeries treeMap = StoreCsv.getInstance().read(asset, Interval.H_1);
 
         Long max = 0L;
 

@@ -3,12 +3,10 @@ package com.olexyn.abricore.datastore.batch;
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.IndicatorRange;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
-import java.util.TreeMap;
 
 public class MaCalcBatch {
 
@@ -19,7 +17,7 @@ public class MaCalcBatch {
     }
 
     public void calculateMa(Asset asset, Interval interval, IndicatorRange range) {
-        SnapShotSeries treeMap = StoreCsv.readFromCache(asset, interval);
+        SnapShotSeries treeMap = StoreCsv.read(asset, interval);
         int rangeValue = range.getNum();
 
         //  move the frameEnd to its starting position

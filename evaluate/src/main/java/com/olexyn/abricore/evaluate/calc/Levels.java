@@ -15,7 +15,7 @@ public class Levels {
 
     public static void main(String... args) {
         Asset asset = Symbols.getAsset("XAGUSD");
-        SnapShotSeries snapShotSeries = StoreCsv.getInstance().readFromCache(asset, Interval.H_1);
+        SnapShotSeries snapShotSeries = StoreCsv.getInstance().read(asset, Interval.H_1);
 
         Long max = 0L;
 

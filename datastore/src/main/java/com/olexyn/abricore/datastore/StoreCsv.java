@@ -32,10 +32,13 @@ public class StoreCsv {
         return instance;
     }
 
-    public static SnapShotSeries readFromCache(Asset asset, Interval interval) {
+    /**
+     * Try to read from Cache. Otherwise read from Store.
+     */
+    public static SnapShotSeries read(Asset asset, Interval interval) {
         if (StoreCache.getSnapShotSeries(asset,interval) == null) {
             SnapShotSeries series = readFromStore(asset, interval);
-            StoreCache.cachedSnapShotSeries.add(series);
+            StoreCache.getCachedSnapshotSeriesCollection().add(series);
             return series;
         } else {
             return StoreCache.getSnapShotSeries(asset,interval);
@@ -61,7 +64,6 @@ public class StoreCsv {
     public static SnapShotSeries readFromStore(Asset asset, Interval interval) {
         Path path = getStorePath(asset, interval);
         SnapShotSeries out = new SnapShotSeries(asset, interval);
-
 
         try {
             asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());

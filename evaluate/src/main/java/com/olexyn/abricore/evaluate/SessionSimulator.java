@@ -8,7 +8,6 @@ import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.function.Predicate;
 
 public class SessionSimulator {
@@ -21,7 +20,7 @@ public class SessionSimulator {
 
 
 
-        SnapShotSeries treeMap = StoreCsv.readFromCache(asset, interval);
+        SnapShotSeries treeMap = StoreCsv.read(asset, interval);
 
         for (Entry<Instant,AssetSnapshot> entry: treeMap.entrySet()) {
             AssetSnapshot assetSnapshot = entry.getValue();
