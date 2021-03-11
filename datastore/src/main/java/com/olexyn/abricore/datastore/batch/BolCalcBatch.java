@@ -3,14 +3,14 @@ package com.olexyn.abricore.datastore.batch;
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.snapshots.IndicatorRange;
+import com.olexyn.abricore.model.snapshots.RangeEnum;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
 
 public class BolCalcBatch {
 
-    public void calcBol(Asset asset, Interval interval, IndicatorRange indicatorRange) {
+    public void calcBol(Asset asset, Interval interval, RangeEnum rangeEnum) {
 
 
         // we already have the ma
@@ -26,7 +26,7 @@ public class BolCalcBatch {
 
 
         SnapShotSeries treeMap = StoreCsv.read(asset, interval);
-        int range = indicatorRange.getNum();
+        int range = rangeEnum.getNum();
 
         Instant firstKey = treeMap.firstKey();
         Instant previousKey = treeMap.firstKey();
@@ -44,7 +44,7 @@ public class BolCalcBatch {
         }
 
         long ma = sum / range;
-        treeMap.get(nextKey).getMa().set(indicatorRange, ma);
+        treeMap.get(nextKey).getMa().set(rangeEnum, ma);
 
 
         Instant frameStartKey = firstKey;
@@ -60,7 +60,7 @@ public class BolCalcBatch {
             frameStartKey = treeMap.ceilingKey(frameStartKey);
             frameEndKey = treeMap.ceilingKey(frameEndKey);
 
-            treeMap.get(frameStartKey).getMa().set(indicatorRange, ma);
+            treeMap.get(frameStartKey).getMa().set(rangeEnum, ma);
 
         }
 

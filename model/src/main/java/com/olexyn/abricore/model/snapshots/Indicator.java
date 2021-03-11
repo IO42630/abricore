@@ -9,7 +9,7 @@ public class Indicator {
     Long r100;
     Long r200;
 
-    public Long get(IndicatorRange range) {
+    public Long get(RangeEnum range) {
         switch (range) {
             case R5:
                 return r5;
@@ -28,7 +28,7 @@ public class Indicator {
         }
     }
 
-    public void set(IndicatorRange range, Long value) {
+    public void set(RangeEnum range, Long value) {
         switch (range) {
             case R5:
                 this.r5 = value;

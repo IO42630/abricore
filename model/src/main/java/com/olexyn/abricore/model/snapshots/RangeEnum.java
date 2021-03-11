@@ -1,6 +1,6 @@
 package com.olexyn.abricore.model.snapshots;
 
-public enum IndicatorRange {
+public enum RangeEnum {
     R5(5),
     R10(10),
     R20(20),
@@ -14,7 +14,7 @@ public enum IndicatorRange {
         return this.num;
     }
 
-    IndicatorRange(int range) {
+    RangeEnum(int range) {
         this.num = range;
     }
 }

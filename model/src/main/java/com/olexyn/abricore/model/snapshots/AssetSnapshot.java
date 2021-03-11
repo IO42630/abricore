@@ -4,7 +4,7 @@ import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 
-import static com.olexyn.abricore.model.snapshots.IndicatorRange.*;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.*;
 
 import static com.olexyn.abricore.util.Constants.*;
 
@@ -189,7 +189,7 @@ public class AssetSnapshot {
     }
 
     public void update(AssetSnapshot otherSnapshot) {
-        for (IndicatorRange range : IndicatorRange.values()) {
+        for (RangeEnum range : RangeEnum.values()) {
             if (this.getMa().get(range) == null) {
                 this.getMa().set(range, otherSnapshot.getMa().get(range));
             }
@@ -228,7 +228,7 @@ public class AssetSnapshot {
 
 
     public void updateForced(AssetSnapshot otherSnapshot) {
-        for (IndicatorRange range : IndicatorRange.values()) {
+        for (RangeEnum range : RangeEnum.values()) {
             this.getMa().set(range, otherSnapshot.getMa().get(range));
         }
     }
