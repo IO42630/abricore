@@ -1,4 +1,4 @@
-package com.olexyn.abricore.evaluate;
+package com.olexyn.abricore.session;
 
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 

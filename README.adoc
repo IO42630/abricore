@@ -44,4 +44,4 @@ image::img/module-dep.png[]
 * E.g. MA-Cross, Extrema, estimated Resistances / Supports
 * These are calcualted on request.
 * They are not stored to disk.
-* `com.olexyn.abricore.evaluate` (TODO)
+* `session` (TODO)

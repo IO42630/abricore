@@ -1,20 +1,11 @@
-package com.olexyn.abricore.evaluate;
+package com.olexyn.abricore.session;
 
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.datastore.Symbols;
-import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import com.olexyn.abricore.util.Parameters;
 
-import  static com.olexyn.abricore.model.snapshots.RangeEnum.*;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
@@ -30,7 +21,7 @@ public class SessionManager {
 
     public static void main(String... args){
 
-        start(setupSession());
+        startBacktest(setupSession());
 
     }
 
@@ -60,7 +51,7 @@ public class SessionManager {
     }
 
 
-    public static void start(Session session) {
+    public static void startBacktest(Session session) {
 
 
         SnapShotSeries treeMap = StoreCsv.read(session.getAsset(), session.getInterval());
@@ -88,6 +79,11 @@ public class SessionManager {
         Long gain = session.getGain();
 
         int br = 0;
+    }
+
+
+    public static void startLive(Session session) {
+        // TODO
     }
 
 
