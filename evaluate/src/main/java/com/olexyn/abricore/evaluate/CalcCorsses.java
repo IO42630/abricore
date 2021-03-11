@@ -30,7 +30,6 @@ public class CalcCorsses {
 
     /**
      * Represents two asset quotes crossing on the chart.
-
      */
    static boolean indicatorACrossesAboveB(
        Asset asset1,
@@ -39,18 +38,16 @@ public class CalcCorsses {
        Interval interval,
        Instant instant) {
 
-       SnapShotSeries treeMap = StoreCsv.read(asset1, interval);
+       SnapShotSeries series = StoreCsv.read(asset1, interval);
 
-       AssetSnapshot next = treeMap.higherEntry(instant).getValue();
-       AssetSnapshot prev= treeMap.lowerEntry(instant).getValue();
-
-       indicatorA.get(next);
-
-
-       if (indicatorA.get(next) > indicatorB.get(next)
-           && indicatorA.get(prev) < indicatorB.get(prev)) {
-           return true;
+       if (series.higherEntry(instant) == null || series.lowerEntry(instant) == null) {
+           return false;
        }
-       return false;
+
+       AssetSnapshot next = series.higherEntry(instant).getValue();
+       AssetSnapshot prev = series.lowerEntry(instant).getValue();
+
+       return indicatorA.get(next) > indicatorB.get(next)
+           && indicatorA.get(prev) < indicatorB.get(prev);
    }
 }
