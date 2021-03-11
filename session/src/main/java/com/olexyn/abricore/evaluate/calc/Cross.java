@@ -14,7 +14,7 @@ import  static com.olexyn.abricore.model.snapshots.RangeEnum.*;
 
 import java.time.Instant;
 
-public class CalcCorsses {
+public class Cross {
 
     public static void main(String... args) {
         Asset asset = Symbols.getAsset("XAGUSD");

@@ -35,14 +35,14 @@ public class SessionManager {
     }
 
     public static Session setupSession() {
-        // strategy.buyConditions.add(x -> CalcCorsses.indicatorACrossesAboveB(
+        // strategy.buyConditions.add(x -> Cross.indicatorACrossesAboveB(
         //     x.getAsset(),
         //     n -> n.getMa().get(R5),
         //     n -> n.getMa().get(R10),
         //     Interval.H_1, x.getInstant()
         // ));
         //
-        // strategy.sellConditions.add(x -> CalcCorsses.indicatorACrossesAboveB(
+        // strategy.sellConditions.add(x -> Cross.indicatorACrossesAboveB(
         //     x.getAsset(),
         //     n -> n.getMa().get(R10),
         //     n -> n.getMa().get(R5),
