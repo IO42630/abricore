@@ -40,6 +40,11 @@ public class CalcCorsses {
 
        SnapShotSeries series = StoreCsv.read(asset1, interval);
 
+       if (series.approximateKey(instant) == null) {
+           return false;
+       }
+       instant = series.approximateKey(instant);
+
        if (series.higherEntry(instant) == null || series.lowerEntry(instant) == null) {
            return false;
        }

@@ -116,4 +116,16 @@ public class SnapShotSeries {
     public Instant higherKey(Instant key) {
         return treeMap.higherKey(key);
     }
+
+    public Instant approximateKey(Instant key) {
+        if (!containsKey(key)) {
+            Instant altKey = getFirstAfter(key);
+            if (altKey == null) {
+                // might be null if series is empty.
+                altKey = getFirstBefore(key);
+            }
+            return altKey;
+        }
+        return  key;
+    }
 }
