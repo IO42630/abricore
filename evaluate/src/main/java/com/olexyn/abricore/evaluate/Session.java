@@ -1,9 +1,26 @@
 package com.olexyn.abricore.evaluate;
 
+import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.Interval;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Session {
+/**
+ * Represents a "Trading Session": <br>
+ * - follows one Asset <br>
+ * - has a fixed capital amount allocated to it <br>
+ * - follows one Strategy <br>
+ * - is configured and started by the SessionManager <br>
+ * - can be serialized to disk in order to be analyzed
+ */
+public class Session implements Serializable {
+
+    private Asset asset;
+    private Interval interval;
+    private Long allocatedCapital;
+    private Strategy strategy;
 
     private final List<Transaction> activeTransactions = new ArrayList<>();
 
@@ -15,6 +32,38 @@ public class Session {
 
     public List<Transaction> getFinishedTransactions() {
         return finishedTransactions;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public void setAsset(Asset asset) {
+        this.asset = asset;
+    }
+
+    public Interval getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Interval interval) {
+        this.interval = interval;
+    }
+
+    public Long getAllocatedCapital() {
+        return allocatedCapital;
+    }
+
+    public void setAllocatedCapital(Long allocatedCapital) {
+        this.allocatedCapital = allocatedCapital;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 
     public Long getProfit() {
@@ -44,4 +93,6 @@ public class Session {
     public Long getGain() {
         return getRevenue() / getSize();
     }
+
+
 }

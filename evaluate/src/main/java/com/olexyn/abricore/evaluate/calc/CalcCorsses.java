@@ -1,4 +1,4 @@
-package com.olexyn.abricore.evaluate;
+package com.olexyn.abricore.evaluate.calc;
 
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.datastore.Symbols;
@@ -51,6 +51,15 @@ public class CalcCorsses {
 
        AssetSnapshot next = series.higherEntry(instant).getValue();
        AssetSnapshot prev = series.lowerEntry(instant).getValue();
+
+       if (next == null
+           || prev == null
+           || indicatorA.get(next) == null
+           || indicatorB.get(next) == null
+           || indicatorA.get(prev) == null
+           || indicatorB.get(prev) == null) {
+           return false;
+       }
 
        return indicatorA.get(next) > indicatorB.get(next)
            && indicatorA.get(prev) < indicatorB.get(prev);
