@@ -144,7 +144,7 @@ public class AssetSnapshot {
 
 
 
-    public static void loadData(AssetSnapshot snapshot, String[] headerArray, String[] lineArray) {
+    public static void mapData(AssetSnapshot snapshot, String[] headerArray, String[] lineArray) {
 
         for (int i = 0; i < headerArray.length; i++) {
             switch (headerArray[i].toUpperCase().trim()) {

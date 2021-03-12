@@ -22,7 +22,7 @@ public class ParseTmpCsvBatch {
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x.toString(), Symbols.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
-            .map(StoreCsv::readFromStore)
+            .map(StoreCsv::readFromDisk)
             .forEach(StoreCsv::update);
     }
 

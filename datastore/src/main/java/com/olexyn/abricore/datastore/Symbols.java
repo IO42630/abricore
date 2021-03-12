@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Central instance for defining Tickers.
+ */
 public class Symbols {
 
     final static Set<Asset> SYMBOLS = new HashSet<>();

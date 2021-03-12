@@ -33,11 +33,11 @@ public class StoreCsv {
     }
 
     /**
-     * Try to read from Cache. Otherwise read from Store.
+     * Try to read from Cache. Otherwise read from Disk.
      */
     public static SnapShotSeries read(Asset asset, Interval interval) {
         if (StoreCache.getSnapShotSeries(asset,interval) == null) {
-            SnapShotSeries series = readFromStore(asset, interval);
+            SnapShotSeries series = readFromDisk(asset, interval);
             StoreCache.getCachedSnapshotSeriesCollection().add(series);
             return series;
         } else {
@@ -45,23 +45,26 @@ public class StoreCsv {
         }
     }
 
-    public static SnapShotSeries readFromStore(Path path) {
+    /**
+     * Wrapper for readFromDisk(Asset asset, Interval interval).
+     */
+    public static SnapShotSeries readFromDisk(Path path) {
         Asset asset;
         Interval interval;
         try {
             asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
             interval = mapToFirstInterval(path.getFileName().toString());
-            return readFromStore(asset, interval);
+            return readFromDisk(asset, interval);
         } catch (StoreException e) {
             return null;
         }
-
     }
 
     /**
-     * Read Map of AssetSnapshot from .csv.
+     * Read a SnapShotSeries from any CSV. <br>
+     * This is done by mapping the columns of the CSV to fields recognized by the AssetSnapshot.
      */
-    public static SnapShotSeries readFromStore(Asset asset, Interval interval) {
+    public static SnapShotSeries readFromDisk(Asset asset, Interval interval) {
         Path path = getStorePath(asset, interval);
         SnapShotSeries out = new SnapShotSeries(asset, interval);
 
@@ -83,7 +86,7 @@ public class StoreCsv {
 
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot assetSnapshot = new AssetSnapshot(asset, interval);
-                AssetSnapshot.loadData(assetSnapshot, headerArray, lineInArray);
+                AssetSnapshot.mapData(assetSnapshot, headerArray, lineInArray);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
@@ -114,7 +117,7 @@ public class StoreCsv {
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
+    private void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
 
         AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
 
@@ -147,13 +150,13 @@ public class StoreCsv {
 
 
     /**
-     * Update .csv by adding new entries from Map of AssesSnapshot.
+     * Update CSV by adding AssesSnapshots from SnapShotSeries .
      */
     public static void update(SnapShotSeries newEntries) {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
         Interval interval = newEntries.firstEntry().getValue().getInterval();
 
-        SnapShotSeries storedMap = readFromStore(asset, interval);
+        SnapShotSeries storedMap = readFromDisk(asset, interval);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
             Instant key = newEntry.getKey();
