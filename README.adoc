@@ -2,6 +2,26 @@
 An investing bot in progress... +
 Basic documentation available in a README at the root of each module.
 
+===== List of Modules
+
+[cols="2,6"]
+|===
+| `datastore` | read/write historical data to .csv
+| `fingers` | web actions through selenium, such as: +
+> data collection +
+> order execution
+| `flow` | basic application flow
+| `model` | runtime model
+| `notifications` | email notifications
+| `reporting` | end of year reporting
+| `session` | trading session: +
+> determines rules for orders +
+> tracks results +
+> backtesting also happens here
+| `util` | basic helper methods
+| `visualisation` | display of session results
+|===
+
 {empty} +
 
 ==== TODO
