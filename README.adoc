@@ -4,9 +4,9 @@ An investing bot in progress...
 {empty} +
 
 ==== TODO
-===== 1. Scrape Mode
+===== 1. Collection Mode
 
-image::img/scrape-mode.png[]
+image::img/collection-mode.png[]
 
 ===== 2. Trade Mode
 
