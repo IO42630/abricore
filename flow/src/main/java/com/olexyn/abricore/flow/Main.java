@@ -14,7 +14,7 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
 
-        String modeEnumString = null;
+        String modeEnumString = "TRADE_SW";
         Asset asset = null;
 
         for (int i = 0; i < args.length; i++) {
@@ -34,6 +34,7 @@ public class Main {
                 break;
             case TRADE_SW:
                 // run trade mode
+                new TradeMode().fetchLiveData();
                 break;
             case TRAIN:
                 // run train mode

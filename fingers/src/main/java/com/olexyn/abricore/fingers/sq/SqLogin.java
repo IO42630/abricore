@@ -36,23 +36,23 @@ public class SqLogin extends Login {
     public WebDriver  doLogin() {
 
         Map<String,String> credentials = fetchCredentials();
-        driver.get("https://www.swissquote.ch/");
+        driver.get("https://www.swissquote.ch/url/login_bank?l=de");
 
-        DriverTools.getWhere(driver, "mn-Dropdown__trigger", CRITERIA.TEXT, "LOGIN").click();
-        DriverTools.followContainedLink(driver, DriverTools.getWhere(driver, "mn-Dropdown__text", CRITERIA.TEXT, "Login Bank"));
 
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
         driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
         SleepFactory.sleep(1);
         driver.findElement(By.id("loginText")).click();
-        SleepFactory.sleep(2);
+        SleepFactory.sleep(1);
 
         WebElement keyHolder = DriverTools.getWhere(driver, "L3CodeDialog__challengeCode");
         String key = keyHolder.getText();
-        driver.findElement(By.className("js-l3Code L3CodeDialog__l3Code Input Field Field__input")).sendKeys(credentials.get(key));
-        driver.findElement(By.className("js-authenticate Button Button--primary")).click();
-
+        SleepFactory.sleep(2);
+        driver.findElement(By.className("L3CodeDialog__l3Code")).sendKeys(credentials.get(key));
+        SleepFactory.sleep(2);
+        driver.findElement(By.className("Button--primary")).click();
+        SleepFactory.sleep(2);
         return driver;
      }
 

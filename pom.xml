@@ -21,6 +21,7 @@
         <module>evaluate</module>
         <module>visualization</module>
         <module>util</module>
+        <module>reporting</module>
     </modules>
     <dependencies>
         <dependency>

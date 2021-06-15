@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Login {
 
+    private static final String CHROME_DRIVER = "chromedriver_92";
+
     protected WebDriver driver;
 
     protected Login() {
@@ -31,9 +33,11 @@ public abstract class Login {
 
     protected WebDriver init() {
         try {
-            String path = App.class.getClassLoader().getResource("chromedriver_83").getPath();
+            String path = Login.class.getClassLoader().getResource(CHROME_DRIVER).getPath();
             System.setProperty("webdriver.chrome.driver", path);
-        } catch (NullPointerException ignored){}
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
 
 
