@@ -1,0 +1,4 @@
+=== Notifications
+
+* This is supposed to send notifications for special events.
+* Small independent module.

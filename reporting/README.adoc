@@ -1,0 +1,4 @@
+=== Reporting
+
+* This is meant to aggregate and format data needed for annual accounts or other declarations.
+* Independent module.

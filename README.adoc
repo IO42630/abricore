@@ -1,5 +1,6 @@
 === Abricore
-An investing bot in progress...
+An investing bot in progress... +
+Basic documentation atvailable in a README at the root of each module.
 
 {empty} +
 

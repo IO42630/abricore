@@ -1,0 +1,4 @@
+=== Flow
+
+* `Main` is located here.
+* Determines which `Mode` the application is run in.
