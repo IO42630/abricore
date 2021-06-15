@@ -1,6 +1,6 @@
 === Abricore
 An investing bot in progress... +
-Basic documentation atvailable in a README at the root of each module.
+Basic documentation available in a README at the root of each module.
 
 {empty} +
 
@@ -33,7 +33,7 @@ image::img/module-dep.png[]
 
 ==== Continuous with fixed Parameters
 * E.g. MA20, Bolliger Bands
-* These are perfomred either
+* These are performed either
 ** in Batches (for historical data)
 ** with each incoming dataset (TODO)
 * They are stored to disk
