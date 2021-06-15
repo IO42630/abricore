@@ -80,4 +80,6 @@ public abstract class Option extends Asset {
     public Double getRiskFreeInterestPA() {
         return null;
     }
+
+    public abstract Long getRatio();
 }
