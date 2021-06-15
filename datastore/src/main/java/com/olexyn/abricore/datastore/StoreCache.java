@@ -14,7 +14,7 @@ public class StoreCache {
     public static SnapShotSeries getSnapShotSeries(Asset asset, Interval interval) {
         for (SnapShotSeries snapShotSeries   : CACHED_SNAPSHOT_SERIES_COLLECTION) {
             if (snapShotSeries.getAsset().equals(asset)
-            &&snapShotSeries.getInterval().equals(interval)) {
+            && snapShotSeries.getInterval().equals(interval)) {
                 return snapShotSeries;
             }
         }

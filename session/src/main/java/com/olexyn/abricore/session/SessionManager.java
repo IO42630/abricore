@@ -56,18 +56,27 @@ public class SessionManager {
 
         SnapShotSeries treeMap = StoreCsv.read(session.getAsset(), session.getInterval());
 
+        Long cash = session.getAllocatedCapital();
+
         for (Entry<Instant,AssetSnapshot> entry: treeMap.entrySet()) {
             AssetSnapshot assetSnapshot = entry.getValue();
-            for (Predicate<AssetSnapshot> predicate : session.getStrategy().buyConditions) {
-                if (predicate.test(assetSnapshot)) {
-                    Transaction transaction = new Transaction(session.getAsset(), entry.getKey(), 10L, assetSnapshot.getAverage());
-                    session.getActiveTransactions().add(transaction);
+            for (Predicate<AssetSnapshot> buyCondition : session.getStrategy().buyConditions) {
+                if (buyCondition.test(assetSnapshot)) {
+                    Long size = session.getStrategy().sizingInCondition.sizeAmount(session.getAllocatedCapital());
+                    Long remainder = cash - size;
+                    if (remainder > 0L) {
+                        Transaction transaction = new Transaction(session.getAsset(), entry.getKey(), size, assetSnapshot.getAverage());
+                        cash = cash - size;
+                        session.getActiveTransactions().add(transaction);
+                    }
+
                 }
             }
-            for (Predicate<AssetSnapshot> predicate : session.getStrategy().sellConditions) {
-                if (predicate.test(assetSnapshot)) {
+            for (Predicate<AssetSnapshot> sellCondition : session.getStrategy().sellConditions) {
+                if (sellCondition.test(assetSnapshot)) {
                     for (Transaction transaction : session.getActiveTransactions()) {
                         transaction.end(entry.getKey(), assetSnapshot.getAverage());
+                        cash = cash + transaction.getRevenue();
                         session.getFinishedTransactions().add(transaction);
                     }
                     session.getActiveTransactions().removeAll(session.getFinishedTransactions());
