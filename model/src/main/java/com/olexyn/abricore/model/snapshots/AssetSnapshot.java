@@ -3,12 +3,14 @@ package com.olexyn.abricore.model.snapshots;
 import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.util.enums.Currency;
 
 import static com.olexyn.abricore.model.snapshots.RangeEnum.*;
 
 import static com.olexyn.abricore.util.Constants.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +20,35 @@ import java.util.List;
 public class AssetSnapshot {
 
     private SnapShotSeries series;
+    private List<SnapShotType> typeList = new ArrayList<>();
 
     private final Asset asset;
     private final Interval interval;
+    private Currency currency;
 
-    // mined fields
+    // GENERIC : collected data
+    private Boolean isMarketOpen;
     private Instant instant;
+
+    // BAR : collected data
+
     private Long open;
     private Long high;
     private Long low;
     private Long close;
     private Long volume;
+
+    // SPREAD : collected data
+    private Long bidVol;
+    private Long askVol;
+    private Double bidPrice;
+    private Double askPrice;
+
+    // OPTION : collected data
+    private Long multiplier;
+    private Double strike;
+    private LocalDateTime expiry;
+
 
     // locally calculated fields
     private Long average;
@@ -38,26 +58,12 @@ public class AssetSnapshot {
     private Indicator lowBol = new Indicator();
     private Indicator highBol = new Indicator();
 
-    public Asset getAsset() {
-        return asset;
-    }
-
     public AssetSnapshot(Asset asset, Interval interval) {
         this.asset =asset;
         this.interval = interval;
     }
 
-    public Instant getInstant() {
-        return instant;
-    }
-
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInstant(Instant instant) {
-        this.instant = instant;
-    }
+    // GETTERS / SETTERS
 
     public SnapShotSeries getSeries() {
         return series;
@@ -65,6 +71,42 @@ public class AssetSnapshot {
 
     public void setSeries(SnapShotSeries series) {
         this.series = series;
+    }
+
+    public List<SnapShotType> getTypeList() {
+        return typeList;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public Interval getInterval() {
+        return interval;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public Boolean getIsMarketOpen() {
+        return isMarketOpen;
+    }
+
+    public void setIsMarketOpen(Boolean open) {
+        isMarketOpen = open;
+    }
+
+    public Instant getInstant() {
+        return instant;
+    }
+
+    public void setInstant(Instant instant) {
+        this.instant = instant;
     }
 
     public Long getOpen() {
@@ -106,6 +148,70 @@ public class AssetSnapshot {
     public void setVolume(Long volume) {
         this.volume = volume;
     }
+
+    // SPREAD : getters /setters
+
+    public Long getBidVol() {
+        return bidVol;
+    }
+
+    public void setBidVol(Long bidVol) {
+        this.bidVol = bidVol;
+    }
+
+    public Long getAskVol() {
+        return askVol;
+    }
+
+    public void setAskVol(Long askVol) {
+        this.askVol = askVol;
+    }
+
+    public Double getBidPrice() {
+        return bidPrice;
+    }
+
+    public void setBidPrice(Double bidPrice) {
+        this.bidPrice = bidPrice;
+    }
+
+    public Double getAskPrice() {
+        return askPrice;
+    }
+
+    public void setAskPrice(Double askPrice) {
+        this.askPrice = askPrice;
+    }
+
+    // OPTION : getters / setters
+
+    public Long getMultiplier() {
+        return multiplier;
+    }
+
+    public void setMultiplier(Long multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    public Double getStrike() {
+        return strike;
+    }
+
+    public void setStrike(Double strike) {
+        this.strike = strike;
+    }
+
+    public LocalDateTime getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(LocalDateTime expiry) {
+        this.expiry = expiry;
+    }
+
+
+
+
 
     public Indicator getMa() {
         return ma;

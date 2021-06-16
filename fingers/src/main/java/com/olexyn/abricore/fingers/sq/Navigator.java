@@ -1,12 +1,18 @@
 package com.olexyn.abricore.fingers.sq;
 
+import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
+import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.SnapShotType;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.Currency;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,26 +52,27 @@ public class Navigator {
         driver.get(url);
     }
 
-    public SqSnapshot resolveFullQuote() {
+    public AssetSnapshot resolveFullQuote() {
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 
-        SqSnapshot sqSnapshot = new SqSnapshot();
-        //sqSnapshot.setCurrency(Currency.valueOf(resolve.get(5)));
-        sqSnapshot.setMultiplier(Long.valueOf(resolve.get(7)));
-        // TODO
-        sqSnapshot.setSnapTime(LocalDateTime.now());
-        sqSnapshot.setBidVol(DataUtil.parseLong(resolve.get(12)));
-        sqSnapshot.setBidPrice(DataUtil.parseDouble(resolve.get(13)));
-        sqSnapshot.setAskPrice(DataUtil.parseDouble(resolve.get(14)));
-        sqSnapshot.setAskVol(DataUtil.parseLong(resolve.get(15)));
-        // TODO account for cases
-        sqSnapshot.setStrike(DataUtil.parseDouble("0.0"));
-        // TODO
-        sqSnapshot.setExpiry(LocalDateTime.now());
-        sqSnapshot.setUnderlyingAsset(resolve.get(22));
+        AssetSnapshot assetSnapshot = new AssetSnapshot(Symbols.getAsset(resolve.get(22)), Interval.S_1);
+        assetSnapshot.getTypeList().addAll(List.of(SnapShotType.SPREAD, SnapShotType.OPTION));
+        assetSnapshot.setCurrency(Currency.CHF);
+        assetSnapshot.setMultiplier(Long.valueOf(resolve.get(7)));
+        assetSnapshot.setInstant(Instant.now());
+        assetSnapshot.setBidVol(DataUtil.parseLong(resolve.get(12)));
+        assetSnapshot.setBidPrice(DataUtil.parseDouble(resolve.get(13)));
 
-        return  sqSnapshot;
+
+        assetSnapshot.setAskPrice(DataUtil.parseDouble(resolve.get(14)));
+        assetSnapshot.setAskVol(DataUtil.parseLong(resolve.get(15)));
+        // TODO account for cases
+        assetSnapshot.setStrike(DataUtil.parseDouble("0.0"));
+        // TODO
+        assetSnapshot.setExpiry(LocalDateTime.now());
+
+        return  assetSnapshot;
     }
 
     public void refresh() {
