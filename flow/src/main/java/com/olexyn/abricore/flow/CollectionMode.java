@@ -1,15 +1,14 @@
 package com.olexyn.abricore.flow;
 
-import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.fingers.tw.TwAgent;
 import com.olexyn.abricore.model.Asset;
 
-public class ScrapeMode extends AbstractMode {
+public class CollectionMode extends AbstractMode {
 
     final ModeEnum modeEnum;
     final Asset assetToScrape;
 
-    ScrapeMode(ModeEnum modeEnum, Asset assetToScrape) {
+    CollectionMode(ModeEnum modeEnum, Asset assetToScrape) {
         this.modeEnum = modeEnum;
         this.assetToScrape = assetToScrape;
     }
@@ -28,7 +27,7 @@ public class ScrapeMode extends AbstractMode {
     void fetchHistoricalData() throws InterruptedException {
 
         switch (modeEnum) {
-            case SCRAPE_TW:
+            case COLLECT_TW:
                 new TwAgent(assetToScrape).start();
         }
     }
