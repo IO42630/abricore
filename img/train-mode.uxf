@@ -64,7 +64,7 @@ fg=#00897B
 
 
 
-3: simulate session</panel_attributes>
+3: simulate mission</panel_attributes>
     <additional_attributes>100.0;60.0;60.0;40.0;100.0;10.0</additional_attributes>
   </element>
   <element>
@@ -117,7 +117,7 @@ as java lambdas</panel_attributes>
       <h>70</h>
     </coordinates>
     <panel_attributes>halign=left
-session
+mission
 
 </panel_attributes>
     <additional_attributes/>

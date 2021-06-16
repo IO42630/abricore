@@ -6,8 +6,6 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import com.olexyn.abricore.session.Session;
-import org.openqa.selenium.WebDriver;
 
 import java.time.Instant;
 import java.util.ArrayList;

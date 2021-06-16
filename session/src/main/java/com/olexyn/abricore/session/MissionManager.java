@@ -18,7 +18,7 @@ import java.util.function.Predicate;
  * - de-/serialize Sessions <br>
  * - start Sessions <br>
  */
-public class SessionManager {
+public class MissionManager {
 
     public static void main(String... args){
 
@@ -26,7 +26,7 @@ public class SessionManager {
 
     }
 
-    public static Session setupSession() {
+    public static Mission setupSession() {
         // strategy.buyConditions.add(x -> Cross.indicatorACrossesAboveB(
         //     x.getAsset(),
         //     n -> n.getMa().get(R5),
@@ -43,59 +43,59 @@ public class SessionManager {
 
 
 
-        Session session = new Session();
-        session.setAsset(Symbols.getAsset("XAGUSD"));
-        session.setInterval(Interval.H_1);
-        session.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
-        session.setAllocatedCapital(10000000L);
-        return session;
+        Mission mission = new Mission();
+        mission.setAsset(Symbols.getAsset("XAGUSD"));
+        mission.setInterval(Interval.H_1);
+        mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
+        mission.setAllocatedCapital(10000000L);
+        return mission;
     }
 
 
-    public static void startBacktest(Session session) {
+    public static void startBacktest(Mission mission) {
 
 
-        SnapShotSeries treeMap = StoreCsv.read(session.getAsset(), session.getInterval());
+        SnapShotSeries treeMap = StoreCsv.read(mission.getAsset(), mission.getInterval());
 
         PaperNavigator paperNavigator = new PaperNavigator();
-        paperNavigator.resolveQuote(session.getAsset(), session.getInterval());
+        paperNavigator.resolveQuote(mission.getAsset(), mission.getInterval());
 
-        Long cash = session.getAllocatedCapital();
+        Long cash = mission.getAllocatedCapital();
 
         for (Entry<Instant,AssetSnapshot> entry: treeMap.entrySet()) {
             AssetSnapshot assetSnapshot = entry.getValue();
-            for (Predicate<AssetSnapshot> buyCondition : session.getStrategy().buyConditions) {
+            for (Predicate<AssetSnapshot> buyCondition : mission.getStrategy().buyConditions) {
                 if (buyCondition.test(assetSnapshot)) {
-                    Long size = session.getStrategy().sizingInCondition.sizeAmount(session.getAllocatedCapital());
+                    Long size = mission.getStrategy().sizingInCondition.sizeAmount(mission.getAllocatedCapital());
                     Long remainder = cash - size;
                     if (remainder > 0L) {
-                        Transaction transaction = new Transaction(session.getAsset(), entry.getKey(), size, assetSnapshot.getAverage());
+                        Transaction transaction = new Transaction(mission.getAsset(), entry.getKey(), size, assetSnapshot.getAverage());
                         cash = cash - size;
-                        session.getActiveTransactions().add(transaction);
+                        mission.getActiveTransactions().add(transaction);
                     }
 
                 }
             }
-            for (Predicate<AssetSnapshot> sellCondition : session.getStrategy().sellConditions) {
+            for (Predicate<AssetSnapshot> sellCondition : mission.getStrategy().sellConditions) {
                 if (sellCondition.test(assetSnapshot)) {
-                    for (Transaction transaction : session.getActiveTransactions()) {
+                    for (Transaction transaction : mission.getActiveTransactions()) {
                         transaction.end(entry.getKey(), assetSnapshot.getAverage());
                         cash = cash + transaction.getRevenue();
-                        session.getFinishedTransactions().add(transaction);
+                        mission.getFinishedTransactions().add(transaction);
                     }
-                    session.getActiveTransactions().removeAll(session.getFinishedTransactions());
+                    mission.getActiveTransactions().removeAll(mission.getFinishedTransactions());
                 }
             }
         }
-        Long revenue = session.getRevenue();
-        Long profit = session.getProfit();
-        Long gain = session.getGain();
+        Long revenue = mission.getRevenue();
+        Long profit = mission.getProfit();
+        Long gain = mission.getGain();
 
         int br = 0;
     }
 
 
-    public static void startLive(Session session) {
+    public static void startLive(Mission mission) {
         // TODO
     }
 

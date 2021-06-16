@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the "Strategy" used during a "Trading Session": <br>
- * - is applied to an Asset through the Session <br>
+ * Represents the "Strategy" used during a "Trading Mission": <br>
+ * - is applied to an Asset through the Mission <br>
  * - the Strategy itself is Asset agnostic <br>
- * - is serialized to disk as a member of a Session for future analysis <br>
+ * - is serialized to disk as a member of a Mission for future analysis <br>
  * - can be serialized to disk separately in order to be reused <br>
  * - the sizing conditions determine how the position is entered/exited <br>
  * - - e.g. if sizingIn = x -> x/5 , then when a buyCondition is met, 1/5 of the capital will be exerted. <br>

@@ -14,12 +14,12 @@ Basic documentation available in a README at the root of each module.
 | `model` | runtime model
 | `notifications` | email notifications
 | `reporting` | end of year reporting
-| `session` | trading session: +
+| `mission` | trading mission: +
 > determines rules for orders +
 > tracks results +
 > backtesting also happens here
 | `util` | basic helper methods
-| `visualisation` | display of session results
+| `visualisation` | display of mission results
 |===
 
 {empty} +
@@ -65,4 +65,4 @@ image::img/module-dep.png[]
 * E.g. MA-Cross, Extrema, estimated Resistances / Supports
 * These are calcualted on request.
 * They are not stored to disk.
-* `session` (TODO)
+* `mission` (TODO)

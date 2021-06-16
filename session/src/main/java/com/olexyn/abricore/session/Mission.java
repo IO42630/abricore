@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a "Trading Session": <br>
+ * Represents a "Trading Mission": <br>
  * - follows one Asset <br>
  * - has a fixed capital amount allocated to it <br>
  * - follows one Strategy <br>
- * - is configured and started by the SessionManager <br>
+ * - is configured and started by the MissionManager <br>
  * - can be serialized to disk in order to be analyzed
  */
-public class Session implements Serializable {
+public class Mission implements Serializable {
 
     private Asset asset;
     private Interval interval;
