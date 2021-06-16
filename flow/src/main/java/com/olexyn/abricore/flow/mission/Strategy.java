@@ -1,4 +1,4 @@
-package com.olexyn.abricore.session;
+package com.olexyn.abricore.flow.mission;
 
 import java.io.Serializable;
 import java.util.ArrayList;

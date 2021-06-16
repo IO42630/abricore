@@ -1,4 +1,4 @@
-package com.olexyn.abricore.session;
+package com.olexyn.abricore.flow.mission;
 
 @FunctionalInterface
 public interface SizingCondition  {
