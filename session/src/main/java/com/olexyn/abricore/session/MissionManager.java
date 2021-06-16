@@ -3,11 +3,15 @@ package com.olexyn.abricore.session;
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.fingers.paper.PaperNavigator;
+import com.olexyn.abricore.fingers.sq.SqNavigator;
+import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
@@ -44,7 +48,8 @@ public class MissionManager {
 
 
         Mission mission = new Mission();
-        mission.setAsset(Symbols.getAsset("XAGUSD"));
+        mission.setUnderlyingAsset(Symbols.getAsset("XAGUSD"));
+        mission.getDerivatives().addAll(List.of((Option) Symbols.getAsset("XAG C 25"), (Option) Symbols.getAsset("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(10000000L);
@@ -55,10 +60,10 @@ public class MissionManager {
     public static void startBacktest(Mission mission) {
 
 
-        SnapShotSeries treeMap = StoreCsv.read(mission.getAsset(), mission.getInterval());
+        SnapShotSeries treeMap = StoreCsv.read(mission.getUnderlyingAsset(), mission.getInterval());
 
         PaperNavigator paperNavigator = new PaperNavigator();
-        paperNavigator.resolveQuote(mission.getAsset(), mission.getInterval());
+        paperNavigator.resolveQuote(mission.getUnderlyingAsset(), mission.getInterval());
 
         Long cash = mission.getAllocatedCapital();
 
@@ -69,7 +74,7 @@ public class MissionManager {
                     Long size = mission.getStrategy().sizingInCondition.sizeAmount(mission.getAllocatedCapital());
                     Long remainder = cash - size;
                     if (remainder > 0L) {
-                        Transaction transaction = new Transaction(mission.getAsset(), entry.getKey(), size, assetSnapshot.getAverage());
+                        Transaction transaction = new Transaction(mission.getUnderlyingAsset(), entry.getKey(), size, assetSnapshot.getAverage());
                         cash = cash - size;
                         mission.getActiveTransactions().add(transaction);
                     }
@@ -96,7 +101,39 @@ public class MissionManager {
 
 
     public static void startLive(Mission mission) {
+
+        if (mission.getDerivatives().size() == 0) {
+            return;
+        }
+
+
+        Asset asset = mission.getUnderlyingAsset();
+        Interval interval = mission.getInterval();
+        SnapShotSeries snapShotSeries = StoreCsv.read(asset, interval);
+        SqNavigator sqNavigator = new SqNavigator(null);
+
         // TODO
+        Double assetPrice = 0d;
+        // TODO hotswap between derivatives
+        // Asset derivate = mission.getDerivatives().stream().filter( x -> assetPrice - x.getStrike() > 0.7d ).findFirst().orElse(null);
+
+
+        // TODO for now just quote the cdfs, comparison with tw comes later
+        Asset cdf = mission.getDerivatives().get(0);
+        while (isMarketOpen(sqNavigator.resolveQuote(cdf, interval))) {
+            AssetSnapshot assetSnapshot = sqNavigator.resolveQuote(cdf, interval);
+            if (isMarketOpen(assetSnapshot)) {
+                snapShotSeries.put(assetSnapshot.getInstant(), assetSnapshot );
+                // Test conditions.
+            }
+
+        }
+    }
+
+    private static boolean isMarketOpen(AssetSnapshot snapshot) {
+        boolean isMarketOpenAccordingToSnapShot = snapshot.isMarketOpen();
+        boolean isMarketOpenAccordingToAsset = snapshot.getAsset().isMarketOpen();
+        return isMarketOpenAccordingToSnapShot && isMarketOpenAccordingToAsset;
     }
 
 

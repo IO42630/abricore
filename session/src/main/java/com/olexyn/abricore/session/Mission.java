@@ -2,6 +2,7 @@ package com.olexyn.abricore.session;
 
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.options.Option;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import java.util.List;
  */
 public class Mission implements Serializable {
 
-    private Asset asset;
+    private Asset underlyingAsset;
+    private List<Option> derivatives = new ArrayList<>();
     private Interval interval;
     private Long allocatedCapital;
     private Strategy strategy;
@@ -34,12 +36,16 @@ public class Mission implements Serializable {
         return finishedTransactions;
     }
 
-    public Asset getAsset() {
-        return asset;
+    public Asset getUnderlyingAsset() {
+        return underlyingAsset;
     }
 
-    public void setAsset(Asset asset) {
-        this.asset = asset;
+    public void setUnderlyingAsset(Asset underlyingAsset) {
+        this.underlyingAsset = underlyingAsset;
+    }
+
+    public List<Option> getDerivatives() {
+        return derivatives;
     }
 
     public Interval getInterval() {

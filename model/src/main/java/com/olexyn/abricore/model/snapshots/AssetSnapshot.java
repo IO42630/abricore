@@ -27,7 +27,7 @@ public class AssetSnapshot {
     private Currency currency;
 
     // GENERIC : collected data
-    private Boolean isMarketOpen;
+    private boolean isMarketOpen;
     private Instant instant;
 
     // BAR : collected data
@@ -93,8 +93,12 @@ public class AssetSnapshot {
         this.currency = currency;
     }
 
-    public Boolean getIsMarketOpen() {
+    public boolean isMarketOpen() {
         return isMarketOpen;
+    }
+
+    public boolean isMarketClosed() {
+        return !isMarketOpen;
     }
 
     public void setIsMarketOpen(Boolean open) {
