@@ -1,6 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.Symbols;
+import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -14,17 +15,16 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.olexyn.abricore.util.Constants.EMPTY;
 
-public class Navigator {
+public class SqNavigator implements Navigator {
 
     private final WebDriver driver;
 
-    public Navigator(WebDriver driver) {
+    public SqNavigator(WebDriver driver) {
         this.driver = driver;
     }
 
@@ -52,7 +52,9 @@ public class Navigator {
         driver.get(url);
     }
 
-    public AssetSnapshot resolveFullQuote() {
+
+    @Override
+    public AssetSnapshot resolveQuote(Asset asset, Interval interval) {
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 

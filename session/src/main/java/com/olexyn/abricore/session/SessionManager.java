@@ -2,6 +2,7 @@ package com.olexyn.abricore.session;
 
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.datastore.Symbols;
+import com.olexyn.abricore.fingers.paper.PaperNavigator;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
@@ -55,6 +56,9 @@ public class SessionManager {
 
 
         SnapShotSeries treeMap = StoreCsv.read(session.getAsset(), session.getInterval());
+
+        PaperNavigator paperNavigator = new PaperNavigator();
+        paperNavigator.resolveQuote(session.getAsset(), session.getInterval());
 
         Long cash = session.getAllocatedCapital();
 
