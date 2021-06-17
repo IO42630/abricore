@@ -6,14 +6,18 @@ import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.util.Calc;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TwFetch extends Fetch {
@@ -21,16 +25,15 @@ public class TwFetch extends Fetch {
     final Asset assetToScrape;
     boolean cont = true;
 
-    TwFetch(Asset assetToScrape, WebDriver driver) {
-        super(driver);
-        this.assetToScrape = assetToScrape;
+    public TwFetch() {
+        super(null);
+        this.assetToScrape = null;
     }
 
-    void fetchAsset(Mode mode) throws InterruptedException {
+    public Map<Asset, List<AssetSnapshot>> fetchHistoricalData(List<Asset> assets) throws InterruptedException {
 
 
         Instant oldEarly = Instant.now();
-        if (mode.equals(Mode.DOWNLOAD)) {
             driver.get("https://www.tradingview.com/" + "chart?symbol=FX%3AXAGUSD");
             setInterval(driver, Interval.M_30);
             while (cont) {
@@ -45,34 +48,28 @@ public class TwFetch extends Fetch {
                     cont = false;
                 }
             }
-        } else  if (mode.equals(Mode.OBSERVE)) {
+        return null;
+    }
 
-            Map<Asset, SnapShotSeries> symbolsToObserve = new HashMap<>();
-            symbolsToObserve.put(AssetFactory.ofTwSymbol("ICEUS:DXY"), new SnapShotSeries(null, null));
-            // driver.get("https://www.tradingview.com/");
+    public List<AssetSnapshot> fetchQuotes(List<Asset> assets) {
+        List<AssetSnapshot> assetSnapshots = new ArrayList<>();
 
-            WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));
-
-
-            if (!watchlist.isDisplayed()) {
-                WebElement watchlistButton = driver.findElement(By.cssSelector("div[data-name='base']"));
-                watchlistButton.click();
-            }
-
-
-
-
-
-            WebElement symbol = driver.findElement(By.cssSelector("div[data-symbol-full='']"));
-            WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
-            String text = last.getText();
-
-
-            while (cont) {
-                download(driver);
-                Thread.sleep(Duration.ofMinutes(5L).toMillis());
-            }
+        WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));
+        if (!watchlist.isDisplayed()) {
+            WebElement watchlistButton = driver.findElement(By.cssSelector("div[data-name='base']"));
+            watchlistButton.click();
         }
+
+        for (Asset asset : assets) {
+            String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
+            WebElement symbol = driver.findElement(By.cssSelector(dataSymbolFull));
+            WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
+            AssetSnapshot assetSnapshot = new AssetSnapshot(asset, Interval.S_1);
+            assetSnapshot.setClose(Calc.parseLong(last.getText()));
+            assetSnapshots.add(assetSnapshot);
+        }
+
+        return assetSnapshots;
     }
 
     private static void setInterval(WebDriver driver, Interval interval) {

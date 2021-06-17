@@ -4,6 +4,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -127,5 +128,13 @@ public class SnapShotSeries {
             return altKey;
         }
         return  key;
+    }
+
+    public void addAll(List<AssetSnapshot> snapshots) {
+        if (snapshots.size() > 0 && snapshots.get(0).getAsset().equals(asset)) {
+            for (AssetSnapshot snapshot : snapshots){
+                treeMap.put(snapshot.getInstant(), snapshot);
+            }
+        }
     }
 }

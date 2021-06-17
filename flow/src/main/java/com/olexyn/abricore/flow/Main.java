@@ -36,20 +36,23 @@ public class Main {
 
 
         switch (ModeEnum.valueOf(modeEnumString)) {
-            case COLLECT_TW:
-                new CollectionMode(ModeEnum.COLLECT_TW, asset).start();
+            case DOWNLOAD_TW:
+                DownloadMode downloadMode = new DownloadTwMode();
+                downloadMode.addAsset(AssetFactory.ofName("XAGUSD"));
+                downloadMode.init();
+                downloadMode.doLogin();
+                downloadMode.downloadHistoricalData();
+                break;
+            case OBSERVE_TW:
+                ObserveMode observeMode = new ObserveTwMode();
+                observeMode.addAsset(AssetFactory.ofName("XAGUSD"));
+                observeMode.init();
+                observeMode.doLogin();
+                observeMode.updateQuote();
                 break;
             case TRADE_SQ:
-                // run trade mode
-                new TradeMode().fetchLiveData();
-                break;
             case TRAIN:
-                // run train mode
-
-                TrainMode trainMode = new TrainMode();
-                trainMode.mission = setupSession();
-                trainMode.start();
-
+            default:
                 break;
         }
     }
