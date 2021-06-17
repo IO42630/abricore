@@ -9,9 +9,5 @@ public class OtcOption extends Option {
         this.ratio = ratio;
     }
 
-    @Override
-    public Long getRatio() {
-        return ratio;
-    }
 }
 

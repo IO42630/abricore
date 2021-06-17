@@ -15,6 +15,7 @@ public abstract class Option extends Asset {
     private Integer strike;
     private Instant expiry;
     private Double dividend; // TODO placeholder
+    private Long ratio;
 
 
 
@@ -81,5 +82,11 @@ public abstract class Option extends Asset {
         return null;
     }
 
-    public abstract Long getRatio();
+    public Long getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(Long ratio) {
+        this.ratio = ratio;
+    }
 }

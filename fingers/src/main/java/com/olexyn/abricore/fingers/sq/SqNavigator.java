@@ -58,7 +58,7 @@ public class SqNavigator implements Navigator {
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 
-        AssetSnapshot assetSnapshot = new AssetSnapshot(Symbols.getAsset(resolve.get(22)), Interval.S_1);
+        AssetSnapshot assetSnapshot = new AssetSnapshot(Symbols.ofName(resolve.get(22)), Interval.S_1);
         assetSnapshot.getTypeList().addAll(List.of(SnapShotType.SPREAD, SnapShotType.OPTION));
         assetSnapshot.setCurrency(Currency.CHF);
         assetSnapshot.setMultiplier(Long.valueOf(resolve.get(7)));

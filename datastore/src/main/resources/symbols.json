@@ -1,0 +1,13 @@
+{
+  "SYMBOLS" : [{
+    "NAME": "XAU",
+    "TW_SYMBOL":"OANDA:XAUUSD",
+    "TYPE":"COMMODITY",
+    "SQ_ISIN":"value2"
+  }, {
+    "NAME": "XAG",
+    "TW_SYMBOL":"OANDA:XAGUSD",
+    "TYPE":"COMMODITY",
+    "SQ_ISIN":"value4"
+  }]
+}

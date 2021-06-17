@@ -1,4 +1,4 @@
-package com.olexyn.abricore.fingers.sq;
+package com.olexyn.abricore.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

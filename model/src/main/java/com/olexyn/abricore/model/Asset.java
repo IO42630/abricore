@@ -7,22 +7,34 @@ import java.util.Map;
 
 public abstract class Asset {
 
-
     private final String name;
 
+    private String twSymbol;
 
-
-
+    private String sqIsin;
 
     public Asset(String name) {
         this.name = name;
     }
 
-
-
-
     public String getName() {
         return name;
+    }
+
+    public String getTwSymbol() {
+        return twSymbol;
+    }
+
+    public void setTwSymbol(String twSymbol) {
+        this.twSymbol = twSymbol;
+    }
+
+    public String getSqIsin() {
+        return sqIsin;
+    }
+
+    public void setSqIsin(String sqIsin) {
+        this.sqIsin = sqIsin;
     }
 
     /**

@@ -73,8 +73,8 @@ public class Main {
 
 
         Mission mission = new Mission();
-        mission.setUnderlyingAsset(Symbols.getAsset("XAGUSD"));
-        mission.getDerivatives().addAll(List.of((Option) Symbols.getAsset("XAG C 25"), (Option) Symbols.getAsset("XAG C 26")));
+        mission.setUnderlyingAsset(Symbols.ofName("XAGUSD"));
+        mission.getDerivatives().addAll(List.of((Option) Symbols.ofName("XAG C 25"), (Option) Symbols.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(10000000L);

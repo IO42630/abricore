@@ -8,14 +8,9 @@ import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
-import org.knowm.xchart.style.Styler;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChartDemo {
 
@@ -25,7 +20,7 @@ public class ChartDemo {
 
     public static void displayCloseXAGUSD() {
 
-        Asset asset = Symbols.getAsset("XAGUSD");
+        Asset asset = Symbols.ofName("XAGUSD");
         SnapShotSeries series = StoreCsv.read(asset, Interval.H_1);
         Duration offsetA = Duration.ofDays(60);
         Duration offsetB = Duration.ofDays(58);

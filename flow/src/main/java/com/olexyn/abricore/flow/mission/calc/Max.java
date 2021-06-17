@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 public class Max {
 
     public static void calcGlobalMax(String... args) {
-        Asset asset = Symbols.getAsset("XAGUSD");
+        Asset asset = Symbols.ofName("XAGUSD");
         SnapShotSeries treeMap = StoreCsv.getInstance().read(asset, Interval.H_1);
 
         Long max = 0L;

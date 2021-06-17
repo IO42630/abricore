@@ -2,6 +2,7 @@ package com.olexyn.abricore.fingers;
 
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import com.olexyn.abricore.fingers.sq.Tools;
+import com.olexyn.abricore.util.FileUtil;
 import com.olexyn.abricore.util.Parameters;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +72,7 @@ public abstract class Login {
         Map<String,String> extractedMap = new HashMap<>();
 
         String path = System.getProperty("user.home") + cred_path;
-        String contents = new Tools().fileToString(new File(path));
+        String contents = new FileUtil().fileToString(new File(path));
         JSONObject obj ;
         try {
             obj = new JSONObject(contents);

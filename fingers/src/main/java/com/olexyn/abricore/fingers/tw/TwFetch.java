@@ -1,17 +1,20 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.fingers.DriverTools;
 import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.Stock;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TwFetch extends Fetch {
 
@@ -25,11 +28,10 @@ public class TwFetch extends Fetch {
 
     void fetchAsset(Mode mode) throws InterruptedException {
 
-        driver.get("https://www.tradingview.com/" + "chart?symbol=FX%3AXAGUSD");
-
 
         Instant oldEarly = Instant.now();
         if (mode.equals(Mode.DOWNLOAD)) {
+            driver.get("https://www.tradingview.com/" + "chart?symbol=FX%3AXAGUSD");
             setInterval(driver, Interval.M_30);
             while (cont) {
 
@@ -44,7 +46,29 @@ public class TwFetch extends Fetch {
                 }
             }
         } else  if (mode.equals(Mode.OBSERVE)) {
-            setInterval(driver, Interval.M_1);
+
+            Symbols.ofName("XAG");
+            Map<String, SnapShotSeries> symbolsToObserve = new HashMap<>();
+            symbolsToObserve.put("ICEUS:DXY", new SnapShotSeries(null, null));
+            // driver.get("https://www.tradingview.com/");
+
+            WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));
+
+
+            if (!watchlist.isDisplayed()) {
+                WebElement watchlistButton = driver.findElement(By.cssSelector("div[data-name='base']"));
+                watchlistButton.click();
+            }
+
+
+
+
+
+            WebElement symbol = driver.findElement(By.cssSelector("div[data-symbol-full='']"));
+            WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
+            String text = last.getText();
+
+
             while (cont) {
                 download(driver);
                 Thread.sleep(Duration.ofMinutes(5L).toMillis());

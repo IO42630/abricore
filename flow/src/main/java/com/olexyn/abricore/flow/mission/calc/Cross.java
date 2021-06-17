@@ -17,7 +17,7 @@ import java.time.Instant;
 public class Cross {
 
     public static void main(String... args) {
-        Asset asset = Symbols.getAsset("XAGUSD");
+        Asset asset = Symbols.ofName("XAGUSD");
         indicatorACrossesAboveB(
             asset,
             x -> x.getMa().get(R5),

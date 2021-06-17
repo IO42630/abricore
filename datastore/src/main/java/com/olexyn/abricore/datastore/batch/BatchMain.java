@@ -9,6 +9,6 @@ public class BatchMain {
 
     public static void main(String... args) throws IOException {
         new ParseTmpCsvBatch().parseTmpCsv();
-        new MaCalcBatch().calcAllMa(Symbols.getAsset("XAGUSD"), Interval.H_1);
+        new MaCalcBatch().calcAllMa(Symbols.ofName("XAGUSD"), Interval.H_1);
     }
 }

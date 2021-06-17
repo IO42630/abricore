@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class Levels {
 
     public static void main(String... args) {
-        Asset asset = Symbols.getAsset("XAGUSD");
+        Asset asset = Symbols.ofName("XAGUSD");
         SnapShotSeries snapShotSeries = StoreCsv.getInstance().read(asset, Interval.H_1);
 
         Long max = 0L;
