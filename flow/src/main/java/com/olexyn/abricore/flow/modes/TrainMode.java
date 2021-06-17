@@ -1,7 +1,8 @@
-package com.olexyn.abricore.flow;
+package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
+import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -12,11 +13,15 @@ import java.util.function.Predicate;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
-public class TrainMode extends AbstractMode {
-
-    ActionMode actionMode = ActionMode.PAPER;
+public class TrainMode extends Mode {
 
     @Override
+    public void init() {
+
+    }
+
+    private Mission mission;
+
     public void start() {
         if (mission.getDerivatives().size() == 0) {
             return;
@@ -73,19 +78,19 @@ public class TrainMode extends AbstractMode {
         Long gain = mission.getGain();
     }
 
-    @Override
+
     void retrieveStoredData() {
 
     }
 
-    @Override
+
     void consultRules() {
 
     }
 
-    @Override
+
     void initializeAction() {
-        super.initializeAction();
+
     }
 
     void checkResult() {
@@ -99,4 +104,6 @@ public class TrainMode extends AbstractMode {
     void storeRules() {
 
     }
+
+
 }

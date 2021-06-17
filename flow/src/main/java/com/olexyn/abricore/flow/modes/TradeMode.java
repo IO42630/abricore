@@ -1,26 +1,27 @@
-package com.olexyn.abricore.flow;
+package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.datastore.StoreCsv;
 import com.olexyn.abricore.fingers.sq.SqLogin;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
+import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.enums.Currency;
+import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
-public class TradeMode extends AbstractMode {
+public class TradeMode extends WebMode {
 
-    ActionMode actionMode = ActionMode.LIVE;
+    private Mission mission;
 
-    @Override
-    void start() throws InterruptedException {
+    public void init() {
 
         if (mission.getDerivatives().size() == 0) {
             return;
@@ -50,7 +51,7 @@ public class TradeMode extends AbstractMode {
         }
     }
 
-    @Override
+
     void retrieveStoredData() {
 
     }
@@ -74,11 +75,15 @@ public class TradeMode extends AbstractMode {
 
     }
 
-    @Override
+
     void consultRules() {
 
     }
 
 
 
+    @Override
+    public WebDriver doLogin() {
+        return null;
+    }
 }

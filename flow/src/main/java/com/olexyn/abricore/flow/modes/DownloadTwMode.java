@@ -1,18 +1,21 @@
-package com.olexyn.abricore.flow;
+package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwLogin;
+import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-public class ObserveTwMode extends ObserveMode {
+public class DownloadTwMode extends DownloadMode {
+
 
     private TwLogin twLogin;
     private TwFetch twFetch;
+
 
     @Override
     public void init() {
@@ -26,14 +29,13 @@ public class ObserveTwMode extends ObserveMode {
     }
 
     @Override
-    public void updateQuote() {
-        List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
+    public void downloadHistoricalData() throws InterruptedException {
+        Map<Asset,List<AssetSnapshot>> historicalData = twFetch.fetchHistoricalData(null);
 
-        for (AssetSnapshot snapshot : snapshots) {
-            Optional<SnapShotSeries> snapShotSeries = getSnapShotSeriesList().stream()
-                .filter(x -> x.getAsset().equals(snapshot.getAsset()))
-                .findFirst();
-            snapShotSeries.ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
+        for (SnapShotSeries series : getSnapShotSeriesList()) {
+            if (historicalData.containsKey(series.getAsset())) {
+                series.addAll(historicalData.get(series.getAsset()));
+            }
         }
     }
 
