@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-import com.olexyn.abricore.datastore.Symbols;
+import com.olexyn.abricore.datastore.AssetFactory;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.model.Asset;
@@ -73,8 +73,8 @@ public class Main {
 
 
         Mission mission = new Mission();
-        mission.setUnderlyingAsset(Symbols.ofName("XAGUSD"));
-        mission.getDerivatives().addAll(List.of((Option) Symbols.ofName("XAG C 25"), (Option) Symbols.ofName("XAG C 26")));
+        mission.setUnderlyingAsset(AssetFactory.ofName("XAGUSD"));
+        mission.getDerivatives().addAll(List.of((Option) AssetFactory.ofName("XAG C 25"), (Option) AssetFactory.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(10000000L);

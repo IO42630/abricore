@@ -1,15 +1,12 @@
 package com.olexyn.abricore.visualization;
 
-import com.olexyn.abricore.util.Calc;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MaxChartStub {

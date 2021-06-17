@@ -1,18 +1,23 @@
 package com.olexyn.abricore.model.snapshots;
 
-import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.util.Calc;
 import com.olexyn.abricore.util.enums.Currency;
-
-import static com.olexyn.abricore.model.snapshots.RangeEnum.*;
-
-import static com.olexyn.abricore.util.Constants.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R10;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R100;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R20;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R200;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R5;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R50;
+import static com.olexyn.abricore.util.Constants.COMMA;
+import static com.olexyn.abricore.util.Constants.NEWLINE;
 
 /**
  *

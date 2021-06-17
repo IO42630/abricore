@@ -1,15 +1,10 @@
 package com.olexyn.abricore.fingers;
 
-import com.olexyn.abricore.fingers.sq.SleepFactory;
-import com.olexyn.abricore.fingers.sq.Tools;
 import com.olexyn.abricore.util.FileUtil;
 import com.olexyn.abricore.util.Parameters;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -17,9 +12,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Login {

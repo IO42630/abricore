@@ -1,9 +1,9 @@
 package com.olexyn.abricore.datastore.batch;
 
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.util.Parameters;
 import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.util.Parameters;
 
 import java.io.IOException;
 import java.nio.file.Files;

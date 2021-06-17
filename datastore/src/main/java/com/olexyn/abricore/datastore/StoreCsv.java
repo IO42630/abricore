@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import static com.olexyn.abricore.datastore.Symbols.SYMBOLS;
+
 public class StoreCsv {
 
     private static StoreCsv instance = null;
@@ -52,7 +54,7 @@ public class StoreCsv {
         Asset asset;
         Interval interval;
         try {
-            asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
+            asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
             interval = mapToFirstInterval(path.getFileName().toString());
             return readFromDisk(asset, interval);
         } catch (StoreException e) {
@@ -69,7 +71,7 @@ public class StoreCsv {
         SnapShotSeries out = new SnapShotSeries(asset, interval);
 
         try {
-            asset = mapToFirstAsset(path.getFileName().toString(), Symbols.getList());
+            asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
             interval = mapToFirstInterval(path.getFileName().toString());
         } catch (StoreException e) {
             return  out;

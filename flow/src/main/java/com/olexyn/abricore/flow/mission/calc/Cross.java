@@ -1,23 +1,22 @@
 package com.olexyn.abricore.flow.mission.calc;
 
+import com.olexyn.abricore.datastore.AssetFactory;
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.GetFromSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
-import  static com.olexyn.abricore.model.snapshots.RangeEnum.*;
-
-
-
 import java.time.Instant;
+
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R20;
+import static com.olexyn.abricore.model.snapshots.RangeEnum.R5;
 
 public class Cross {
 
     public static void main(String... args) {
-        Asset asset = Symbols.ofName("XAGUSD");
+        Asset asset = AssetFactory.ofName("XAGUSD");
         indicatorACrossesAboveB(
             asset,
             x -> x.getMa().get(R5),

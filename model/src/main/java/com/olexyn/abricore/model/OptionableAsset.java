@@ -1,7 +1,6 @@
 package com.olexyn.abricore.model;
 
 import com.olexyn.abricore.model.options.Option;
-import com.olexyn.abricore.model.options.VanillaOption;
 
 import java.util.HashMap;
 import java.util.Map;

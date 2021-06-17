@@ -1,9 +1,6 @@
 package com.olexyn.abricore.model;
 
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Asset {
 
@@ -36,6 +33,8 @@ public abstract class Asset {
     public void setSqIsin(String sqIsin) {
         this.sqIsin = sqIsin;
     }
+
+
 
     /**
      *

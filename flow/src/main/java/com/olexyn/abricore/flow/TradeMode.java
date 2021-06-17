@@ -1,8 +1,8 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqLogin;
+import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -13,7 +13,7 @@ import com.olexyn.abricore.util.enums.Currency;
 import java.util.ArrayList;
 import java.util.List;
 
-import  static  com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
+import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
 public class TradeMode extends AbstractMode {
 

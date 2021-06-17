@@ -18,7 +18,6 @@
         <module>fingers</module>
         <module>model</module>
         <module>flow</module>
-        <module>evaluate</module>
         <module>visualization</module>
         <module>util</module>
         <module>reporting</module>

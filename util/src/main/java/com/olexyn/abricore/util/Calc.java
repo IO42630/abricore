@@ -1,6 +1,7 @@
 package com.olexyn.abricore.util;
 
-import static com.olexyn.abricore.util.Constants.*;
+import static com.olexyn.abricore.util.Constants.DOT;
+import static com.olexyn.abricore.util.Constants.NULL;
 
 public class Calc {
 

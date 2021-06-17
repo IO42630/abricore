@@ -1,20 +1,13 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.DriverTools;
-import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Login;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 
 

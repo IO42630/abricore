@@ -1,6 +1,6 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.datastore.Symbols;
+import com.olexyn.abricore.datastore.AssetFactory;
 import com.olexyn.abricore.fingers.DriverTools;
 import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
@@ -47,9 +47,8 @@ public class TwFetch extends Fetch {
             }
         } else  if (mode.equals(Mode.OBSERVE)) {
 
-            Symbols.ofName("XAG");
-            Map<String, SnapShotSeries> symbolsToObserve = new HashMap<>();
-            symbolsToObserve.put("ICEUS:DXY", new SnapShotSeries(null, null));
+            Map<Asset, SnapShotSeries> symbolsToObserve = new HashMap<>();
+            symbolsToObserve.put(AssetFactory.ofTwSymbol("ICEUS:DXY"), new SnapShotSeries(null, null));
             // driver.get("https://www.tradingview.com/");
 
             WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));

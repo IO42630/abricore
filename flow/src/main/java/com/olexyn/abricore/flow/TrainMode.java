@@ -10,7 +10,7 @@ import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.util.function.Predicate;
 
-import  static  com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
+import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
 public class TrainMode extends AbstractMode {
 

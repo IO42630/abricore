@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow.mission.calc;
 
+import com.olexyn.abricore.datastore.AssetFactory;
 import com.olexyn.abricore.datastore.StoreCsv;
-import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class Levels {
 
     public static void main(String... args) {
-        Asset asset = Symbols.ofName("XAGUSD");
+        Asset asset = AssetFactory.ofName("XAGUSD");
         SnapShotSeries snapShotSeries = StoreCsv.getInstance().read(asset, Interval.H_1);
 
         Long max = 0L;

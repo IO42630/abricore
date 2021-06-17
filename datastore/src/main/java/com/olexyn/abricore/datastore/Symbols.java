@@ -21,35 +21,9 @@ import java.util.stream.Collectors;
  */
 public class Symbols {
 
-    final static Set<Asset> SYMBOLS = new HashSet<>();
+    public final static Set<Asset> SYMBOLS = new HashSet<>();
 
     static {
-        loadSymbols();
-    }
-
-    /**
-     */
-    public static Set<Asset> getList() {
-        return SYMBOLS;
-    }
-
-    public static Asset ofName(String name) {
-        return SYMBOLS.stream().filter(x -> x.getName().equals(name)).findAny().orElseThrow();
-    }
-
-    public static Asset ofIsin(String isin) {
-        return SYMBOLS.stream().filter(x -> x.getSqIsin().equals(isin)).findAny().orElseThrow();
-    }
-
-    public static Asset ofTwSymbol(String twSymbol) {
-        return SYMBOLS.stream().filter(x -> x.getTwSymbol().equals(twSymbol)).findAny().orElseThrow();
-    }
-
-    public static Set<String> getNames() {
-        return SYMBOLS.stream().map(Asset::getName).collect(Collectors.toSet());
-    }
-
-    private static void loadSymbols() {
         String path = Symbols.class.getClassLoader().getResource("symbols.json").getPath();
 
         String contents = new FileUtil().fileToString(new File(path));
@@ -84,4 +58,9 @@ public class Symbols {
             e.printStackTrace();
         }
     }
+
+    public static Set<String> getNames() {
+        return SYMBOLS.stream().map(Asset::getName).collect(Collectors.toSet());
+    }
+
 }

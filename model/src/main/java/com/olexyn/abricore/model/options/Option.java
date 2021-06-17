@@ -4,10 +4,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
 
 public abstract class Option extends Asset {
 
