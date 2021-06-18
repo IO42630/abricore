@@ -55,7 +55,7 @@ public class Main {
                 observeMode.start();
                 Timer timer = new Timer();
                 timer.start();
-                while (timer.hasPassed(Duration.ofSeconds(30))) {
+                while (timer.hasPassed(Duration.ofSeconds(10))) {
                     observeMode.updateQuote();
                     Thread.sleep(1000L);
                 }
@@ -64,6 +64,7 @@ public class Main {
 
                 SnapSeriesService.save(snapShotSeries);
                 // List<Long> prices = snapShotSeries.getNavSet().stream().map(x -> snapShotSeries.get(x).getClose()).collect(Collectors.toList());
+                observeMode.stop();
                 break;
             case TRADE_SQ:
             case TRAIN:
