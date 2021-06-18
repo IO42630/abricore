@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.mission.calc;
 
-import com.olexyn.abricore.datastore.AssetFactory;
+import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 public class Max {
 
     public static void calcGlobalMax(String... args) {
-        Asset asset = AssetFactory.ofName("XAGUSD");
+        Asset asset = AssetService.ofName("XAGUSD");
         SnapShotSeries treeMap = SnapSeriesService.of(asset, Interval.H_1);
 
         Long max = 0L;

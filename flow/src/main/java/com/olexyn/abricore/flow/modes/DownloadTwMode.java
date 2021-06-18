@@ -1,11 +1,10 @@
 package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.fingers.tw.TwFetch;
-import com.olexyn.abricore.fingers.tw.TwLogin;
+import com.olexyn.abricore.fingers.tw.TwSession;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 import java.util.Map;
@@ -13,14 +12,19 @@ import java.util.Map;
 public class DownloadTwMode extends DownloadMode {
 
 
-    private TwLogin twLogin;
+    private TwSession twSession;
     private TwFetch twFetch;
 
 
     @Override
-    public void init() {
-        twLogin = new TwLogin();
-        twFetch = new TwFetch(twLogin.doLogin());
+    public void start() {
+        twSession = new TwSession();
+        twFetch = new TwFetch(twSession.doLogin());
+    }
+
+    @Override
+    public void stop() {
+        twSession.doLogout();
     }
 
     @Override

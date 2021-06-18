@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.mission.calc;
 
-import com.olexyn.abricore.datastore.AssetFactory;
+import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -16,7 +16,7 @@ import static com.olexyn.abricore.model.snapshots.RangeEnum.R5;
 public class Cross {
 
     public static void main(String... args) {
-        Asset asset = AssetFactory.ofName("XAGUSD");
+        Asset asset = AssetService.ofName("XAGUSD");
         indicatorACrossesAboveB(
             asset,
             x -> x.getMa().get(R5),

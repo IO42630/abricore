@@ -1,6 +1,6 @@
 package com.olexyn.abricore.fingers.sq;
 
-import com.olexyn.abricore.datastore.AssetFactory;
+import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
 import com.olexyn.abricore.model.Asset;
@@ -58,7 +58,7 @@ public class SqNavigator implements Navigator {
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 
-        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetFactory.ofName(resolve.get(22)), Interval.S_1);
+        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)), Interval.S_1);
         assetSnapshot.getTypeList().addAll(List.of(SnapShotType.SPREAD, SnapShotType.OPTION));
         assetSnapshot.setCurrency(Currency.CHF);
         assetSnapshot.setMultiplier(Long.valueOf(resolve.get(7)));

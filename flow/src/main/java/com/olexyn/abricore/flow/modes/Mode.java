@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 
 public abstract class Mode {
 
-     public  abstract void  init();
+     public  abstract void start();
+
+     public abstract void stop();
 
      private final List<SnapShotSeries> snapShotSeriesList = new ArrayList<>();
 

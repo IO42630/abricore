@@ -16,13 +16,18 @@ import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 public class TrainMode extends Mode {
 
     @Override
-    public void init() {
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
 
     }
 
     private Mission mission;
 
-    public void start() {
+    public void foo() {
         if (mission.getDerivatives().size() == 0) {
             return;
         }

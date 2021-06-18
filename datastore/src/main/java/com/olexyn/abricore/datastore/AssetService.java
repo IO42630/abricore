@@ -2,9 +2,9 @@ package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
 
-import static com.olexyn.abricore.datastore.Symbols.SYMBOLS;
+import static com.olexyn.abricore.datastore.SymbolsService.SYMBOLS;
 
-public class AssetFactory {
+public class AssetService {
 
     public static Asset ofName(String name) {
         return SYMBOLS.stream().filter(x -> x.getName().equals(name)).findAny().orElseThrow();

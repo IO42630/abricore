@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.datastore.SnapSeriesService;
-import com.olexyn.abricore.fingers.sq.SqLogin;
+import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
 import com.olexyn.abricore.flow.mission.Mission;
@@ -20,7 +20,7 @@ public class TradeMode extends Mode {
 
     private Mission mission;
 
-    public void init() {
+    public void start() {
 
         if (mission.getDerivatives().size() == 0) {
             return;
@@ -56,7 +56,7 @@ public class TradeMode extends Mode {
     }
 
     void fetchLiveData() {
-        SqNavigator navigator = new SqNavigator(new SqLogin().doLogin());
+        SqNavigator navigator = new SqNavigator(new SqSession().doLogin());
         //navigator.search("XAG");
         navigator.tradeWindow("CH1111950643", Currency.CHF, Exchange.SDOTS);
 

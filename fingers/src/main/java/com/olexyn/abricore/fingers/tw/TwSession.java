@@ -2,7 +2,7 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.DriverTools;
 import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
-import com.olexyn.abricore.fingers.Login;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TwLogin extends Login {
+public class TwSession extends Session {
 
     private static final String PREFIX = "tw_iol_";
     private static final String USER = "user";
@@ -19,6 +19,9 @@ public class TwLogin extends Login {
 
     @Override
     public WebDriver doLogin() {
+        if (active) {
+            return driver;
+        }
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.tradingview.com/#signin");
 
@@ -30,13 +33,11 @@ public class TwLogin extends Login {
         SleepFactory.sleep(1);
         DriverTools.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
 
+        active = true;
         return driver;
     }
 
-    @Override
-    public boolean doLogout(WebDriver webDriver) {
-        return false;
-    }
+
 
     @Override
     protected Map<String, String> fetchCredentials() {

@@ -1,11 +1,11 @@
 package com.olexyn.abricore.fingers.paper;
 
-import com.olexyn.abricore.fingers.Login;
+import com.olexyn.abricore.fingers.Session;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 
-public class PaperLogin extends Login {
+public class PaperSession extends Session {
 
     @Override
     protected Map<String, String> fetchCredentials() {
@@ -17,9 +17,7 @@ public class PaperLogin extends Login {
         return null;
     }
 
-    @Override
-    public boolean doLogout(WebDriver webDriver) {
-        return false;
-    }
+
+
 
 }

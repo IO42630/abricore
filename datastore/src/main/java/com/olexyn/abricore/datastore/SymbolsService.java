@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 /**
  * Central instance for defining Tickers.
  */
-public class Symbols {
+public class SymbolsService {
 
     public final static Set<Asset> SYMBOLS = new HashSet<>();
 
     static {
-        String path = Symbols.class.getClassLoader().getResource("symbols.json").getPath();
+        String path = SymbolsService.class.getClassLoader().getResource("symbols.json").getPath();
 
         String contents = new FileUtil().fileToString(new File(path));
 

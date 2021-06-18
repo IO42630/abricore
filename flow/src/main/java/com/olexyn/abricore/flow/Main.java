@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow;
 
-import com.olexyn.abricore.datastore.AssetFactory;
+import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
@@ -16,7 +16,6 @@ import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -46,14 +45,14 @@ public class Main {
         switch (ModeEnum.valueOf(modeEnumString)) {
             case DOWNLOAD_TW:
                 DownloadMode downloadMode = new DownloadTwMode();
-                downloadMode.addAsset(AssetFactory.ofName("XAGUSD"));
-                downloadMode.init();
+                downloadMode.addAsset(AssetService.ofName("XAGUSD"));
+                downloadMode.start();
                 downloadMode.downloadHistoricalData();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
-                observeMode.addAsset(AssetFactory.ofName("XAGUSD"));
-                observeMode.init();
+                observeMode.addAsset(AssetService.ofName("XAGUSD"));
+                observeMode.start();
                 Timer timer = new Timer();
                 timer.start();
                 while (timer.hasPassed(Duration.ofSeconds(30))) {
@@ -92,8 +91,8 @@ public class Main {
 
 
         Mission mission = new Mission();
-        mission.setUnderlyingAsset(AssetFactory.ofName("XAGUSD"));
-        mission.getDerivatives().addAll(List.of((Option) AssetFactory.ofName("XAG C 25"), (Option) AssetFactory.ofName("XAG C 26")));
+        mission.setUnderlyingAsset(AssetService.ofName("XAGUSD"));
+        mission.getDerivatives().addAll(List.of((Option) AssetService.ofName("XAG C 25"), (Option) AssetService.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(10000000L);

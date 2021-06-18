@@ -15,19 +15,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Login {
+public abstract class Session {
 
     private static final String CHROME_DRIVER = "chromedriver_92";
 
+    protected boolean active = false;
+
     protected WebDriver driver;
 
-    protected Login() {
+    protected Session() {
         this.driver = init();
     }
 
     protected WebDriver init() {
         try {
-            String path = Login.class.getClassLoader().getResource(CHROME_DRIVER).getPath();
+            String path = Session.class.getClassLoader().getResource(CHROME_DRIVER).getPath();
             System.setProperty("webdriver.chrome.driver", path);
         } catch (NullPointerException e){
             e.printStackTrace();
@@ -52,10 +54,17 @@ public abstract class Login {
         return driver;
     }
 
-    protected boolean cleanup(WebDriver driver){
+
+    public void doLogout() {
+        if (active) {
+            cleanup(driver);
+            active = false;
+        }
+    }
+
+    protected void cleanup(WebDriver driver){
         if(driver !=null)
             driver.quit();
-        return true;
     }
 
     /**
@@ -81,6 +90,5 @@ public abstract class Login {
     protected  abstract Map<String,String> fetchCredentials();
 
     public abstract WebDriver doLogin();
-    public abstract  boolean doLogout(WebDriver webDriver);
 
 }

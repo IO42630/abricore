@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static com.olexyn.abricore.datastore.Symbols.SYMBOLS;
+import static com.olexyn.abricore.datastore.SymbolsService.SYMBOLS;
 
 public class StoreCsvService {
 

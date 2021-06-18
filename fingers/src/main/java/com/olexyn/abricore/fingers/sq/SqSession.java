@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.DriverTools;
-import com.olexyn.abricore.fingers.Login;
+import com.olexyn.abricore.fingers.Session;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 
-public class SqLogin extends Login {
+public class SqSession extends Session {
 
 
 
@@ -27,6 +27,9 @@ public class SqLogin extends Login {
 
     @Override
     public WebDriver  doLogin() {
+        if (active) {
+            return driver;
+        }
 
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.swissquote.ch/url/login_bank?l=de");
@@ -46,14 +49,10 @@ public class SqLogin extends Login {
         SleepFactory.sleep(2);
         driver.findElement(By.className("Button--primary")).click();
         SleepFactory.sleep(2);
+
+        active = true;
         return driver;
      }
-
-    @Override
-    public boolean doLogout(WebDriver webDriver) {
-        cleanup(webDriver);
-        return true;
-    }
 
 
 
