@@ -10,13 +10,18 @@ import java.util.Optional;
 
 public class ObserveTwMode extends ObserveMode {
 
-    private TwSession twLogin;
+    private TwSession twSession;
     private TwFetch twFetch;
 
     @Override
     public void start() {
-        twLogin = new TwSession();
-        twFetch = new TwFetch(twLogin.doLogin());
+        twSession = new TwSession();
+        twFetch = new TwFetch(twSession.doLogin());
+    }
+
+    @Override
+    public void stop() {
+        twSession.doLogout();
     }
 
 

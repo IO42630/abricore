@@ -50,6 +50,11 @@ public class TradeMode extends Mode {
         }
     }
 
+    @Override
+    public void stop() {
+
+    }
+
 
     void retrieveStoredData() {
 

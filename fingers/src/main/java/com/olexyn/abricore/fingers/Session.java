@@ -54,7 +54,6 @@ public abstract class Session {
         return driver;
     }
 
-
     public void doLogout() {
         if (active) {
             cleanup(driver);

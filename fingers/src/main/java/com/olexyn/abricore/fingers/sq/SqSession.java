@@ -34,7 +34,6 @@ public class SqSession extends Session {
         Map<String,String> credentials = fetchCredentials();
         driver.get("https://www.swissquote.ch/url/login_bank?l=de");
 
-
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
         driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
