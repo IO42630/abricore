@@ -4,7 +4,6 @@ import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwLogin;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +16,10 @@ public class ObserveTwMode extends ObserveMode {
     @Override
     public void init() {
         twLogin = new TwLogin();
-        twFetch = new TwFetch();
+        twFetch = new TwFetch(twLogin.doLogin());
     }
 
-    @Override
-    public WebDriver doLogin() {
-        return twLogin.doLogin();
-    }
+
 
     @Override
     public void updateQuote() {

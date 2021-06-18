@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
-public class TradeMode extends WebMode {
+public class TradeMode extends Mode {
 
     private Mission mission;
 
@@ -82,8 +82,5 @@ public class TradeMode extends WebMode {
 
 
 
-    @Override
-    public WebDriver doLogin() {
-        return null;
-    }
+
 }

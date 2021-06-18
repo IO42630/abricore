@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 
 public enum Interval {
+    I(Duration.ofSeconds(0), null, "0"),
     S_1(Duration.ofSeconds(1), "1 second", "1s"),
     S_5(Duration.ofSeconds(5), "5 seconds", "5s"),
     S_15(Duration.ofSeconds(15), "15 seconds", "15s"),

@@ -11,8 +11,11 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.Stock;
 import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -25,7 +28,7 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
 
-        String modeEnumString = "TRADE_SW";
+        String modeEnumString = ModeEnum.OBSERVE_TW.name();
         Asset asset = null;
 
         for (int i = 0; i < args.length; i++) {
@@ -44,15 +47,21 @@ public class Main {
                 DownloadMode downloadMode = new DownloadTwMode();
                 downloadMode.addAsset(AssetFactory.ofName("XAGUSD"));
                 downloadMode.init();
-                downloadMode.doLogin();
                 downloadMode.downloadHistoricalData();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
                 observeMode.addAsset(AssetFactory.ofName("XAGUSD"));
                 observeMode.init();
-                observeMode.doLogin();
-                observeMode.updateQuote();
+                Timer timer = new Timer();
+                timer.start();
+                while (timer.hasPassed(Duration.ofSeconds(30))) {
+                    observeMode.updateQuote();
+                    Thread.sleep(1000L);
+                }
+
+                SnapShotSeries snapShotSeries = observeMode.getSnapShotSeriesList().get(0);
+                List<Long> prices = snapShotSeries.getNavSet().stream().map(x -> snapShotSeries.get(x).getClose()).collect(Collectors.toList());
                 break;
             case TRADE_SQ:
             case TRAIN:

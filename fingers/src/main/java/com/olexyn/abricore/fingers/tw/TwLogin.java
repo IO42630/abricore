@@ -24,10 +24,6 @@ public class TwLogin extends Login {
 
         driver.findElement(By.className("tv-signin-dialog__toggle-email")).click();
 
-
-        // getWhere("mn-Dropdown__trigger", "LOGIN").click();
-        //followContainedLink(driver, getWhere("mn-Dropdown__text", "Login Bank"));
-
         driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
         driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));

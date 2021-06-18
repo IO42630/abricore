@@ -25,8 +25,8 @@ public class TwFetch extends Fetch {
     final Asset assetToScrape;
     boolean cont = true;
 
-    public TwFetch() {
-        super(null);
+    public TwFetch(WebDriver driver) {
+        super(driver);
         this.assetToScrape = null;
     }
 
@@ -64,7 +64,8 @@ public class TwFetch extends Fetch {
             String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
             WebElement symbol = driver.findElement(By.cssSelector(dataSymbolFull));
             WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
-            AssetSnapshot assetSnapshot = new AssetSnapshot(asset, Interval.S_1);
+            AssetSnapshot assetSnapshot = new AssetSnapshot(asset, Interval.I);
+            assetSnapshot.setInstant(Instant.now());
             assetSnapshot.setClose(Calc.parseLong(last.getText()));
             assetSnapshots.add(assetSnapshot);
         }

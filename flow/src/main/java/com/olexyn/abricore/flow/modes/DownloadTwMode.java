@@ -20,12 +20,7 @@ public class DownloadTwMode extends DownloadMode {
     @Override
     public void init() {
         twLogin = new TwLogin();
-        twFetch = new TwFetch();
-    }
-
-    @Override
-    public WebDriver doLogin() {
-        return twLogin.doLogin();
+        twFetch = new TwFetch(twLogin.doLogin());
     }
 
     @Override

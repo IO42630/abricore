@@ -6,6 +6,7 @@ import com.olexyn.abricore.model.Interval;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -128,6 +129,10 @@ public class SnapShotSeries {
             return altKey;
         }
         return  key;
+    }
+
+    public NavigableSet<Instant> getNavSet() {
+        return treeMap.navigableKeySet();
     }
 
     public void addAll(List<AssetSnapshot> snapshots) {
