@@ -1,6 +1,7 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetFactory;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.DownloadMode;
@@ -61,7 +62,9 @@ public class Main {
                 }
 
                 SnapShotSeries snapShotSeries = observeMode.getSnapShotSeriesList().get(0);
-                List<Long> prices = snapShotSeries.getNavSet().stream().map(x -> snapShotSeries.get(x).getClose()).collect(Collectors.toList());
+
+                SnapSeriesService.save(snapShotSeries);
+                // List<Long> prices = snapShotSeries.getNavSet().stream().map(x -> snapShotSeries.get(x).getClose()).collect(Collectors.toList());
                 break;
             case TRADE_SQ:
             case TRAIN:

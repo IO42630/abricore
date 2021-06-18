@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.modes;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
@@ -30,7 +30,7 @@ public class TrainMode extends Mode {
 
         Asset asset = mission.getUnderlyingAsset();
         Interval interval = mission.getInterval();
-        SnapShotSeries snapShotSeries = StoreCsv.read(asset, interval);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, interval);
         SqNavigator sqNavigator = new SqNavigator(null);
 
         // TODO

@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow.mission.calc;
 
 import com.olexyn.abricore.datastore.AssetFactory;
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
@@ -37,7 +37,7 @@ public class Cross {
        Interval interval,
        Instant instant) {
 
-       SnapShotSeries series = StoreCsv.read(asset1, interval);
+       SnapShotSeries series = SnapSeriesService.of(asset1, interval);
 
        if (series.approximateKey(instant) == null) {
            return false;

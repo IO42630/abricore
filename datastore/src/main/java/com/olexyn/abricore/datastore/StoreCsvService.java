@@ -21,31 +21,7 @@ import java.util.Set;
 
 import static com.olexyn.abricore.datastore.Symbols.SYMBOLS;
 
-public class StoreCsv {
-
-    private static StoreCsv instance = null;
-
-    private StoreCsv() {}
-
-    public static synchronized StoreCsv getInstance() {
-        if (instance == null) {
-            instance = new StoreCsv();
-        }
-        return instance;
-    }
-
-    /**
-     * Try to read from Cache. Otherwise read from Disk.
-     */
-    public static SnapShotSeries read(Asset asset, Interval interval) {
-        if (StoreCache.getSnapShotSeries(asset,interval) == null) {
-            SnapShotSeries series = readFromDisk(asset, interval);
-            StoreCache.getCachedSnapshotSeriesCollection().add(series);
-            return series;
-        } else {
-            return StoreCache.getSnapShotSeries(asset,interval);
-        }
-    }
+public class StoreCsvService {
 
     /**
      * Wrapper for readFromDisk(Asset asset, Interval interval).
@@ -119,7 +95,7 @@ public class StoreCsv {
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    private void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
+    private static void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
 
         AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
 
@@ -149,8 +125,6 @@ public class StoreCsv {
         }
     }
 
-
-
     /**
      * Update CSV by adding AssesSnapshots from SnapShotSeries .
      */
@@ -169,7 +143,7 @@ public class StoreCsv {
                 storedMap.put(key, newSnapshot);
             }
         }
-        StoreCsv.getInstance().writeToStore(storedMap);
+        writeToStore(storedMap);
     }
 
     private static Path getStorePath(Asset asset, Interval interval) {

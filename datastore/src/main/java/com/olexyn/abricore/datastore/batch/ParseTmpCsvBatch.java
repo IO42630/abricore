@@ -1,6 +1,6 @@
 package com.olexyn.abricore.datastore.batch;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.StoreCsvService;
 import com.olexyn.abricore.datastore.Symbols;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.util.Parameters;
@@ -22,8 +22,8 @@ public class ParseTmpCsvBatch {
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x.toString(), Symbols.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
-            .map(StoreCsv::readFromDisk)
-            .forEach(StoreCsv::update);
+            .map(StoreCsvService::readFromDisk)
+            .forEach(StoreCsvService::update);
     }
 
     private static boolean containsAnyToken(String candidate, Set<String> tokens) {

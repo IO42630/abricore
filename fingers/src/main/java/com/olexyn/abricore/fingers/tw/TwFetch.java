@@ -40,7 +40,7 @@ public class TwFetch extends Fetch {
 
                 download(driver);
 
-                Instant newEarly = null; //StoreCsv.getInstance().read(new Stock(""), Interval.M_30).firstEntry().getKey();
+                Instant newEarly = null; //StoreCsvService.getInstance().read(new Stock(""), Interval.M_30).firstEntry().getKey();
                 if (newEarly.isBefore(oldEarly)) {
                     oldEarly = newEarly;
                     // TODO goto DATE - FOO (foo depends on Interval chosen)
@@ -51,8 +51,10 @@ public class TwFetch extends Fetch {
         return null;
     }
 
-    public List<AssetSnapshot> fetchQuotes(List<Asset> assets) {
+    public List<AssetSnapshot> fetchQuotes(List<Asset> assets) throws InterruptedException {
         List<AssetSnapshot> assetSnapshots = new ArrayList<>();
+
+        Thread.sleep(1000);
 
         WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));
         if (!watchlist.isDisplayed()) {

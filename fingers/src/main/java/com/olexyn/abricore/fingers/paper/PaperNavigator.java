@@ -1,6 +1,6 @@
 package com.olexyn.abricore.fingers.paper;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
@@ -37,7 +37,7 @@ public class PaperNavigator implements Navigator {
                return snapShotSeries.get(thisKey);
            }
         }
-        SnapShotSeries snapShotSeries = StoreCsv.read(asset, interval);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, interval);
         snapShotSeriesList.add(snapShotSeries);
         counters.put(snapShotSeries, snapShotSeries.firstKey());
         return snapShotSeries.firstEntry().getValue();

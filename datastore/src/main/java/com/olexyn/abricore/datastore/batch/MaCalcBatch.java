@@ -1,6 +1,7 @@
 package com.olexyn.abricore.datastore.batch;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.StoreCsvService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.RangeEnum;
@@ -17,7 +18,7 @@ public class MaCalcBatch {
     }
 
     public void calculateMa(Asset asset, Interval interval, RangeEnum range) {
-        SnapShotSeries treeMap = StoreCsv.read(asset, interval);
+        SnapShotSeries treeMap = SnapSeriesService.of(asset, interval);
         int rangeValue = range.getNum();
 
         //  move the frameEnd to its starting position
@@ -45,7 +46,7 @@ public class MaCalcBatch {
             frameStartKey = incrementKey(treeMap, frameStartKey);
             frameEndKey = incrementKey(treeMap, frameEndKey);
         }
-        StoreCsv.update(treeMap);
+        StoreCsvService.update(treeMap);
     }
 
     private Instant incrementKey(SnapShotSeries treeMap, Instant key) {

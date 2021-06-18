@@ -1,6 +1,6 @@
 package com.olexyn.abricore.datastore.batch;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.RangeEnum;
@@ -25,7 +25,7 @@ public class BolCalcBatch {
 
 
 
-        SnapShotSeries treeMap = StoreCsv.read(asset, interval);
+        SnapShotSeries treeMap = SnapSeriesService.of(asset, interval);
         int range = rangeEnum.getNum();
 
         Instant firstKey = treeMap.firstKey();

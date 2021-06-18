@@ -22,7 +22,7 @@ public class ObserveTwMode extends ObserveMode {
 
 
     @Override
-    public void updateQuote() {
+    public void updateQuote() throws InterruptedException {
         List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
 
         for (AssetSnapshot snapshot : snapshots) {

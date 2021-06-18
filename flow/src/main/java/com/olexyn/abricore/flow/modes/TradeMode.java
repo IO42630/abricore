@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.modes;
 
-import com.olexyn.abricore.datastore.StoreCsv;
+import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.sq.SqLogin;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.enums.Exchange;
@@ -10,7 +10,6 @@ import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.enums.Currency;
-import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class TradeMode extends Mode {
 
         Asset asset = mission.getUnderlyingAsset();
         Interval interval = mission.getInterval();
-        SnapShotSeries snapShotSeries = StoreCsv.read(asset, interval);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, interval);
         SqNavigator sqNavigator = new SqNavigator(null);
 
         // TODO
