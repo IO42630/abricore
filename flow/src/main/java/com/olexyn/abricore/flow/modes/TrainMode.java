@@ -3,13 +3,10 @@ package com.olexyn.abricore.flow.modes;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.flow.mission.Mission;
-import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-
-import java.util.function.Predicate;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
@@ -22,6 +19,11 @@ public class TrainMode extends TradeMode {
 
     @Override
     public void stop() {
+
+    }
+
+    @Override
+    public void updateQuote() {
 
     }
 

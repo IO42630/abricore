@@ -20,15 +20,6 @@ public abstract class TradeMode extends Mode {
         this.mission = mission;
     }
 
-    public Asset getUnderlyingAsset() {
-        List<Asset> underlyingAssetList =  getAssets().stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
-        if (underlyingAssetList.size() != 1) {
-            throw new UnsafeModeException();
-        } else {
-            return underlyingAssetList.get(0);
-        }
-    }
-
     public void trade() {
         Long cash = mission.getAllocatedCapital();
         AssetSnapshot assetSnapshot = null;

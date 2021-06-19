@@ -22,7 +22,7 @@ public class TradeSqMode extends TradeMode {
     public void updateQuote() {
 
         List<AssetSnapshot> snapshots = new ArrayList<>();
-        snapshots.add(sqNavigator.resolveQuote(getUnderlyingAsset(), null));
+        snapshots.add(sqNavigator.resolveQuote(mission.getUnderlyingAsset(), null));
 
         for (Asset cdf : mission.getDerivatives()) {
             snapshots.add(sqNavigator.resolveQuote(cdf, null));
