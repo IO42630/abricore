@@ -8,5 +8,5 @@ public interface Constants {
     String DOT_REGEX = "\\.";
     String NEWLINE = "\n";
     String NULL = "null";
-    String ZERO = "0";
+    String ZERO_STR = "0";
 }

@@ -1,10 +1,11 @@
 package com.olexyn.abricore.util;
 
-import com.olexyn.abricore.util.exception.CalcException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static com.olexyn.abricore.util.Constants.DOT;
 import static com.olexyn.abricore.util.Constants.DOT_REGEX;
-import static com.olexyn.abricore.util.Constants.ZERO;
+import static com.olexyn.abricore.util.Constants.ZERO_STR;
 
 /**
  * MAX ANum :
@@ -19,7 +20,8 @@ public class ANum {
     private long num;
     private int dec;
 
-    private static final int DEC_LIMIT = 999999999;
+    public static final int DEC_IN_NUM = 1000000000;
+    public static final ANum ZERO = new ANum(0, 0);
 
     public ANum(long num, int dec) {
         this.num = num;
@@ -30,92 +32,156 @@ public class ANum {
         this(num, 0);
     }
 
+    private ANum() {}
 
 
     public static ANum of(String string) {
-        String[] split = string.split(DOT_REGEX);
-        long num = Long.parseLong(split[0]);
-        StringBuilder decStringBuilder = new StringBuilder(split[1]);
-        while (decStringBuilder.length() != 8) {
-            decStringBuilder.append(ZERO);
+
+        if (string.contains(DOT)) {
+            String[] split = string.split(DOT_REGEX);
+            long num = Long.parseLong(split[0]);
+            StringBuilder decStringBuilder = new StringBuilder(split[1]);
+            while (decStringBuilder.length() < 9) {
+                decStringBuilder.append(ZERO_STR);
+            }
+            int dec = Integer.parseInt(decStringBuilder.toString());
+            return new ANum(num, dec);
+        } else {
+            long num = Long.parseLong(string);
+            int dec = 0;
+            return new ANum(num, dec);
         }
-        int dec = Integer.parseInt(decStringBuilder.toString());
-        return  new ANum(num, dec);
+    }
+
+    public static ANum of(BigDecimal bigDecimal) {
+        return of(bigDecimal.toString());
     }
 
     @Override
     public String toString() {
-        return String.join(DOT, String.valueOf(num), String.valueOf(dec));
+        StringBuilder zeroSb = new StringBuilder();
+        String decString = String.valueOf(dec);
+        while (zeroSb.length() + decString.length() < 9) {
+            zeroSb.append(ZERO_STR);
+        }
+        return String.join(DOT, String.valueOf(num), zeroSb.append(decString).toString());
     }
 
-    public ANum add(ANum other) {
-        if (other.dec < 0 || other.num < 0) {
-            throw new CalcException();
-        }
-        dec += other.dec;
-        if (dec > DEC_LIMIT) {
-            dec -= DEC_LIMIT + 1;
-            num++;
-        }
-        num += other.num;
-        return this;
+    private BigDecimal toBigDecimal() {
+        return new BigDecimal(toString());
     }
 
-    public ANum sub(ANum other) {
+    public ANum plus(ANum other) {
 
-        //
-        // 1.2 - 2.4 = - 1.2
-        // 1.4 - 2.2 = - 0.8
-        //
-        num -= other.num;
-        int tempDec = dec - other.dec;
-        if (num < 0) {
-            if (tempDec < 0 ) {
-                dec = other.dec - dec;
-            } else {
-                dec = DEC_LIMIT + 1 + other.dec - dec;
-                num++;
+        if (this.geq(ZERO) && other.lesser(ZERO)) {
+            return this.minus(other.neg());
+        }
+
+        if (this.geq(ZERO) && other.geq(ZERO)) {
+            ANum result = new ANum();
+            result.num = num + other.num;
+            result.dec = dec + other.dec;
+
+            if (result.dec >= DEC_IN_NUM) {
+                result.dec -= DEC_IN_NUM;
+                result.num += 1;
             }
+            return result;
+        }
+
+        if (this.lesser(ZERO) && other.lesser(ZERO)) {
+            ANum negThis = this.neg();
+            ANum negOther = other.neg();
+            return negThis.plus(negOther).neg();
+        }
+
+        if (this.lesser(ZERO) && other.geq(ZERO)) {
+            return doMinus(other, this.neg());
+        }
+
+        return null;
+    }
+
+    public ANum minus(ANum other) {
+        if (this.greater(other)) {
+            return doMinus(this, other);
         } else {
-            if (tempDec < 0) {
-                dec += DEC_LIMIT + 1;
-                num--;
-            }
+            return doMinus(other, this).neg();
         }
-
-
-        dec -= other.dec;
-
-        return this;
-
-
     }
 
-    public ANum mul(ANum other) {
-        return this;
+    /**
+     * a > b
+     */
+    private static ANum doMinus(ANum a, ANum b) {
+
+        ANum result = new ANum();
+
+        if (a.num >= 0 && b.num >= 0) {
+            result.num = a.num - b.num;
+            result.dec = a.dec - b.dec;
+            if (result.dec < 0) {
+                result.dec += DEC_IN_NUM;
+                result.num -= 1;
+            }
+        }
+        return result;
+    }
+
+    public ANum times(ANum other) {
+        long preProdDec = (long) dec * other.dec / DEC_IN_NUM;
+        long prodDec = (long) dec * other.abs().num + (long) other.dec * abs().num + preProdDec;
+        long prodNum = num * other.num;
+        if (prodDec > DEC_IN_NUM){
+            long over = prodDec / DEC_IN_NUM;
+            prodNum += over;
+            prodDec -= over * DEC_IN_NUM;
+        }
+        return new ANum(prodNum, (int) prodDec);
     }
 
     public ANum div(ANum other) {
-        return this;
+        return of(this.toBigDecimal().divide(other.toBigDecimal(), RoundingMode.HALF_EVEN));
     }
 
     public boolean lesser(ANum other) {
-        return true;
+        boolean b1 = num < other.num;
+        boolean b2 = num == other.num && dec < other.dec;
+        return b1 || b2;
     }
 
     public boolean greater(ANum other) {
-        return true;
+        boolean b1 = num > other.num;
+        boolean b2 = num == other.num && dec > other.dec;
+        return b1 || b2;
     }
 
     public boolean leq(ANum other) {
-        return true;
+        return !greater(other);
     }
 
     public boolean geq(ANum other) {
-        return true;
+        return !lesser(other);
     }
 
     public ANum neg() {
-        return null;
+        return new ANum(-num, dec);
     }
+
+    public ANum abs() {
+        return lesser(ZERO) ? neg() : copy() ;
+    }
+
+    public ANum copy() {
+        return new ANum(num, dec);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (o == null || getClass() != o.getClass()) { return false; }
+        ANum aNum = (ANum) o;
+        return num == aNum.num && dec == aNum.dec;
+    }
+
 }

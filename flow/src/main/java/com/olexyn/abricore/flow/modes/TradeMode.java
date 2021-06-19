@@ -39,10 +39,10 @@ public abstract class TradeMode extends Mode {
         for (Predicate<SnapShotSeries> buyCondition : mission.getStrategy().buyConditions) {
             if (buyCondition.test(series)) {
                 ANum size = mission.getStrategy().sizingInCondition.sizeAmount(mission.getAllocatedCapital());
-                ANum remainder = cash.sub(size);
+                ANum remainder = cash.minus(size);
                 if (remainder.greater(new ANum(0,0))) {
                     Transaction transaction = new Transaction(mission.getUnderlyingAsset(), assetSnapshot.getInstant(), size, assetSnapshot.getPrice().getTraded());
-                    cash = cash.sub(size);
+                    cash = cash.minus(size);
                     mission.getActiveTransactions().add(transaction);
                 }
 
@@ -53,7 +53,7 @@ public abstract class TradeMode extends Mode {
             if (sellCondition.test(series)) {
                 for (Transaction transaction : mission.getActiveTransactions()) {
                     transaction.end(assetSnapshot.getInstant(), assetSnapshot.getPrice().getTraded());
-                    cash = cash.add(transaction.getRevenue());
+                    cash = cash.plus(transaction.getRevenue());
                     mission.getFinishedTransactions().add(transaction);
                 }
                 mission.getActiveTransactions().removeAll(mission.getFinishedTransactions());

@@ -76,7 +76,7 @@ public class Mission implements Serializable {
     public ANum getProfit() {
         ANum profit = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            profit = profit.add(transaction.getProfit());
+            profit = profit.plus(transaction.getProfit());
         }
         return profit;
     }
@@ -84,7 +84,7 @@ public class Mission implements Serializable {
     public ANum getRevenue() {
         ANum revenue = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            revenue = revenue.add(transaction.getRevenue());
+            revenue = revenue.plus(transaction.getRevenue());
         }
         return revenue;
     }
@@ -92,7 +92,7 @@ public class Mission implements Serializable {
     public ANum getSize() {
         ANum size = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            size = size.add(transaction.getSize());
+            size = size.plus(transaction.getSize());
         }
         return size;
     }

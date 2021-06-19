@@ -3,7 +3,6 @@ package com.olexyn.abricore.flow.mission.calc;
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.ANum;
@@ -57,8 +56,8 @@ public class Max {
                 try {
 
 
-                    if (candidateSnapshotEntry.getValue().getPrice().getTraded().mul(flip).geq(ceilingRadiusSnapshotEntry.getValue().getPrice().getTraded().mul(flip))
-                        && candidateSnapshotEntry.getValue().getPrice().getTraded().mul(flip).geq(floorRadiusSnapshotEntry.getValue().getPrice().getTraded().mul(flip))) {
+                    if (candidateSnapshotEntry.getValue().getPrice().getTraded().times(flip).geq(ceilingRadiusSnapshotEntry.getValue().getPrice().getTraded().times(flip))
+                        && candidateSnapshotEntry.getValue().getPrice().getTraded().times(flip).geq(floorRadiusSnapshotEntry.getValue().getPrice().getTraded().times(flip))) {
                         ceilingRadiusSnapshotEntry = baseSeries.higherEntry(ceilingRadiusSnapshotEntry.getKey());
                         floorRadiusSnapshotEntry = baseSeries.lowerEntry(floorRadiusSnapshotEntry.getKey());
                     } else {

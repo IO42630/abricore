@@ -84,7 +84,7 @@ public class Transaction {
         if (active) {
             return null;
         }
-        return getRevenue().sub(getSize()).sub(buyFee).sub(sellFee);
+        return getRevenue().minus(getSize()).minus(buyFee).minus(sellFee);
     }
 
     public ANum getGain() {
@@ -98,11 +98,11 @@ public class Transaction {
         if (active) {
             return null;
         }
-        return sellPrice.mul(amount);
+        return sellPrice.times(amount);
     }
 
     public ANum getSize() {
-        return buyPrice.mul(amount);
+        return buyPrice.times(amount);
     }
 }
 
