@@ -2,6 +2,11 @@ package com.olexyn.abricore.model;
 
 
 
+import com.olexyn.abricore.fingers.sq.enums.Exchange;
+import com.olexyn.abricore.util.enums.Currency;
+import com.olexyn.abricore.util.enums.Exchange;
+
+
 public abstract class Asset {
 
     private final String name;
@@ -9,6 +14,10 @@ public abstract class Asset {
     private String twSymbol;
 
     private String sqIsin;
+
+    private Currency currency;
+
+    private Exchange exchange;
 
     public Asset(String name) {
         this.name = name;
@@ -34,7 +43,21 @@ public abstract class Asset {
         this.sqIsin = sqIsin;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
 
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public Exchange getExchange() {
+        return exchange;
+    }
+
+    public void setExchange(Exchange exchange) {
+        this.exchange = exchange;
+    }
 
     /**
      *

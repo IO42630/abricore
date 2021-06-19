@@ -31,6 +31,9 @@ public abstract class Mode {
               .findFirst();
      }
 
+     /**
+      * This is simply a List that can hold Assets. Do specify rules about allowed Assets in child classes.
+      */
      public List<Asset> getAssets() {
           return snapShotSeriesList.stream().map(SnapShotSeries::getAsset).collect(Collectors.toList());
      }
@@ -38,5 +41,7 @@ public abstract class Mode {
      public void addAsset(Asset asset) {
           snapShotSeriesList.add(new SnapShotSeries(asset, null));
      }
+
+     public abstract void updateQuote() throws InterruptedException;
 
 }

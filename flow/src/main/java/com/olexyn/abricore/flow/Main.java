@@ -4,8 +4,8 @@ import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
-import com.olexyn.abricore.flow.modes.DownloadMode;
 import com.olexyn.abricore.flow.modes.DownloadTwMode;
+import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.flow.modes.ObserveMode;
 import com.olexyn.abricore.flow.modes.ObserveTwMode;
 import com.olexyn.abricore.flow.modes.TradeMode;
@@ -31,20 +31,21 @@ public class Main {
             Thread.currentThread().getContextClassLoader().getResource("Main.properties").getPath())
         );
 
+        Timer timer = new Timer();
 
 
         switch (ModeEnum.valueOf(properties.getProperty("mode"))) {
             case DOWNLOAD_TW:
-                DownloadMode downloadMode = new DownloadTwMode();
+                Mode downloadMode = new DownloadTwMode();
                 downloadMode.addAsset(AssetService.ofName("XAGUSD"));
                 downloadMode.start();
-                downloadMode.downloadHistoricalData();
+                downloadMode.updateQuote();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
                 observeMode.addAsset(AssetService.ofName("XAGUSD"));
                 observeMode.start();
-                Timer timer = new Timer();
+
                 timer.start();
                 while (timer.hasPassed(Duration.ofSeconds(10))) {
                     observeMode.updateQuote();
@@ -60,6 +61,12 @@ public class Main {
                 TradeMode tradeMode = new TradeSqMode();
                 tradeMode.addAsset(AssetService.ofName("XAGUSD"));
                 tradeMode.start();
+                timer.start();
+                while (timer.hasPassed(Duration.ofSeconds(10))) {
+                    tradeMode.updateQuote();
+                    tradeMode.trade();
+                    Thread.sleep(10L);
+                }
                 tradeMode.stop();
             case TRAIN:
             default:

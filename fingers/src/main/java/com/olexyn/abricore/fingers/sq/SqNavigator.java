@@ -2,7 +2,7 @@ package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.fingers.Navigator;
-import com.olexyn.abricore.fingers.sq.enums.Exchange;
+import com.olexyn.abricore.util.enums.Exchange;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
@@ -28,8 +28,6 @@ public class SqNavigator implements Navigator {
         this.driver = driver;
     }
 
-
-
     public void goToMainScreen() {
         driver.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
     }
@@ -38,7 +36,7 @@ public class SqNavigator implements Navigator {
         driver.findElement(By.className("defaultInput")).sendKeys(keyword);
     }
 
-    public void tradeWindow(String isin, Currency currency, Exchange exchange) {
+    public void getTradeWindow(String isin, Currency currency, Exchange exchange) {
         String url = String.join(
             EMPTY,
             "https://trade.swissquote.ch/sqb_core/DispatchCtrl?commandName=trade&isin=",
@@ -49,12 +47,18 @@ public class SqNavigator implements Navigator {
             exchange.getCode(),
             "&partnerSource=fullquote"
         );
-        driver.get(url);
+        if (driver.getCurrentUrl().equals(url)) {
+            refresh();
+        } else {
+            driver.get(url);
+        }
     }
 
 
     @Override
     public AssetSnapshot resolveQuote(Asset asset, Interval interval) {
+
+        getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 

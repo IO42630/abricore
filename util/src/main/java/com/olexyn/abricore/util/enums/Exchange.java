@@ -1,4 +1,4 @@
-package com.olexyn.abricore.fingers.sq.enums;
+package com.olexyn.abricore.util.enums;
 
 public enum Exchange {
     SDOTS("672");

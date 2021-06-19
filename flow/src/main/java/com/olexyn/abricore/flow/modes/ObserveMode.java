@@ -4,6 +4,6 @@ public abstract class ObserveMode extends Mode {
 
 
 
-    public abstract void updateQuote() throws InterruptedException;
+
 
 }

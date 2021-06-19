@@ -9,7 +9,7 @@ import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadTwMode extends DownloadMode {
+public class DownloadTwMode extends Mode {
 
 
     private TwSession twSession;
@@ -28,7 +28,7 @@ public class DownloadTwMode extends DownloadMode {
     }
 
     @Override
-    public void downloadHistoricalData() throws InterruptedException {
+    public void updateQuote() throws InterruptedException {
         Map<Asset,List<AssetSnapshot>> historicalData = twFetch.fetchHistoricalData(null);
 
         for (SnapShotSeries series : getSnapShotSeriesList()) {
