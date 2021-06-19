@@ -31,10 +31,8 @@ public class ObserveTwMode extends ObserveMode {
         List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
 
         for (AssetSnapshot snapshot : snapshots) {
-            Optional<SnapShotSeries> snapShotSeries = getSnapShotSeriesList().stream()
-                .filter(x -> x.getAsset().equals(snapshot.getAsset()))
-                .findFirst();
-            snapShotSeries.ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
+            getSnapShotSeries(snapshot.getAsset(), snapshot.getInterval())
+                .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
         }
     }
 

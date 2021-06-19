@@ -8,41 +8,32 @@ import com.olexyn.abricore.flow.modes.DownloadMode;
 import com.olexyn.abricore.flow.modes.DownloadTwMode;
 import com.olexyn.abricore.flow.modes.ObserveMode;
 import com.olexyn.abricore.flow.modes.ObserveTwMode;
-import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.flow.modes.TradeMode;
+import com.olexyn.abricore.flow.modes.TradeSqMode;
 import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.Stock;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
 
-
     /**
-     * -m mode target
-     * -a asset
-     *
-     * @param args
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
 
-        String modeEnumString = ModeEnum.OBSERVE_TW.name();
-        Asset asset = null;
-
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-m":
-                    modeEnumString = (args[i + 1] + "_" + args[i + 2]).toUpperCase();
-                case "-a":
-                    asset = new Stock(args[i + 1]);
-            }
-        }
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(
+            Thread.currentThread().getContextClassLoader().getResource("Main.properties").getPath())
+        );
 
 
 
-        switch (ModeEnum.valueOf(modeEnumString)) {
+        switch (ModeEnum.valueOf(properties.getProperty("mode"))) {
             case DOWNLOAD_TW:
                 DownloadMode downloadMode = new DownloadTwMode();
                 downloadMode.addAsset(AssetService.ofName("XAGUSD"));
@@ -57,16 +48,19 @@ public class Main {
                 timer.start();
                 while (timer.hasPassed(Duration.ofSeconds(10))) {
                     observeMode.updateQuote();
-                    Thread.sleep(1000L);
+                    Thread.sleep(10L);
                 }
 
                 SnapShotSeries snapShotSeries = observeMode.getSnapShotSeriesList().get(0);
 
                 SnapSeriesService.save(snapShotSeries);
-                // List<Long> prices = snapShotSeries.getNavSet().stream().map(x -> snapShotSeries.get(x).getClose()).collect(Collectors.toList());
                 observeMode.stop();
                 break;
             case TRADE_SQ:
+                TradeMode tradeMode = new TradeSqMode();
+                tradeMode.addAsset(AssetService.ofName("XAGUSD"));
+                tradeMode.start();
+                tradeMode.stop();
             case TRAIN:
             default:
                 break;
