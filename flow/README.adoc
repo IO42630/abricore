@@ -2,3 +2,9 @@
 
 * `Main` is located here.
 * Determines which `WebMode` the application is run in.
+
+{empty} +
+
+==== Modes
+
+image::img/mode_inheritance.png[]

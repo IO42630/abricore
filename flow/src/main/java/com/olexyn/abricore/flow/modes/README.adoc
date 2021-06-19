@@ -1,3 +1,0 @@
-=== Modes
-
-image::mode_inheritance.png[]
