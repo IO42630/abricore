@@ -2,15 +2,10 @@ package com.olexyn.abricore.flow.modes;
 
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
-import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.UnderlyingAsset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import com.olexyn.abricore.util.exception.UnsafeModeException;
 
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public abstract class TradeMode extends Mode {
 
@@ -18,6 +13,8 @@ public abstract class TradeMode extends Mode {
 
     public void setMission(Mission mission) {
         this.mission = mission;
+        addAsset(mission.getUnderlyingAsset());
+        mission.getDerivatives().forEach(this::addAsset);
     }
 
     public void trade() {

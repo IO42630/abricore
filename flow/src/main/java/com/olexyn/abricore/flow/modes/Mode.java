@@ -34,11 +34,11 @@ public abstract class Mode {
      /**
       * This is simply a List that can hold Assets. Do specify rules about allowed Assets in child classes.
       */
-     public List<Asset> getAssets() {
+     public final List<Asset> getAssets() {
           return snapShotSeriesList.stream().map(SnapShotSeries::getAsset).collect(Collectors.toList());
      }
 
-     public void addAsset(Asset asset) {
+     public final void addAsset(Asset asset) {
           snapShotSeriesList.add(new SnapShotSeries(asset, null));
      }
 

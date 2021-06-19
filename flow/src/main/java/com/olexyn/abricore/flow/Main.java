@@ -61,6 +61,7 @@ public class Main {
                 TradeMode tradeMode = new TradeSqMode();
                 tradeMode.addAsset(AssetService.ofName("XAGUSD"));
                 tradeMode.start();
+                tradeMode.setMission(new Mission());
                 timer.start();
                 while (timer.hasPassed(Duration.ofSeconds(10))) {
                     tradeMode.updateQuote();
