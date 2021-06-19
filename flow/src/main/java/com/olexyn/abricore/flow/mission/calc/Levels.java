@@ -6,6 +6,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
 import java.util.Map.Entry;
@@ -15,15 +16,15 @@ public class Levels {
 
     public static void main(String... args) {
         Asset asset = AssetService.ofName("XAGUSD");
-        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, Interval.H_1);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset);
 
-        Long max = 0L;
+        ANum max = new ANum(0,0);
 
 
         for (Entry<Instant, AssetSnapshot> entry : snapShotSeries.entrySet()) {
-            if (entry.getValue().getHigh() > max) {
-                max = entry.getValue().getHigh();
-            }
+            // if (entry.getValue().getHigh() > max) {
+            //     max = entry.getValue().getHigh();
+            // }
         }
 
         int br = 0;
@@ -32,7 +33,8 @@ public class Levels {
         for (Entry<Instant, AssetSnapshot> entry : snapShotSeries.entrySet()) {
 
             AssetSnapshot snapshot = entry.getValue();
-            long level = (snapshot.getOpen() + snapshot.getClose() ) / 2;
+            // long level = (snapshot.getOpen() + snapshot.getClose() ) / 2;
+            long level = 0;
             int lvl = (int) level / 1000;
 
             if ( values.containsKey(lvl)) {

@@ -1,10 +1,11 @@
 package com.olexyn.abricore.model.options;
 
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.util.ANum;
 
 public class BarrierOption extends Option {
 
-    private Long ratio;
+    private ANum ratio;
 
     public BarrierOption(String name) {
         super(name);

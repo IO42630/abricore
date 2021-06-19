@@ -1,8 +1,10 @@
 package com.olexyn.abricore.flow.mission;
 
+import com.olexyn.abricore.util.ANum;
+
 @FunctionalInterface
 public interface SizingCondition  {
 
 
-    Long sizeAmount(Long totalAmount);
+    ANum sizeAmount(ANum totalAmount);
 }

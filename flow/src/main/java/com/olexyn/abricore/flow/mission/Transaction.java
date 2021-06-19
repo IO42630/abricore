@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow.mission;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.util.Calc;
+import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
 
@@ -13,15 +13,15 @@ public class Transaction {
 
     private Instant buyInstant;
     private Instant sellInstant;
-    private Long amount;
-    private Long buyPrice;
-    private Long sellPrice;
-    private Long buyFee = 0L;
-    private Long sellFee = 0L;
+    private ANum amount;
+    private ANum buyPrice;
+    private ANum sellPrice;
+    private ANum buyFee = new ANum(0,0);
+    private ANum sellFee = new ANum(0,0);
 
     private Transaction() {}
 
-    public Transaction (Asset asset, Instant buyInstant, Long amount, Long buyPrice) {
+    public Transaction (Asset asset, Instant buyInstant, ANum amount, ANum buyPrice) {
         this.asset = asset;
         this.buyInstant = buyInstant;
         this.amount = amount;
@@ -29,7 +29,7 @@ public class Transaction {
         this.active = true;
     }
 
-    public void end(Instant sellInstant, Long sellPrice) {
+    public void end(Instant sellInstant, ANum sellPrice) {
         this.sellInstant = sellInstant;
         this.sellPrice = sellPrice;
         this.active = false;
@@ -52,57 +52,57 @@ public class Transaction {
         return sellInstant;
     }
 
-    public Long getAmount() {
+    public ANum getAmount() {
         return amount;
     }
 
-    public Long getBuyPrice() {
+    public ANum getBuyPrice() {
         return buyPrice;
     }
 
-    public Long getSellPrice() {
+    public ANum getSellPrice() {
         return sellPrice;
     }
 
-    public Long getBuyFee() {
+    public ANum getBuyFee() {
         return buyFee;
     }
 
-    public void setBuyFee(Long buyFee) {
+    public void setBuyFee(ANum buyFee) {
         this.buyFee = buyFee;
     }
 
-    public Long getSellFee() {
+    public ANum getSellFee() {
         return sellFee;
     }
 
-    public void setSellFee(Long sellFee) {
+    public void setSellFee(ANum sellFee) {
         this.sellFee = sellFee;
     }
 
-    public Long getProfit() {
+    public ANum getProfit() {
         if (active) {
             return null;
         }
-        return  getRevenue() - getSize() - buyFee - sellFee;
+        return getRevenue().sub(getSize()).sub(buyFee).sub(sellFee);
     }
 
-    public Long getGain() {
+    public ANum getGain() {
         if (active) {
             return null;
         }
-        return getRevenue() / getSize();
+        return getRevenue().div(getSize());
     }
 
-    public Long getRevenue() {
+    public ANum getRevenue() {
         if (active) {
             return null;
         }
-        return Calc.multiply(sellPrice, amount);
+        return sellPrice.mul(amount);
     }
 
-    public Long getSize() {
-        return Calc.multiply(buyPrice, amount);
+    public ANum getSize() {
+        return buyPrice.mul(amount);
     }
 }
 

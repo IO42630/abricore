@@ -31,7 +31,7 @@ public class ObserveTwMode extends ObserveMode {
         List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
 
         for (AssetSnapshot snapshot : snapshots) {
-            getSnapShotSeries(snapshot.getAsset(), snapshot.getInterval())
+            getSnapShotSeries(snapshot.getAsset())
                 .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
         }
     }

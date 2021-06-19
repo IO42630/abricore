@@ -1,15 +1,19 @@
 package com.olexyn.abricore.model.snapshots;
 
+
+
+import com.olexyn.abricore.util.ANum;
+
 public class Indicator {
 
-    Long r5;
-    Long r10;
-    Long r20;
-    Long r50;
-    Long r100;
-    Long r200;
+    ANum r5;
+    ANum r10;
+    ANum r20;
+    ANum r50;
+    ANum r100;
+    ANum r200;
 
-    public Long get(RangeEnum range) {
+    public ANum get(RangeEnum range) {
         switch (range) {
             case R5:
                 return r5;
@@ -28,7 +32,7 @@ public class Indicator {
         }
     }
 
-    public void set(RangeEnum range, Long value) {
+    public void set(RangeEnum range, ANum value) {
         switch (range) {
             case R5:
                 this.r5 = value;

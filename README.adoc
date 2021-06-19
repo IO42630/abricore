@@ -46,7 +46,7 @@ image::img/module-dep.png[]
 
 {empty} +
 
-== Calculations
+== ANumulations
 * We consider two types of calculations.
 
 {empty} +

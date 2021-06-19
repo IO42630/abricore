@@ -29,7 +29,6 @@ public class PaperNavigator implements Navigator {
     public AssetSnapshot resolveQuote(Asset asset, Interval interval) {
         for (SnapShotSeries snapShotSeries : snapShotSeriesList) {
            if (snapShotSeries.getAsset().equals(asset)
-               && snapShotSeries.getInterval().equals(interval)
            ) {
                Instant lastKey = counters.get(snapShotSeries);
                Instant thisKey = snapShotSeries.higherKey(lastKey);
@@ -37,7 +36,7 @@ public class PaperNavigator implements Navigator {
                return snapShotSeries.get(thisKey);
            }
         }
-        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, interval);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset);
         snapShotSeriesList.add(snapShotSeries);
         counters.put(snapShotSeries, snapShotSeries.firstKey());
         return snapShotSeries.firstEntry().getValue();

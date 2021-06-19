@@ -26,10 +26,9 @@ public abstract class Mode {
           return snapShotSeriesList;
      }
 
-     public Optional<SnapShotSeries> getSnapShotSeries(Asset asset, Interval interval) {
+     public Optional<SnapShotSeries> getSnapShotSeries(Asset asset) {
           return getSnapShotSeriesList().stream()
               .filter(x -> x.getAsset().equals(asset))
-              .filter(x -> x.getInterval().equals(interval))
               .findFirst();
      }
 
@@ -44,7 +43,7 @@ public abstract class Mode {
       * Protected in Mode, Public in ObserveMode.
       */
      protected void addAsset(Asset asset) {
-          snapShotSeriesList.add(new SnapShotSeries(asset, null));
+          snapShotSeriesList.add(new SnapShotSeries(asset));
      }
 
      public abstract void updateQuote() throws InterruptedException;

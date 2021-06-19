@@ -11,16 +11,4 @@ public class DataUtil {
         return LocalDateTime.parse(string, SQ_DATE_TIME_FORMATTER);
     }
 
-    public static Double parseDouble(String string){
-        string = string.replace("'", "");
-        if (string.equals("-")) {
-            return 0d;
-        }
-        return Double.valueOf(string);
-    }
-
-    public static Long parseLong(String string){
-        string = string.replace("'", "");
-        return Long.valueOf(string);
-    }
 }

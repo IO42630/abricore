@@ -21,10 +21,10 @@ public class ChartDemo {
     public static void displayCloseXAGUSD() {
 
         Asset asset = AssetService.ofName("XAGUSD");
-        SnapShotSeries series = SnapSeriesService.of(asset, Interval.H_1);
         Duration offsetA = Duration.ofDays(60);
         Duration offsetB = Duration.ofDays(58);
-        XYChart chart2 = Chart.makeChart(series, Instant.now().minus(offsetA), Instant.now().minus(offsetB), AssetSnapshot::getClose);
-        new SwingWrapper<>(chart2).displayChart();
+        // XYChart chart2 = Chart.makeChart(series, Instant.now().minus(offsetA), Instant.now().minus(offsetB), AssetSnapshot::getClose);
+        // new SwingWrapper<>(chart2).displayChart();
+        return;
     }
 }

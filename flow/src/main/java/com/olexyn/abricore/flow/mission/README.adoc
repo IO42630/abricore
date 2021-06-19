@@ -6,8 +6,8 @@ Strategy suggestions so far is ascending order of complexity:
 {empty} +
 
 ==== MaCross
-* Calculate ma20 and ma50
-* Calculate Cross
+* ANumulate ma20 and ma50
+* ANumulate Cross
 * Decisions
 ** MA20 crosses above MA50 -> sell, enter long
 ** MA20 crosses below MA50 -> sell, enter short
@@ -16,8 +16,8 @@ Strategy suggestions so far is ascending order of complexity:
 {empty} +
 
 ==== Bolliger
-* Calculate Bolliger Bands
-* Calculate Trend (via MA history)
+* ANumulate Bolliger Bands
+* ANumulate Trend (via MA history)
 * Decisions:
 ** if trend bullish
 *** and price below lower bolliger -> enter long

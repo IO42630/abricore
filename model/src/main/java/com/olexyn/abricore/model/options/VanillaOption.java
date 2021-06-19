@@ -1,5 +1,7 @@
 package com.olexyn.abricore.model.options;
 
+import com.olexyn.abricore.util.ANum;
+
 public class VanillaOption extends Option {
 
     public VanillaOption(String name) {
@@ -7,7 +9,7 @@ public class VanillaOption extends Option {
     }
 
     @Override
-    public Long getRatio() {
-        return 100L;
+    public ANum getRatio() {
+        return new ANum(100, 0);
     }
 }

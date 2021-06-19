@@ -19,8 +19,8 @@ public class Cross {
         Asset asset = AssetService.ofName("XAGUSD");
         indicatorACrossesAboveB(
             asset,
-            x -> x.getMa().get(R5),
-            x -> x.getHighBol().get(R20),
+            x -> x.getVolume(),
+            AssetSnapshot::getVolume,
             Interval.H_1,
             Instant.now()
         );
@@ -37,7 +37,7 @@ public class Cross {
        Interval interval,
        Instant instant) {
 
-       SnapShotSeries series = SnapSeriesService.of(asset1, interval);
+       SnapShotSeries series = SnapSeriesService.of(asset1);
 
        if (series.approximateKey(instant) == null) {
            return false;
@@ -60,7 +60,7 @@ public class Cross {
            return false;
        }
 
-       return indicatorA.get(next) > indicatorB.get(next)
-           && indicatorA.get(prev) < indicatorB.get(prev);
+       return indicatorA.get(next).greater(indicatorB.get(next))
+           && indicatorA.get(prev).lesser(indicatorB.get(prev));
    }
 }

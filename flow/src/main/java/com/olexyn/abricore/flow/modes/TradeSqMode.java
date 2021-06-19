@@ -29,7 +29,7 @@ public class TradeSqMode extends TradeMode {
         }
 
         for (AssetSnapshot snapshot : snapshots) {
-            getSnapShotSeries(snapshot.getAsset(), snapshot.getInterval())
+            getSnapShotSeries(snapshot.getAsset())
                 .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
         }
 

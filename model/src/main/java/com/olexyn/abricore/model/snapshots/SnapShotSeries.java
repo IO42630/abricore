@@ -18,19 +18,13 @@ public class SnapShotSeries {
     private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
 
     private Asset asset;
-    private Interval interval;
 
-    public SnapShotSeries(Asset asset, Interval interval) {
+    public SnapShotSeries(Asset asset) {
         this.asset = asset;
-        this.interval = interval;
     }
 
     public Asset getAsset() {
         return asset;
-    }
-
-    public Interval getInterval() {
-        return interval;
     }
 
     public AssetSnapshot get(Instant instant) {
@@ -69,7 +63,7 @@ public class SnapShotSeries {
      * @return returns a sequence of the Series between "from" and "to"
      */
     public SnapShotSeries limitSeries(Instant from, Instant to) {
-        SnapShotSeries limitedSeries = new SnapShotSeries(getAsset(), getInterval());
+        SnapShotSeries limitedSeries = new SnapShotSeries(getAsset());
         Instant first = getFirstAfter(from);
         Instant last = getFirstBefore(to);
         limitedSeries.put(first, treeMap.get(first));

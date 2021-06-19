@@ -6,7 +6,7 @@ import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.util.Calc;
+import com.olexyn.abricore.util.ANum;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -62,9 +62,9 @@ public class TwFetch extends Fetch {
             String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
             WebElement symbol = driver.findElement(By.cssSelector(dataSymbolFull));
             WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
-            AssetSnapshot assetSnapshot = new AssetSnapshot(asset, Interval.I);
+            AssetSnapshot assetSnapshot = new AssetSnapshot(asset);
             assetSnapshot.setInstant(Instant.now());
-            assetSnapshot.setClose(Calc.parseLong(last.getText()));
+            assetSnapshot.getPrice().setTraded(ANum.of(last.getText()));
             assetSnapshots.add(assetSnapshot);
         }
 

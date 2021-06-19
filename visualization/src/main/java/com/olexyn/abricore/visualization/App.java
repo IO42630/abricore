@@ -1,17 +1,12 @@
 package com.olexyn.abricore.visualization;
 
-import com.olexyn.abricore.model.snapshots.OptionSnapshot;
-import com.olexyn.abricore.util.Calc;
-import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.QuickChart;
-import org.knowm.xchart.SwingWrapper;
+import com.olexyn.abricore.util.ANum;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Hello world!
@@ -21,70 +16,55 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        OptionSnapshot optionLow = new OptionSnapshot();
-        optionLow.setStrike(23);
-        optionLow.setTimeTillExpiry(0.23);
-        optionLow.setRiskFreeInterestPA(0);
-        optionLow.setDividendPA(0);
-        optionLow.setVolatilityPA(0.38);
 
-        OptionSnapshot optionHigh = new OptionSnapshot();
-        optionHigh.setPrice(23L);
-        optionHigh.setStrike(25);
-        optionHigh.setTimeTillExpiry(0.23);
-        optionHigh.setRiskFreeInterestPA(0);
-        optionHigh.setDividendPA(0);
-        optionHigh.setVolatilityPA(0.38);
 
 
         int points = 40;
-        Long delta = 100L;
+        ANum delta = new ANum(0,0);
 
-        Long[] xData = new Long[points];
-        Long[] yData = new Long[points];
+        ANum[] xData = new ANum[points];
+        ANum[] yData = new ANum[points];
 
-        Long startPoint = 27L;
+        ANum startPoint = new ANum(27,0);
 
         for (int i = 0; i < points; i++) {
 
-            xData[i] = startPoint - i * delta;
-            if (xData[i] >= 0) {
-                optionLow.setPrice(xData[i]);
-                Long optionLowPrice = 0L;
-                optionHigh.setPrice(xData[i]);
-                Long optionHighPrice = 0L;
-
-                yData[i] = optionLowPrice / optionHighPrice;
-            } else {
-                xData[i] = 0L;
-                yData[i] = 0L;
-            }
+            // xData[i] = startPoint - i * delta;
+            // if (xData[i] >= 0) {
+            //     ANum optionLowPrice = new ANum(0,0);
+            //     ANum optionHighPrice = new ANum(0,0);
+            //
+            //     yData[i] = optionLowPrice / optionHighPrice;
+            // } else {
+            //     xData[i] = new ANum(0,0);
+            //     yData[i] = new ANum(0,0);
+            // }
         }
 
 
 
         // Create Chart
-        double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
-        double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
-
-        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xxData, yyData);
+        // double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(ANum.toString(x))).toArray();
+        // double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(ANum.toString(x))).toArray();
+        //
+        // XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xxData, yyData);
 
 
 
 
 
         // Show it
-        new SwingWrapper(chart).displayChart();
+        // new SwingWrapper(chart).displayChart();
 
         // Save it
-        BitmapEncoder.saveBitmap(chart, "./Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
+        // BitmapEncoder.saveBitmap(chart, "./Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
 
         // or save it in high-res
-        BitmapEncoder.saveBitmapWithDPI(chart, "./Sample_Chart_300_DPI", BitmapEncoder.BitmapFormat.PNG, 300);
+        // BitmapEncoder.saveBitmapWithDPI(chart, "./Sample_Chart_300_DPI", BitmapEncoder.BitmapFormat.PNG, 300);
 
         //XYChart exampleChart = new XYChart();
         XYChart chart2 = getChart();
-        new SwingWrapper<>(chart).displayChart();
+        // new SwingWrapper<>(chart).displayChart();
 
 
     }

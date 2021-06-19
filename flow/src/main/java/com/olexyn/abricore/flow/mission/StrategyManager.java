@@ -1,5 +1,6 @@
 package com.olexyn.abricore.flow.mission;
 
+import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.Parameters;
 
 import java.io.BufferedOutputStream;
@@ -17,11 +18,11 @@ public class StrategyManager {
 
     public static Strategy setupStrategy(String name) {
         Strategy strategy = new Strategy(name);
-        strategy.buyConditions.add(x -> x.getLast().getClose() < 20000);
-        strategy.sellConditions.add(x -> x.getLast().getClose() > 25000);
-        strategy.stopConditions.add(x -> x.getLast().getClose() < 10000);
-        strategy.sizingInCondition = x -> x/5;
-        strategy.sizingOutCondition = x -> x/5;
+        strategy.buyConditions.add(x -> x.getLast().getPrice().getTraded().lesser(new ANum(20000)));
+        strategy.sellConditions.add(x -> x.getLast().getPrice().getTraded().greater(new ANum(27000)));
+        strategy.stopConditions.add(x -> x.getLast().getPrice().getTraded().lesser(new ANum(10000)));
+        strategy.sizingInCondition = x -> x.div(new ANum(5));
+        strategy.sizingOutCondition = x -> x.div(new ANum(5));
         return strategy;
     }
 

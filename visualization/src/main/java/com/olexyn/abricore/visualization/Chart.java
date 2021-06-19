@@ -3,7 +3,7 @@ package com.olexyn.abricore.visualization;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.GetFromSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import com.olexyn.abricore.util.Calc;
+import com.olexyn.abricore.util.ANum;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
 
@@ -50,32 +50,31 @@ public class Chart {
 
 
         int mergeSize = series.size() / resolution;
-        List<Long> xList = new ArrayList<>();
-        List<Long> yList = new ArrayList<>();
+        List<ANum> xList = new ArrayList<>();
+        List<ANum> yList = new ArrayList<>();
 
-        int count = 0;
-        Long amount = 0L;
-        long xCount = 1L;
-        for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
-
-            if (count == 0) {
-                amount = getFromSnapshot.get(entry.getValue());
-                count++;
-            } else if ( count < mergeSize) {
-                amount += getFromSnapshot.get(entry.getValue());
-                count++;
-            } else {
-                xList.add(xCount);
-                xCount = xCount + 1;
-                yList.add(amount/mergeSize);
-                count = 0;
-            }
-        }
-        long[] xData = xList.stream().mapToLong(x -> x).toArray();
-        long[] yData = yList.stream().mapToLong(x -> x).toArray();
-
-        String title = makeTitle(series, from, to);
-        return makeXYChart(title, xData, yData);
+        // int count = 0;
+        // ANum amount = new ANum(0,0);
+        // long xCount = 1L;
+        // for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
+        //
+        //     if (count == 0) {
+        //         count++;
+        //     } else if ( count < mergeSize) {
+        //         count++;
+        //     } else {
+        //         xList.add(xCount);
+        //         xCount = xCount + 1;
+        //         // yList.add(amount/mergeSize);
+        //         count = 0;
+        //     }
+        // }
+        // long[] xData = xList.stream().mapToANum(x -> x).toArray();
+        // long[] yData = yList.stream().mapToANum(x -> x).toArray();
+        //
+        // String title = makeTitle(series, from, to);
+        // return makeXYChart(title, xData, yData);
+        return null;
     }
 
     private static  XYChart makeDefaultChart(
@@ -84,19 +83,19 @@ public class Chart {
         Instant to,
         GetFromSnapshot getFromSnapshot
     ) {
-        List<Long> xList = new ArrayList<>();
-        List<Long> yList = new ArrayList<>();
-        long xCount = 1L;
-        for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
-            xList.add(xCount);
-            xCount = xCount + 1;
-            yList.add(getFromSnapshot.get(entry.getValue()));
-        }
-        long[] xData = xList.stream().mapToLong(x -> x).toArray();
-        long[] yData = yList.stream().mapToLong(x -> x).toArray();
-
-        String title = makeTitle(series, from, to);
-        return makeXYChart(title, xData, yData);
+        // List<ANum> xList = new ArrayList<>();
+        // List<ANum> yList = new ArrayList<>();
+        // long xCount = 1L;
+        // for (Entry<Instant, AssetSnapshot> entry: series.entrySet()) {
+        //     xList.add(xCount);
+        //     xCount = xCount + 1;
+        // }
+        // long[] xData = xList.stream().mapToANum(x -> x).toArray();
+        // long[] yData = yList.stream().mapToANum(x -> x).toArray();
+        //
+        // String title = makeTitle(series, from, to);
+        // return makeXYChart(title, xData, yData);
+        return null;
     }
 
     private static String makeTitle(SnapShotSeries series, Instant from, Instant to) {
@@ -110,8 +109,9 @@ public class Chart {
 
 
     private static XYChart makeXYChart (String title, long[] xData, long[] yData) {
-        double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(Calc.parseString(1000*x))).toArray();
-        double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(Calc.parseString(x))).toArray();
-        return QuickChart.getChart(title, "t", "x", null, xxData, yyData);
+        // double[] xxData = Arrays.stream(xData).mapToDouble(x -> Double.parseDouble(ANum.toString(1000*x))).toArray();
+        // double[] yyData = Arrays.stream(yData).mapToDouble(x -> Double.parseDouble(ANum.toString(x))).toArray();
+        // return QuickChart.getChart(title, "t", "x", null, xxData, yyData);
+        return null;
     }
 }

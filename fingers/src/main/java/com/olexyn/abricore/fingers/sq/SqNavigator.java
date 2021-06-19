@@ -2,13 +2,14 @@ package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.fingers.Navigator;
-import com.olexyn.abricore.util.enums.Exchange;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotType;
+import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.Currency;
+import com.olexyn.abricore.util.enums.Exchange;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -62,21 +63,25 @@ public class SqNavigator implements Navigator {
 
         List<String> resolve = resolveTable(driver.findElement(By.className("tableContent")));
 
-        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)), Interval.S_1);
-        assetSnapshot.getTypeList().addAll(List.of(SnapShotType.SPREAD, SnapShotType.OPTION));
-        assetSnapshot.setCurrency(Currency.CHF);
-        assetSnapshot.setMultiplier(Long.valueOf(resolve.get(7)));
+        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)));
+        // assetSnapshot.setMultiplier(ANum.valueOf(resolve.get(7)));
         assetSnapshot.setInstant(Instant.now());
-        assetSnapshot.setBidVol(DataUtil.parseLong(resolve.get(12)));
-        assetSnapshot.setBidPrice(DataUtil.parseDouble(resolve.get(13)));
+        // assetSnapshot.setBidVol(DataUtil.parseANum(resolve.get(12)));
+        assetSnapshot.getPrice().setBid(ANum.of(resolve.get(13)));
 
 
-        assetSnapshot.setAskPrice(DataUtil.parseDouble(resolve.get(14)));
-        assetSnapshot.setAskVol(DataUtil.parseLong(resolve.get(15)));
+        assetSnapshot.getPrice().setAsk(ANum.of(resolve.get(14)));
+        // assetSnapshot.setAskVol(DataUtil.parseANum(resolve.get(15)));
         // TODO account for cases
-        assetSnapshot.setStrike(DataUtil.parseDouble("0.0"));
-        // TODO
-        assetSnapshot.setExpiry(LocalDateTime.now());
+
+
+        assetSnapshot.getAsset().setCurrency(Currency.CHF);
+
+        if (asset instanceof Option) {
+            Option option = (Option) asset;
+            option.setStrike(ANum.of("0.0"));
+            option.setExpiry(Instant.now());
+        }
 
         return  assetSnapshot;
     }

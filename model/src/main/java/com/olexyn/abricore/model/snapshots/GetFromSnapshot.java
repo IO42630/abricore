@@ -1,15 +1,11 @@
 package com.olexyn.abricore.model.snapshots;
 
+import com.olexyn.abricore.util.ANum;
 
 @FunctionalInterface
 public interface GetFromSnapshot {
 
-    Long get(AssetSnapshot assetSnapshot);
-
-
-
-
-
+    ANum get(AssetSnapshot assetSnapshot);
 
 }
 

@@ -17,19 +17,16 @@ public class SnapSeriesService {
     /**
      * Try to read from Cache. Otherwise read from Disk.
      */
-    public static SnapShotSeries of(Asset asset, Interval interval) {
-        if (getSeries(asset, interval).isEmpty()) {
-            SERIES_COLLECTION.add(StoreCsvService.readFromDisk(asset, interval));
+    public static SnapShotSeries of(Asset asset) {
+        if (getSeries(asset).isEmpty()) {
+            SERIES_COLLECTION.add(StoreCsvService.readFromDisk(asset));
         }
-        return getSeries(asset, interval).get();
+        return getSeries(asset).get();
     }
 
-    private static Optional<SnapShotSeries> getSeries(Asset asset, Interval interval) {
+    private static Optional<SnapShotSeries> getSeries(Asset asset) {
         return SERIES_COLLECTION.stream()
-            .filter(
-                x -> x.getAsset().equals(asset)
-                && x.getInterval().equals(interval)
-            )
+            .filter(x -> x.getAsset().equals(asset))
             .findFirst();
     }
 

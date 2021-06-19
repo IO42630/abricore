@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 public class ParseTmpCsvBatch {
@@ -23,6 +24,7 @@ public class ParseTmpCsvBatch {
             .filter(x -> containsAnyToken(x.toString(), SymbolsService.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
             .map(StoreCsvService::readFromDisk)
+            .filter(Objects::nonNull)
             .forEach(StoreCsvService::update);
     }
 

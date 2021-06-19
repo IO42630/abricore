@@ -12,4 +12,4 @@ There are two types of CSV:
 There are two type of batches:
 
 * `ParseTmpCsv` : loads data from `tmp CSV` to `store CSV`.
-* `XYCalc` : calculates some values, and stores them to `store CSV`.
+* `XYANum` : calculates some values, and stores them to `store CSV`.

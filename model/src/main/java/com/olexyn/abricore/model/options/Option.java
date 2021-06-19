@@ -1,67 +1,26 @@
 package com.olexyn.abricore.model.options;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import org.apache.commons.math3.distribution.NormalDistribution;
+import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
 
 public abstract class Option extends Asset {
 
     private Asset underlyingAsset;
-    private Integer strike;
+    private ANum strike;
     private Instant expiry;
-    private Double dividend; // TODO placeholder
-    private Long ratio;
-
-
+    private ANum ratio;
 
     public Option(String name) {
         super(name);
     }
 
-    public double calculatePrice(AssetSnapshot assetSnapshot) {
-        double lnSX = Math.log(Double.parseDouble(assetSnapshot.getAverage().toString()) / getStrike());
-        double sigmaTwo = Math.pow(calculateVolatilityPA(), 2) / 2;
-        double trqSigma = getTimeTillExpiry() * (getRiskFreeInterestPA() - dividend + sigmaTwo);
-        double sigmaSqrtT = calculateVolatilityPA() * Math.sqrt(getTimeTillExpiry());
-        double d1 = (lnSX + trqSigma) / sigmaSqrtT;
-
-        double d2 = d1 - sigmaSqrtT;
-
-        NormalDistribution normalDistribution = new NormalDistribution();
-        double n1 = normalDistribution.cumulativeProbability(d1);
-        double n2 = normalDistribution.cumulativeProbability(d2);
-
-        double part5 = Math.exp(-dividend* getTimeTillExpiry());
-        double part6 = assetSnapshot.getAverage()  * part5 * n1;
-
-        double part7 = Math.exp(-getRiskFreeInterestPA()* getTimeTillExpiry());
-        double part8 = getStrike() * part7 * n2;
-
-        double price = part6 - part8;
-        price = price >=0 ? price : 0;
-
-        return price;
-    }
-
-    public double calculateIntrinsicValue(AssetSnapshot assetSnapshot){
-        double intrinsicValue = assetSnapshot.getAverage() - getStrike();
-        intrinsicValue = intrinsicValue >= 0 ? intrinsicValue : 0;
-        return intrinsicValue;
-    }
-
-    public double calculateTimeValue(AssetSnapshot assetSnapshot){
-        double timeValue = calculatePrice(assetSnapshot) - calculateIntrinsicValue(assetSnapshot);
-        timeValue = timeValue >= 0 ? timeValue : 0;
-        return timeValue;
-    }
-
-    public Integer getStrike() {
+    public ANum getStrike() {
         return strike;
     }
 
-    public void setStrike(Integer strike) {
+    public void setStrike(ANum strike) {
         this.strike = strike;
     }
 
@@ -69,21 +28,23 @@ public abstract class Option extends Asset {
         return 0d;
     }
 
-
-
     public Double getTimeTillExpiry() {
         return  0d;
     }
 
-    public Double getRiskFreeInterestPA() {
-        return null;
+    public Instant getExpiry() {
+        return expiry;
     }
 
-    public Long getRatio() {
+    public void setExpiry(Instant expiry) {
+        this.expiry = expiry;
+    }
+
+    public ANum getRatio() {
         return ratio;
     }
 
-    public void setRatio(Long ratio) {
+    public void setRatio(ANum ratio) {
         this.ratio = ratio;
     }
 }

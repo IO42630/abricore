@@ -1,10 +1,12 @@
 package com.olexyn.abricore.model.options;
 
+import com.olexyn.abricore.util.ANum;
+
 public class OtcOption extends Option {
 
-    private Long ratio;
+    private ANum ratio;
 
-    public OtcOption(String name, Long ratio) {
+    public OtcOption(String name, ANum ratio) {
         super(name);
         this.ratio = ratio;
     }

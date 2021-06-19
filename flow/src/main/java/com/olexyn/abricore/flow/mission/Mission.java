@@ -3,6 +3,7 @@ package com.olexyn.abricore.flow.mission;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.util.ANum;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Mission implements Serializable {
     private Asset underlyingAsset;
     private List<Option> derivatives = new ArrayList<>();
     private Interval interval;
-    private Long allocatedCapital;
+    private ANum allocatedCapital;
     private Strategy strategy;
 
     private final List<Transaction> activeTransactions = new ArrayList<>();
@@ -56,11 +57,11 @@ public class Mission implements Serializable {
         this.interval = interval;
     }
 
-    public Long getAllocatedCapital() {
+    public ANum getAllocatedCapital() {
         return allocatedCapital;
     }
 
-    public void setAllocatedCapital(Long allocatedCapital) {
+    public void setAllocatedCapital(ANum allocatedCapital) {
         this.allocatedCapital = allocatedCapital;
     }
 
@@ -72,32 +73,32 @@ public class Mission implements Serializable {
         this.strategy = strategy;
     }
 
-    public Long getProfit() {
-        Long profit = 0L;
+    public ANum getProfit() {
+        ANum profit = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            profit += transaction.getProfit();
+            profit = profit.add(transaction.getProfit());
         }
         return profit;
     }
 
-    public Long getRevenue() {
-        Long revenue = 0L;
+    public ANum getRevenue() {
+        ANum revenue = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            revenue += transaction.getRevenue();
+            revenue = revenue.add(transaction.getRevenue());
         }
         return revenue;
     }
 
-    public Long getSize() {
-        Long size = 0L;
+    public ANum getSize() {
+        ANum size = new ANum(0,0);
         for (Transaction transaction : finishedTransactions) {
-            size += transaction.getSize();
+            size = size.add(transaction.getSize());
         }
         return size;
     }
 
-    public Long getGain() {
-        return getRevenue() / getSize();
+    public ANum getGain() {
+        return getRevenue().div(getSize());
     }
 
 

@@ -7,6 +7,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.util.ANum;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
@@ -37,7 +38,7 @@ public class TrainMode extends TradeMode {
 
         Asset asset = mission.getUnderlyingAsset();
         Interval interval = mission.getInterval();
-        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset, interval);
+        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset);
         SqNavigator sqNavigator = new SqNavigator(null);
 
         // TODO
@@ -59,9 +60,9 @@ public class TrainMode extends TradeMode {
 
         }
 
-        Long revenue = mission.getRevenue();
-        Long profit = mission.getProfit();
-        Long gain = mission.getGain();
+        ANum revenue = mission.getRevenue();
+        ANum profit = mission.getProfit();
+        ANum gain = mission.getGain();
     }
 
 

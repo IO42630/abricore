@@ -4,6 +4,7 @@ import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.util.ANum;
 
 import java.time.Duration;
 import java.util.function.Predicate;
@@ -31,17 +32,17 @@ public abstract class TradeMode extends Mode {
     }
 
     public void trade() {
-        Long cash = mission.getAllocatedCapital();
+        ANum cash = mission.getAllocatedCapital();
         AssetSnapshot assetSnapshot = null;
         SnapShotSeries series = null;
 
         for (Predicate<SnapShotSeries> buyCondition : mission.getStrategy().buyConditions) {
             if (buyCondition.test(series)) {
-                Long size = mission.getStrategy().sizingInCondition.sizeAmount(mission.getAllocatedCapital());
-                Long remainder = cash - size;
-                if (remainder > 0L) {
-                    Transaction transaction = new Transaction(mission.getUnderlyingAsset(), assetSnapshot.getInstant(), size, assetSnapshot.getAverage());
-                    cash = cash - size;
+                ANum size = mission.getStrategy().sizingInCondition.sizeAmount(mission.getAllocatedCapital());
+                ANum remainder = cash.sub(size);
+                if (remainder.greater(new ANum(0,0))) {
+                    Transaction transaction = new Transaction(mission.getUnderlyingAsset(), assetSnapshot.getInstant(), size, assetSnapshot.getPrice().getTraded());
+                    cash = cash.sub(size);
                     mission.getActiveTransactions().add(transaction);
                 }
 
@@ -51,8 +52,8 @@ public abstract class TradeMode extends Mode {
         for (Predicate<SnapShotSeries> sellCondition : mission.getStrategy().sellConditions) {
             if (sellCondition.test(series)) {
                 for (Transaction transaction : mission.getActiveTransactions()) {
-                    transaction.end(assetSnapshot.getInstant(), assetSnapshot.getAverage());
-                    cash = cash + transaction.getRevenue();
+                    transaction.end(assetSnapshot.getInstant(), assetSnapshot.getPrice().getTraded());
+                    cash = cash.add(transaction.getRevenue());
                     mission.getFinishedTransactions().add(transaction);
                 }
                 mission.getActiveTransactions().removeAll(mission.getFinishedTransactions());

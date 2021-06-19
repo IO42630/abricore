@@ -6,6 +6,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
 import java.util.Map.Entry;
@@ -14,14 +15,15 @@ public class Max {
 
     public static void calcGlobalMax(String... args) {
         Asset asset = AssetService.ofName("XAGUSD");
-        SnapShotSeries treeMap = SnapSeriesService.of(asset, Interval.H_1);
+        SnapShotSeries treeMap = SnapSeriesService.of(asset);
 
-        Long max = 0L;
+        ANum max = new ANum(0,0);
+
 
 
         for (Entry<Instant, AssetSnapshot> entry : treeMap.entrySet()) {
-            if (entry.getValue().getHigh() > max) {
-                max = entry.getValue().getHigh();
+            if (entry.getValue().getPrice().getTraded().greater(max)) {
+                max = entry.getValue().getPrice().getTraded();
             }
         }
 
@@ -39,10 +41,10 @@ public class Max {
 
     private SnapShotSeries calc(SnapShotSeries baseSeries, int radius, Instant seriesStart, Instant seriesEnd, Extreme extremeType) {
 
-        SnapShotSeries extremes = new SnapShotSeries(baseSeries.getAsset(), baseSeries.getInterval());
+        SnapShotSeries extremes = new SnapShotSeries(baseSeries.getAsset());
 
-        double flip;
-        if (extremeType == Extreme.MAX) { flip = 1; } else { flip = -1; }
+        ANum flip;
+        if (extremeType == Extreme.MAX) { flip = new ANum(1,0); } else { flip = new ANum(-1,0); }
 
         Entry<Instant, AssetSnapshot> candidateSnapshotEntry = getEntryFromInstant(baseSeries, seriesStart);
         boolean isExtreme = true;
@@ -53,8 +55,10 @@ public class Max {
 
             for (int i = 0; i < radius; i++) {
                 try {
-                    if (candidateSnapshotEntry.getValue().getAverage() * flip >= flip * ceilingRadiusSnapshotEntry.getValue().getAverage()
-                        && candidateSnapshotEntry.getValue().getAverage() * flip >= flip * floorRadiusSnapshotEntry.getValue().getAverage()) {
+
+
+                    if (candidateSnapshotEntry.getValue().getPrice().getTraded().mul(flip).geq(ceilingRadiusSnapshotEntry.getValue().getPrice().getTraded().mul(flip))
+                        && candidateSnapshotEntry.getValue().getPrice().getTraded().mul(flip).geq(floorRadiusSnapshotEntry.getValue().getPrice().getTraded().mul(flip))) {
                         ceilingRadiusSnapshotEntry = baseSeries.higherEntry(ceilingRadiusSnapshotEntry.getKey());
                         floorRadiusSnapshotEntry = baseSeries.lowerEntry(floorRadiusSnapshotEntry.getKey());
                     } else {

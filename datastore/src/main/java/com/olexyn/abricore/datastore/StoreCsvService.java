@@ -3,6 +3,7 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.Header;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
@@ -32,7 +33,7 @@ public class StoreCsvService {
         try {
             asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
             interval = mapToFirstInterval(path.getFileName().toString());
-            return readFromDisk(asset, interval);
+            return readFromDisk(asset);
         } catch (StoreException e) {
             return null;
         }
@@ -42,13 +43,12 @@ public class StoreCsvService {
      * Read a SnapShotSeries from any CSV. <br>
      * This is done by mapping the columns of the CSV to fields recognized by the AssetSnapshot.
      */
-    public static SnapShotSeries readFromDisk(Asset asset, Interval interval) {
-        Path path = getStorePath(asset, interval);
-        SnapShotSeries out = new SnapShotSeries(asset, interval);
+    public static SnapShotSeries readFromDisk(Asset asset) {
+        Path path = getStorePath(asset);
+        SnapShotSeries out = new SnapShotSeries(asset);
 
         try {
             asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
-            interval = mapToFirstInterval(path.getFileName().toString());
         } catch (StoreException e) {
             return  out;
         }
@@ -63,7 +63,7 @@ public class StoreCsvService {
             }
 
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot assetSnapshot = new AssetSnapshot(asset, interval);
+                AssetSnapshot assetSnapshot = new AssetSnapshot(asset);
                 AssetSnapshot.mapData(assetSnapshot, headerArray, lineInArray);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
@@ -98,14 +98,11 @@ public class StoreCsvService {
     private static void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
 
         AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
-
-        Asset asset = firstSnapshot .getAsset();
-        Interval interval = firstSnapshot .getInterval();
-        Path path = getStorePath(asset, interval);
+        Path path = getStorePath(firstSnapshot.getAsset());
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
-            bufferedWriter.write(firstSnapshot.getHeader());
+            bufferedWriter.write(Header.getHeader());
             StringBuilder lineBuilder = new StringBuilder();
             int size = 0;
             for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
@@ -130,24 +127,17 @@ public class StoreCsvService {
      */
     public static void update(SnapShotSeries newEntries) {
         Asset asset = newEntries.firstEntry().getValue().getAsset();
-        Interval interval = newEntries.firstEntry().getValue().getInterval();
 
-        SnapShotSeries storedMap = readFromDisk(asset, interval);
+        SnapShotSeries storedMap = readFromDisk(asset);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
-            Instant key = newEntry.getKey();
-            AssetSnapshot newSnapshot = newEntry.getValue();
-            if (storedMap.containsKey(key)) {
-                storedMap.get(key).update(newSnapshot);
-            } else {
-                storedMap.put(key, newSnapshot);
-            }
+            storedMap.put(newEntry.getKey(), newEntry.getValue());
         }
         writeToStore(storedMap);
     }
 
-    private static Path getStorePath(Asset asset, Interval interval) {
-        return Paths.get(Parameters.QUOTES_DIR_STORE + asset.getName() + "_" + interval.getFileLabel()+ ".csv");
+    private static Path getStorePath(Asset asset) {
+        return Paths.get(Parameters.QUOTES_DIR_STORE + asset.getName() + ".csv");
     }
 
 }

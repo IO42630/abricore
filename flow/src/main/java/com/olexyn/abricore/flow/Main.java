@@ -1,6 +1,7 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
+import com.olexyn.abricore.datastore.batch.ParseTmpCsvBatch;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.DownloadTwMode;
@@ -11,6 +12,7 @@ import com.olexyn.abricore.flow.modes.TradeMode;
 import com.olexyn.abricore.flow.modes.TradeSqMode;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.util.ANum;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +43,7 @@ public class Main {
                 // downloadMode.addAsset(AssetService.ofName("XAGUSD"));
                 downloadMode.start();
                 downloadMode.updateQuote();
+                new ParseTmpCsvBatch().parseTmpCsv();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
@@ -80,7 +83,7 @@ public class Main {
         mission.getDerivatives().addAll(List.of((Option) AssetService.ofName("XAG C 25"), (Option) AssetService.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
-        mission.setAllocatedCapital(10000000L);
+        mission.setAllocatedCapital(new ANum(1000000,0));
         return mission;
     }
 
