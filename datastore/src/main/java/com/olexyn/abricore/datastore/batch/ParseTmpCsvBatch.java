@@ -16,7 +16,7 @@ import java.util.Set;
 public class ParseTmpCsvBatch {
 
     /**
-     * Stub ...
+     * TODO fix.
      */
     public void parseTmpCsv() throws IOException {
         Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);

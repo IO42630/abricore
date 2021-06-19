@@ -59,6 +59,16 @@ public class SnapShotSeries {
         return null;
     }
 
+    public AssetSnapshot getFirstSnapBefore(AssetSnapshot assetSnapshot) {
+        Instant before = getFirstBefore(assetSnapshot.getInstant());
+        return get(before);
+    }
+
+    public AssetSnapshot getFirstSnapAfter(AssetSnapshot assetSnapshot) {
+        Instant after = getFirstAfter(assetSnapshot.getInstant());
+        return get(after);
+    }
+
     /**
      * @return returns a sequence of the Series between "from" and "to"
      */
