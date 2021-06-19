@@ -264,7 +264,7 @@ public class AssetSnapshot {
         for (int i = 0; i < headerArray.length; i++) {
             switch (headerArray[i].toUpperCase().trim()) {
                 case "TIME":
-                    snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
+                    snapshot.setInstant(Instant.parse(lineArray[i]));
                     break;
                 case "OPEN":
                     snapshot.setOpen(Calc.parseLong(lineArray[i]));
@@ -330,7 +330,7 @@ public class AssetSnapshot {
         values.add(getMa().get(R100));
         values.add(getMa().get(R200));
 
-        lineBuilder.append(instant.toEpochMilli() / 1000).append(COMMA);
+        lineBuilder.append(instant.toString()).append(COMMA);
         for (int i = 0 ; i< values.size(); i++) {
             lineBuilder.append(Calc.parseString(values.get(i)));
             if (i + 1 < values.size()) {
