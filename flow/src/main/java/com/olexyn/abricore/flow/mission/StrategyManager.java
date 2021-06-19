@@ -17,9 +17,9 @@ public class StrategyManager {
 
     public static Strategy setupStrategy(String name) {
         Strategy strategy = new Strategy(name);
-        strategy.buyConditions.add(x -> x.getClose() < 20000);
-        strategy.sellConditions.add(x -> x.getClose() > 25000);
-        strategy.stopConditions.add(x -> x.getClose() < 10000);
+        strategy.buyConditions.add(x -> x.getLast().getClose() < 20000);
+        strategy.sellConditions.add(x -> x.getLast().getClose() > 25000);
+        strategy.stopConditions.add(x -> x.getLast().getClose() < 10000);
         strategy.sizingInCondition = x -> x/5;
         strategy.sizingOutCondition = x -> x/5;
         return strategy;

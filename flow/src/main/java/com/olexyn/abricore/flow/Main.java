@@ -1,7 +1,6 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.DownloadTwMode;
@@ -12,11 +11,9 @@ import com.olexyn.abricore.flow.modes.TradeMode;
 import com.olexyn.abricore.flow.modes.TradeSqMode;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.options.Option;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,47 +25,28 @@ public class Main {
 
         Properties properties = new Properties();
         properties.load(new FileInputStream(
-            Thread.currentThread().getContextClassLoader().getResource("Main.properties").getPath())
+            Thread.currentThread().getContextClassLoader().getResource("config.properties").getPath())
         );
 
-        Timer timer = new Timer();
+
 
 
         switch (ModeEnum.valueOf(properties.getProperty("mode"))) {
             case DOWNLOAD_TW:
                 Mode downloadMode = new DownloadTwMode();
-                downloadMode.addAsset(AssetService.ofName("XAGUSD"));
+                // downloadMode.addAsset(AssetService.ofName("XAGUSD"));
                 downloadMode.start();
                 downloadMode.updateQuote();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
                 observeMode.addAsset(AssetService.ofName("XAGUSD"));
-                observeMode.start();
-
-                timer.start();
-                while (timer.hasPassed(Duration.ofSeconds(10))) {
-                    observeMode.updateQuote();
-                    Thread.sleep(10L);
-                }
-
-                SnapShotSeries snapShotSeries = observeMode.getSnapShotSeriesList().get(0);
-
-                SnapSeriesService.save(snapShotSeries);
-                observeMode.stop();
+                observeMode.run();
                 break;
             case TRADE_SQ:
                 TradeMode tradeMode = new TradeSqMode();
-                tradeMode.addAsset(AssetService.ofName("XAGUSD"));
-                tradeMode.start();
-                tradeMode.setMission(new Mission());
-                timer.start();
-                while (timer.hasPassed(Duration.ofSeconds(10))) {
-                    tradeMode.updateQuote();
-                    tradeMode.trade();
-                    Thread.sleep(10L);
-                }
-                tradeMode.stop();
+                tradeMode.run(new Mission());
+                break;
             case TRAIN:
             default:
                 break;

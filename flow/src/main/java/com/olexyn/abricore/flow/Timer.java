@@ -7,11 +7,11 @@ public class Timer {
 
     private Instant startTime;
 
-    void start() {
+    public void start() {
         startTime = Instant.now();
     }
 
-    boolean hasPassed(TemporalAmount duration) {
+    public boolean hasPassed(TemporalAmount duration) {
         return startTime.plus(duration).isAfter(Instant.now());
     }
 

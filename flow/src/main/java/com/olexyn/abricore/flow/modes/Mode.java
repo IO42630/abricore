@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.modes;
 
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.flow.Timer;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class Mode {
+
+     protected Timer timer = new Timer();
 
      public  abstract void start();
 
@@ -34,11 +36,14 @@ public abstract class Mode {
      /**
       * This is simply a List that can hold Assets. Do specify rules about allowed Assets in child classes.
       */
-     public final List<Asset> getAssets() {
+     public List<Asset> getAssets() {
           return snapShotSeriesList.stream().map(SnapShotSeries::getAsset).collect(Collectors.toList());
      }
 
-     public final void addAsset(Asset asset) {
+     /**
+      * Protected in Mode, Public in ObserveMode.
+      */
+     protected void addAsset(Asset asset) {
           snapShotSeriesList.add(new SnapShotSeries(asset, null));
      }
 

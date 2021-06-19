@@ -2,7 +2,6 @@ package com.olexyn.abricore.model;
 
 
 
-import com.olexyn.abricore.fingers.sq.enums.Exchange;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 

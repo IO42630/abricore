@@ -5,6 +5,7 @@ import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
+import java.time.Duration;
 import java.util.function.Predicate;
 
 public abstract class TradeMode extends Mode {
@@ -15,6 +16,18 @@ public abstract class TradeMode extends Mode {
         this.mission = mission;
         addAsset(mission.getUnderlyingAsset());
         mission.getDerivatives().forEach(this::addAsset);
+    }
+
+    public void run(Mission mission) throws InterruptedException {
+        start();
+        setMission(mission);
+        timer.start();
+        while (timer.hasPassed(Duration.ofSeconds(10))) {
+            updateQuote();
+            trade();
+            Thread.sleep(10L);
+        }
+        stop();
     }
 
     public void trade() {

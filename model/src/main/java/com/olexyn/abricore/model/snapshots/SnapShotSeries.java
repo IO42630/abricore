@@ -37,6 +37,14 @@ public class SnapShotSeries {
         return treeMap.get(instant);
     }
 
+    public AssetSnapshot getFirst() {
+        return treeMap.firstEntry().getValue();
+    }
+
+    public AssetSnapshot getLast() {
+        return treeMap.lastEntry().getValue();
+    }
+
     public Instant getFirstAfter(Instant instant) {
         // "lowerKey" "instant" "i"
         for (Instant i : treeMap.keySet()) {
