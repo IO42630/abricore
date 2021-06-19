@@ -20,7 +20,6 @@ public class Tools {
 
 
     /**
-     * @param path
      * @return the contents of File at *path* a List of String.
      */
     public List<String> catFileToList(String path) {
@@ -44,9 +43,7 @@ public class Tools {
         String readState = "none";
         StringBuilder tmpItem = new StringBuilder();
 
-        for (int i = 0; i < input.size(); i++) {
-
-            String line = input.get(i);
+        for (String line : input) {
 
             if (readState.equals("none") && line.contains("<item>")) {
                 readState = "reading";
@@ -58,7 +55,7 @@ public class Tools {
 
             if (readState.equals("reading")) {
                 if (line.contains("</item>")) {
-                    tmpItem.append(line.split("</item>")[0] + "</item>");
+                    tmpItem.append(line.split("</item>")[0]).append("</item>");
                     items.add(tmpItem.toString());
                     tmpItem = new StringBuilder();
                     readState = "none";
@@ -103,8 +100,8 @@ public class Tools {
                                   int group) {
         List<String> groups = new ArrayList<>();
 
-        for (int i = 0; i < matches.size(); i++) {
-            groups.add(matches.get(i).get(group));
+        for (List<String> match : matches) {
+            groups.add(match.get(group));
         }
         return groups;
     }
@@ -129,50 +126,6 @@ public class Tools {
         } else{
             return null;
         }
-    }
-
-
-    /**
-     *
-     * @param input
-     * @param tag
-     * @return The payloads of tags as list.
-     */
-    public List<String> parseTagS(String input, String tag){
-        List<String> ouput = new ArrayList<>();
-
-        int firstTagStart = 0;
-        int firstTagEnd = 0;
-        int jumpTagStart = 0;
-        int jumpTagEnd =0;
-        int secondTagStart = 0;
-        int secondTagEnd = 0;
-        int tagJump = 0; // how many tags were jumped e.g. in <foo> <foo> </foo> </foo>
-
-        while (firstTagStart>=0){
-
-            firstTagStart = input.indexOf("<"+tag, secondTagEnd);
-            firstTagEnd = input.indexOf(">", firstTagStart);
-
-            jumpTagStart = input.indexOf("<"+tag, firstTagEnd);
-            jumpTagEnd = input.indexOf(">", jumpTagStart);
-
-            secondTagStart = input.indexOf("</"+tag,firstTagEnd);
-            secondTagEnd =  input.indexOf(">", secondTagStart);
-
-            if (jumpTagStart > secondTagStart){
-
-            }
-
-
-
-
-            if (firstTagStart >=0 && firstTagEnd >=0 && secondTagStart >=0){
-                ouput.add(input.substring(firstTagEnd+1,secondTagStart));
-            }
-            firstTagStart = input.indexOf("<"+tag, secondTagStart);
-        }
-        return ouput;
     }
 
 

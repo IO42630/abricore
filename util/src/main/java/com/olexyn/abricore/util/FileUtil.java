@@ -18,8 +18,8 @@ public class FileUtil {
     public String brToString(BufferedReader br) {
         StringBuilder sb = new StringBuilder();
         Object[] br_array = br.lines().toArray();
-        for (int i = 0; i < br_array.length; i++) {
-            sb.append(br_array[i].toString() + "\n");
+        for (Object o : br_array) {
+            sb.append(o.toString()).append("\n");
         }
         return sb.toString();
     }

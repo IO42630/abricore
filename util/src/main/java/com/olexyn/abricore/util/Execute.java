@@ -26,7 +26,7 @@ public class Execute {
         return twobr;
     }
 
-    public class TwoBr {
+    public static class TwoBr {
         public BufferedReader output;
         public BufferedReader error;
     }

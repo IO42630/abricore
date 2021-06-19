@@ -13,7 +13,7 @@ public class MaxChartStub {
 
     public static void main(String... args){
         XYChart chart2 = getChart();
-        new SwingWrapper<XYChart>(chart2).displayChart();
+        new SwingWrapper<>(chart2).displayChart();
     }
 
     public static XYChart getChart() {

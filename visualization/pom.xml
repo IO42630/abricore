@@ -10,7 +10,6 @@
         <version>0.1</version>
     </parent>
     <name>visualization</name>
-    <properties></properties>
     <dependencies>
         <dependency>
             <groupId>org.knowm.xchart</groupId>

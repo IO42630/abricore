@@ -10,7 +10,6 @@
     <artifactId>notifications</artifactId>
     <version>0.1</version>
     <name>notifications</name>
-    <properties></properties>
     <dependencies>
         <dependency>
             <groupId>javax.mail</groupId>

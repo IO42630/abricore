@@ -10,8 +10,6 @@
     <artifactId>reporting</artifactId>
     <version>0.1</version>
     <name>reporting</name>
-    <properties></properties>
-    <dependencies></dependencies>
     <build>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>

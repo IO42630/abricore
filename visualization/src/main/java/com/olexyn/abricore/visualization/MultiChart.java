@@ -30,28 +30,24 @@ public class MultiChart {
 
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
 
-            @Override
-            public void run() {
+            // Create and set up the window.
+            JFrame frame = new JFrame("Advanced Example");
+            frame.setLayout(new BorderLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-                // Create and set up the window.
-                JFrame frame = new JFrame("Advanced Example");
-                frame.setLayout(new BorderLayout());
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            // chart
+            JPanel chartPanel = new XChartPanel<>(chart);
+            frame.add(chartPanel, BorderLayout.CENTER);
 
-                // chart
-                JPanel chartPanel = new XChartPanel<XYChart>(chart);
-                frame.add(chartPanel, BorderLayout.CENTER);
+            // label
+            JLabel label = new JLabel("Blah blah blah.", SwingConstants.CENTER);
+            frame.add(label, BorderLayout.SOUTH);
 
-                // label
-                JLabel label = new JLabel("Blah blah blah.", SwingConstants.CENTER);
-                frame.add(label, BorderLayout.SOUTH);
-
-                // Display the window.
-                frame.pack();
-                frame.setVisible(true);
-            }
+            // Display the window.
+            frame.pack();
+            frame.setVisible(true);
         });
     }
 }

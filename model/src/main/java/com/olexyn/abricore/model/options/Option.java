@@ -21,7 +21,7 @@ public abstract class Option extends Asset {
     }
 
     public double calculatePrice(AssetSnapshot assetSnapshot) {
-        double lnSX = Math.log(assetSnapshot.getAverage() / getStrike());
+        double lnSX = Math.log(Double.parseDouble(assetSnapshot.getAverage().toString()) / getStrike());
         double sigmaTwo = Math.pow(calculateVolatilityPA(), 2) / 2;
         double trqSigma = getTimeTillExpiry() * (getRiskFreeInterestPA() - dividend + sigmaTwo);
         double sigmaSqrtT = calculateVolatilityPA() * Math.sqrt(getTimeTillExpiry());

@@ -13,20 +13,24 @@ import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.options.Option;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
 public class Main {
 
+    public static final Properties properties = new Properties();
+
     /**
      */
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(
-            Thread.currentThread().getContextClassLoader().getResource("config.properties").getPath())
-        );
+        loadProperties();
+
+
 
 
 
@@ -78,6 +82,13 @@ public class Main {
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(10000000L);
         return mission;
+    }
+
+    private static void loadProperties() throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("config.properties");
+        if (url != null) {
+            properties.load(new FileInputStream(url.getPath()));
+        }
     }
 
 }

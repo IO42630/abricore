@@ -84,7 +84,7 @@ public class App {
 
         //XYChart exampleChart = new XYChart();
         XYChart chart2 = getChart();
-        new SwingWrapper<XYChart>(chart).displayChart();
+        new SwingWrapper<>(chart).displayChart();
 
 
     }
