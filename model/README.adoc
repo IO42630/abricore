@@ -2,4 +2,4 @@
 
 This is supposed to be the run-time model.
 
-image::class-diag-abricore-model.png[]
+image::img/class-diag-abricore-model.png[]

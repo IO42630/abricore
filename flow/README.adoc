@@ -8,3 +8,11 @@
 ==== Modes
 
 image::img/mode_inheritance.png[]
+
+===== Generrally the Mode classes fullfill the following requirements: +
+
+* hava a List of SnapShotSeries, which acts as a central point of access to the known data.
+** SnapShotSeries are the static runtime containers for each known Asset/Interval combination.
+* list of Assets depends on Mode
+** in ObserveMode add assets directly to List
+** in TradeMode add Mission, which contains Assets

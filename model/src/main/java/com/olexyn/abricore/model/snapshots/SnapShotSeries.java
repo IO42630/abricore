@@ -10,6 +10,9 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
 
+/**
+ * A SnapShotSeries is the static runtime container of AssetSnapShot for each known Asset/Interval combination.
+ */
 public class SnapShotSeries {
 
     private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
