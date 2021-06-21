@@ -12,15 +12,5 @@ public abstract class ObserveMode extends Mode {
         super.addAsset(asset);
     }
 
-    public void run() throws InterruptedException {
-        start();
-        timer.start();
-        while (timer.hasPassed(Duration.ofSeconds(10))) {
-            updateQuote();
-            Thread.sleep(10L);
-        }
-        SnapShotSeries snapShotSeries = getSnapShotSeriesList().get(0);
-        SnapSeriesService.save(snapShotSeries);
-        stop();
-    }
+
 }

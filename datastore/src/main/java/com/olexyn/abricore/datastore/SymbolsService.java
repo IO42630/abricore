@@ -63,4 +63,8 @@ public class SymbolsService {
         return SYMBOLS.stream().map(Asset::getName).collect(Collectors.toSet());
     }
 
+    public static void save() {
+        // TODO
+    }
+
 }

@@ -72,6 +72,13 @@ public class ANum {
         return String.join(DOT, String.valueOf(num), zeroSb.append(decString).toString());
     }
 
+    public String toString(int i) {
+        if (!toString().contains(".")) {
+            return toString();
+        }
+        return toString().split("\\.")[0] + "." + toString().split("\\.")[1].substring(0, i);
+    }
+
     private BigDecimal toBigDecimal() {
         return new BigDecimal(toString());
     }

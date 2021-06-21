@@ -17,6 +17,11 @@ public class DownloadTwMode extends Mode {
 
 
     @Override
+    public void run() throws InterruptedException {
+
+    }
+
+    @Override
     public void start() {
         twSession = new TwSession();
         twFetch = new TwFetch(twSession.doLogin());
@@ -28,7 +33,7 @@ public class DownloadTwMode extends Mode {
     }
 
     @Override
-    public void updateQuote() throws InterruptedException {
+    public void updateData() throws InterruptedException {
         Map<Asset,List<AssetSnapshot>> historicalData = twFetch.fetchHistoricalData(null);
 
         for (SnapShotSeries series : getSnapShotSeriesList()) {

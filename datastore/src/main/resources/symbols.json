@@ -3,11 +3,26 @@
     "NAME": "XAUUSD",
     "TW_SYMBOL":"OANDA:XAUUSD",
     "TYPE":"COMMODITY",
-    "SQ_ISIN":"value2"
+    "SQ_ISIN":""
   }, {
     "NAME": "XAGUSD",
     "TW_SYMBOL":"OANDA:XAGUSD",
     "TYPE":"COMMODITY",
-    "SQ_ISIN":"value4"
+    "SQ_ISIN":"XC0009653103"
+  }, {
+    "NAME": "A",
+    "TW_SYMBOL":"OANDA:XAGUSD",
+    "TYPE":"STOCK",
+    "SQ_ISIN":""
+  }, {
+    "NAME": "B",
+    "TW_SYMBOL":"OANDA:XAGUSD",
+    "TYPE":"COMMODITY",
+    "SQ_ISIN":""
+  }, {
+    "NAME": "C",
+    "TW_SYMBOL":"OANDA:XAGUSD",
+    "TYPE":"COMMODITY",
+    "SQ_ISIN":""
   }]
 }

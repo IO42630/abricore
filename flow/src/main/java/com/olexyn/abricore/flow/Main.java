@@ -8,6 +8,7 @@ import com.olexyn.abricore.flow.modes.DownloadTwMode;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.flow.modes.ObserveMode;
 import com.olexyn.abricore.flow.modes.ObserveTwMode;
+import com.olexyn.abricore.flow.modes.SyncQuoteSqMode;
 import com.olexyn.abricore.flow.modes.TradeMode;
 import com.olexyn.abricore.flow.modes.TradeSqMode;
 import com.olexyn.abricore.datastore.Interval;
@@ -32,7 +33,9 @@ public class Main {
         loadProperties();
 
 
-
+        ObserveMode a = new SyncQuoteSqMode();
+        a.addAsset(AssetService.ofName("XAGUSD"));
+        a.run();
 
 
 

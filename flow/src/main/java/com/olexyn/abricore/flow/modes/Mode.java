@@ -13,6 +13,8 @@ public abstract class Mode {
 
      protected Timer timer = new Timer();
 
+     public  abstract void run() throws InterruptedException;
+
      public  abstract void start();
 
      public abstract void stop();
@@ -45,6 +47,6 @@ public abstract class Mode {
           snapShotSeriesList.add(new SnapShotSeries(asset));
      }
 
-     public abstract void updateQuote() throws InterruptedException;
+     public abstract void updateData() throws InterruptedException;
 
 }

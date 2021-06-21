@@ -2,7 +2,9 @@ package com.olexyn.abricore.fingers;
 
 
 import com.olexyn.abricore.fingers.sq.SleepFactory;
+import com.olexyn.abricore.util.enums.Currency;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,7 +17,8 @@ import java.util.Map.Entry;
 /**
  * Utility class.
  */
-public class DriverTools {
+public class DriverUtil {
+
 
     public static WebElement filterElementListBy(List<WebElement> list, CRITERIA criteria, String text) {
         for (WebElement element : list) {
@@ -124,5 +127,17 @@ public class DriverTools {
     public static void followContainedLink(WebDriver driver, WebElement element) {
         String link = element.getAttribute("href");
         if (link != null) driver.navigate().to(link);
+    }
+
+
+
+    public static void setRadio(WebDriver driver, By by, boolean checked) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].checked = "+ checked + ";", driver.findElement(by));
+    }
+
+    public static void setComboByDataValue(WebDriver driver, By comboBy, String dataValue) {
+        WebElement combo = driver.findElement(comboBy);
+        combo.click();
+        combo.findElement(By.cssSelector("li[data-value='" + dataValue + "']")).click();
     }
 }

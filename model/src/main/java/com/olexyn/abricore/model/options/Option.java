@@ -12,6 +12,10 @@ public abstract class Option extends Asset {
     private Instant expiry;
     private ANum ratio;
 
+    private OptionType type;
+
+
+
     public Option(String name) {
         super(name);
     }
@@ -46,5 +50,13 @@ public abstract class Option extends Asset {
 
     public void setRatio(ANum ratio) {
         this.ratio = ratio;
+    }
+
+    public OptionType getType() {
+        return type;
+    }
+
+    public void setType(OptionType type) {
+        this.type = type;
     }
 }

@@ -1,6 +1,6 @@
 package com.olexyn.abricore.fingers.sq;
 
-import com.olexyn.abricore.fingers.DriverTools;
+import com.olexyn.abricore.fingers.DriverUtil;
 import com.olexyn.abricore.fingers.Session;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -41,7 +41,7 @@ public class SqSession extends Session {
         driver.findElement(By.id("loginText")).click();
         SleepFactory.sleep(1);
 
-        WebElement keyHolder = DriverTools.getWhere(driver, "L3CodeDialog__challengeCode");
+        WebElement keyHolder = DriverUtil.getWhere(driver, "L3CodeDialog__challengeCode");
         String key = keyHolder.getText();
         SleepFactory.sleep(2);
         driver.findElement(By.className("L3CodeDialog__l3Code")).sendKeys(credentials.get(key));

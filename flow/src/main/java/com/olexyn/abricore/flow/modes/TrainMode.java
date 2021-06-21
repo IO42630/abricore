@@ -14,6 +14,11 @@ import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 public class TrainMode extends TradeMode {
 
     @Override
+    public void run() throws InterruptedException {
+
+    }
+
+    @Override
     public void start() {
 
     }
@@ -24,7 +29,7 @@ public class TrainMode extends TradeMode {
     }
 
     @Override
-    public void updateQuote() {
+    public void updateData() {
 
     }
 

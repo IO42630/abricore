@@ -13,13 +13,18 @@ public class TradeSqMode extends TradeMode {
     private SqSession sqSession;
     private SqNavigator sqNavigator;
 
+    @Override
+    public void run() throws InterruptedException {
+
+    }
+
     public void start() {
         sqSession = new SqSession();
         sqNavigator = new SqNavigator(sqSession.doLogin());
     }
 
     @Override
-    public void updateQuote() {
+    public void updateData() {
 
         List<AssetSnapshot> snapshots = new ArrayList<>();
         snapshots.add(sqNavigator.resolveQuote(mission.getUnderlyingAsset(), null));

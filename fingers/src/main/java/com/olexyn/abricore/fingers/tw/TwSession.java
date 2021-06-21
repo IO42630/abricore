@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.fingers.DriverTools;
-import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
+import com.olexyn.abricore.fingers.DriverUtil;
+import com.olexyn.abricore.fingers.DriverUtil.CRITERIA;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import org.openqa.selenium.By;
@@ -31,7 +31,7 @@ public class TwSession extends Session {
         SleepFactory.sleep(1);
         driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
         SleepFactory.sleep(1);
-        DriverTools.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
+        DriverUtil.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
 
         active = true;
         return driver;

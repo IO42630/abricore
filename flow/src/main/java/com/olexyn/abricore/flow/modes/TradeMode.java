@@ -24,7 +24,7 @@ public abstract class TradeMode extends Mode {
         setMission(mission);
         timer.start();
         while (timer.hasPassed(Duration.ofSeconds(10))) {
-            updateQuote();
+            updateData();
             trade();
             Thread.sleep(10L);
         }

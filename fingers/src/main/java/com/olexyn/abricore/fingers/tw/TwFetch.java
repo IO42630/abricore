@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.fingers.DriverTools;
-import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
+import com.olexyn.abricore.fingers.DriverUtil;
+import com.olexyn.abricore.fingers.DriverUtil.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.datastore.Interval;
@@ -72,14 +72,14 @@ public class TwFetch extends Fetch {
     }
 
     private static void setInterval(WebDriver driver, Interval interval) {
-        DriverTools.getWhere(driver, "apply-common-tooltip", CRITERIA.TITLE, interval.getTwLabel()).click();
-        DriverTools.getWhere(driver, "label-3Xqxy756", CRITERIA.TEXT, interval.getTwLabel()).click();
+        DriverUtil.getWhere(driver, "apply-common-tooltip", CRITERIA.TITLE, interval.getTwLabel()).click();
+        DriverUtil.getWhere(driver, "label-3Xqxy756", CRITERIA.TEXT, interval.getTwLabel()).click();
     }
 
     private static void download(WebDriver driver) {
-        DriverTools.getWhere(driver, "button-9U4gleap").click();
-        DriverTools.getWhere(driver, "labelRow-3Q0rdE8-", CRITERIA.TEXT, "Export chart").click();
-        DriverTools.getWhere(driver, "submitButton-2lNICzl3").click();
+        DriverUtil.getWhere(driver, "button-9U4gleap").click();
+        DriverUtil.getWhere(driver, "labelRow-3Q0rdE8-", CRITERIA.TEXT, "Export chart").click();
+        DriverUtil.getWhere(driver, "submitButton-2lNICzl3").click();
     }
 
 }
