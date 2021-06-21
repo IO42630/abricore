@@ -1,4 +1,4 @@
-package com.olexyn.abricore.flow.modes;
+package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
@@ -9,14 +9,17 @@ import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadTwMode extends Mode {
+public class DownloadTwMode extends ObserveMode {
 
 
     private TwSession twSession;
     private TwFetch twFetch;
 
+    public DownloadTwMode(Asset asset) {
+        super(asset);
+    }
 
-    @Override
+
     public void run() throws InterruptedException {
 
     }
@@ -33,10 +36,10 @@ public class DownloadTwMode extends Mode {
     }
 
     @Override
-    public void updateData() throws InterruptedException {
+    public void fetchData() throws InterruptedException {
         Map<Asset,List<AssetSnapshot>> historicalData = twFetch.fetchHistoricalData(null);
 
-        for (SnapShotSeries series : getSnapShotSeriesList()) {
+        for (SnapShotSeries series : getCdfSeriesList()) {
             if (historicalData.containsKey(series.getAsset())) {
                 series.addAll(historicalData.get(series.getAsset()));
             }

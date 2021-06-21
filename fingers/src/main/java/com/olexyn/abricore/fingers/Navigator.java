@@ -9,6 +9,6 @@ import com.olexyn.abricore.model.snapshots.AssetSnapshot;
  */
 public interface Navigator {
 
-    AssetSnapshot resolveQuote(Asset asset, Interval interval);
+    AssetSnapshot resolveQuote(Asset asset);
 
 }

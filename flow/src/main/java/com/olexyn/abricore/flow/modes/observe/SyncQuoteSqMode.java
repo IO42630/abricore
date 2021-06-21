@@ -1,4 +1,4 @@
-package com.olexyn.abricore.flow.modes;
+package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
@@ -19,16 +19,20 @@ public class SyncQuoteSqMode extends  ObserveMode {
     private SqSession sqSession;
     private SqNavigator sqNavigator;
 
+    public SyncQuoteSqMode(Asset asset) {
+        super(asset);
+    }
+
 
     @Override
     public void run() throws InterruptedException {
         start();
         timer.start();
         while (timer.hasPassed(Duration.ofSeconds(10))) {
-            updateData();
+            fetchData();
             Thread.sleep(10L);
         }
-        SnapShotSeries snapShotSeries = getSnapShotSeriesList().get(0);
+        SnapShotSeries snapShotSeries = getCdfSeriesList().get(0);
         SnapSeriesService.save(snapShotSeries);
         stop();
     }
@@ -45,7 +49,7 @@ public class SyncQuoteSqMode extends  ObserveMode {
     }
 
     @Override
-    public void updateData() throws InterruptedException {
+    public void fetchData() throws InterruptedException {
         // TODO
         // for all assets, fetch cdf +- 1
         // remove obsolete cdf

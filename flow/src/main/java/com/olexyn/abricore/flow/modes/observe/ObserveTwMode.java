@@ -1,8 +1,9 @@
-package com.olexyn.abricore.flow.modes;
+package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
+import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
@@ -14,14 +15,18 @@ public class ObserveTwMode extends ObserveMode {
     private TwSession twSession;
     private TwFetch twFetch;
 
+    public ObserveTwMode(Asset asset) {
+        super(asset);
+    }
+
     public void run() throws InterruptedException {
         start();
         timer.start();
         while (timer.hasPassed(Duration.ofSeconds(10))) {
-            updateData();
+            fetchData();
             Thread.sleep(10L);
         }
-        SnapShotSeries snapShotSeries = getSnapShotSeriesList().get(0);
+        SnapShotSeries snapShotSeries = getCdfSeriesList().get(0);
         SnapSeriesService.save(snapShotSeries);
         stop();
     }
@@ -40,7 +45,7 @@ public class ObserveTwMode extends ObserveMode {
 
 
     @Override
-    public void updateData() throws InterruptedException {
+    public void fetchData() throws InterruptedException {
         List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
 
         for (AssetSnapshot snapshot : snapshots) {

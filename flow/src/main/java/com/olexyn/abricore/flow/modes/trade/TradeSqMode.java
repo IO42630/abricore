@@ -1,7 +1,8 @@
-package com.olexyn.abricore.flow.modes;
+package com.olexyn.abricore.flow.modes.trade;
 
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
+import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 
@@ -13,28 +14,34 @@ public class TradeSqMode extends TradeMode {
     private SqSession sqSession;
     private SqNavigator sqNavigator;
 
-    @Override
-    public void run() throws InterruptedException {
 
+    public TradeSqMode(Asset asset, Mission mission) {
+        super(asset, mission);
     }
+
+
 
     public void start() {
         sqSession = new SqSession();
         sqNavigator = new SqNavigator(sqSession.doLogin());
     }
 
+
+    /**
+     * Fetch CDF data from SQ.
+     */
     @Override
-    public void updateData() {
+    public void fetchData() {
 
         List<AssetSnapshot> snapshots = new ArrayList<>();
-        snapshots.add(sqNavigator.resolveQuote(mission.getUnderlyingAsset(), null));
 
-        for (Asset cdf : mission.getDerivatives()) {
-            snapshots.add(sqNavigator.resolveQuote(cdf, null));
+        for (Asset cdf : mission.getCdfList()) {
+            snapshots.add(sqNavigator.resolveQuote(cdf));
         }
 
         for (AssetSnapshot snapshot : snapshots) {
-            getSnapShotSeries(snapshot.getAsset())
+            cdfSeriesList.stream()
+                .filter(x -> x.getAsset().equals(snapshot.getAsset())).findFirst()
                 .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
         }
 

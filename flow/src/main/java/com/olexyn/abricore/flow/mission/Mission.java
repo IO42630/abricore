@@ -45,7 +45,7 @@ public class Mission implements Serializable {
         this.underlyingAsset = underlyingAsset;
     }
 
-    public List<Option> getDerivatives() {
+    public List<Option> getCdfList() {
         return derivatives;
     }
 

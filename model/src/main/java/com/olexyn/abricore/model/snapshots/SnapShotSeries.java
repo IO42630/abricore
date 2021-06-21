@@ -1,8 +1,10 @@
 package com.olexyn.abricore.model.snapshots;
 
 import com.olexyn.abricore.model.Asset;
+import util.Observer;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableSet;
@@ -13,6 +15,8 @@ import java.util.TreeMap;
  * A SnapShotSeries is the static runtime container of AssetSnapShot for each known Asset/Interval combination.
  */
 public class SnapShotSeries {
+
+    public List<Observer> observers = new ArrayList<>();
 
     private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
 
@@ -86,6 +90,9 @@ public class SnapShotSeries {
 
     public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
+        for (Observer observer : observers) {
+            observer.onSeriesUpdate();
+        }
         return treeMap.put(instant, snapshot);
     }
 

@@ -1,4 +1,4 @@
-package com.olexyn.abricore.flow.modes;
+package com.olexyn.abricore.flow.modes.trade;
 
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
@@ -13,9 +13,8 @@ import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 
 public class TrainMode extends TradeMode {
 
-    @Override
-    public void run() throws InterruptedException {
-
+    public TrainMode(Asset asset, Mission mission) {
+        super(asset, mission);
     }
 
     @Override
@@ -29,14 +28,14 @@ public class TrainMode extends TradeMode {
     }
 
     @Override
-    public void updateData() {
+    public void fetchData() {
 
     }
 
     private Mission mission;
 
     public void foo() {
-        if (mission.getDerivatives().size() == 0) {
+        if (mission.getCdfList().size() == 0) {
             return;
         }
 
@@ -54,9 +53,9 @@ public class TrainMode extends TradeMode {
 
 
         // TODO for now just quote the cdfs, comparison with tw comes later
-        Asset cdf = mission.getDerivatives().get(0);
-        while (isMarketOpen(sqNavigator.resolveQuote(cdf, interval))) {
-            AssetSnapshot assetSnapshot = sqNavigator.resolveQuote(cdf, interval);
+        Asset cdf = mission.getCdfList().get(0);
+        while (isMarketOpen(sqNavigator.resolveQuote(cdf))) {
+            AssetSnapshot assetSnapshot = sqNavigator.resolveQuote(cdf);
             if (isMarketOpen(assetSnapshot)) {
                 snapShotSeries.put(assetSnapshot.getInstant(), assetSnapshot );
                 // Test conditions.

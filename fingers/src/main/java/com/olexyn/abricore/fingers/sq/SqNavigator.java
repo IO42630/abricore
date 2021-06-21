@@ -61,7 +61,7 @@ public class SqNavigator implements Navigator {
 
 
     @Override
-    public AssetSnapshot resolveQuote(Asset asset, Interval interval) {
+    public AssetSnapshot resolveQuote(Asset asset) {
 
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 

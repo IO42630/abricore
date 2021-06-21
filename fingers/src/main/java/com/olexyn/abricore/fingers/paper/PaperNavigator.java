@@ -26,7 +26,7 @@ public class PaperNavigator implements Navigator {
      * fetch it from store, and return the first AssetSnapshot.
      */
     @Override
-    public AssetSnapshot resolveQuote(Asset asset, Interval interval) {
+    public AssetSnapshot resolveQuote(Asset asset) {
         for (SnapShotSeries snapShotSeries : snapShotSeriesList) {
            if (snapShotSeries.getAsset().equals(asset)
            ) {
