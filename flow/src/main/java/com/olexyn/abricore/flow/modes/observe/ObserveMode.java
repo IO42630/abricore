@@ -14,6 +14,4 @@ public abstract class ObserveMode extends Mode {
         super.addCdf(asset);
     }
 
-
-
 }

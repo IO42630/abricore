@@ -20,7 +20,7 @@ public class DownloadTwMode extends ObserveMode {
     }
 
 
-    public void run() throws InterruptedException {
+    public void run() {
 
     }
 

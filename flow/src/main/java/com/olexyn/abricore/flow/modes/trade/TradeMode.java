@@ -27,10 +27,10 @@ public abstract class TradeMode extends Mode {
     }
 
     @Override
-    public void run() throws InterruptedException {
+    public void run() {
         start();
         SeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
-        sleep();
+        sleep(1000L);
         stop();
     }
 

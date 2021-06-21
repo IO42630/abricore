@@ -1,17 +1,13 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.TmpCsvService;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
-import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
-import com.olexyn.abricore.flow.modes.Mode;
-import com.olexyn.abricore.flow.modes.observe.ObserveMode;
 import com.olexyn.abricore.flow.modes.observe.ObserveTwMode;
-import com.olexyn.abricore.flow.modes.observe.SyncQuoteSqMode;
-import com.olexyn.abricore.flow.modes.trade.TradeMode;
+import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
 import com.olexyn.abricore.flow.modes.trade.TradeSqMode;
-import com.olexyn.abricore.datastore.Interval;
+import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
 
@@ -32,34 +28,10 @@ public class Main {
 
         loadProperties();
 
-
-        ObserveMode a = new SyncQuoteSqMode(AssetService.ofName("XAGUSD"));
-        a.addCdf(AssetService.ofName("XAGUSD"));
-        a.run();
-
-
-
-        switch (ModeEnum.valueOf(properties.getProperty("mode"))) {
-            case DOWNLOAD_TW:
-                Mode downloadMode = new DownloadTwMode(AssetService.ofName("XAGUSD"));
-                // downloadMode.addAsset(AssetService.ofName("XAGUSD"));
-                // downloadMode.start();
-                // downloadMode.updateQuote();
-                new TmpCsvService().parseTmpCsv();
-                break;
-            case OBSERVE_TW:
-                ObserveMode observeMode = new ObserveTwMode(AssetService.ofName("XAGUSD"));
-                observeMode.addCdf(AssetService.ofName("XAGUSD"));
-                observeMode.run();
-                break;
-            case TRADE_SQ:
-                TradeMode tradeMode = new TradeSqMode(new Mission());
-                tradeMode.run();
-                break;
-            case TRAIN:
-            default:
-                break;
-        }
+        Asset underlyingAsset = AssetService.ofName("XAGUSD");
+        new Thread(new SyncCdfSqMode(underlyingAsset)).start();
+        new Thread(new ObserveTwMode(underlyingAsset)).start();
+        new Thread(new TradeSqMode(new Mission())).start();
     }
 
 

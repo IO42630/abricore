@@ -1,11 +1,9 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.SymbolsService;
 import com.olexyn.abricore.fingers.DriverUtil;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.options.BarrierOption;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.options.OptionType;
@@ -18,7 +16,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -101,7 +99,7 @@ public class SqNavigator implements Navigator {
             .collect(Collectors.toList());
     }
 
-    public void getCdf(Asset asset, OptionType optionType, ANum strike, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+    public Set<Asset> getCdf(Asset asset, OptionType optionType, ANum strike, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
         // 120 barrier options
         // 110 options
         String up = optionType == OptionType.CALL ? "up" : "down";
@@ -146,7 +144,7 @@ public class SqNavigator implements Navigator {
             .stream().map(WebElement::getText)
             .collect(Collectors.toList());
 
-        List<Asset> assets = new ArrayList<>();
+        Set<Asset> assets = new HashSet<>();
         BarrierOption tempAsset = null;
         for (String cellText : cellTexts) {
             int mod = cellTexts.indexOf(cellText) % 11;
@@ -157,15 +155,13 @@ public class SqNavigator implements Navigator {
                 case 5:
                     tempAsset.setStrike(ANum.of(cellText));
                     tempAsset.setType(optionType);
-                    AssetService.addAsset(tempAsset);
+                    assets.add(tempAsset);
                     break;
                 default:
                     break;
             }
         }
-        Set<Asset> assetList = SymbolsService.SYMBOLS;
-
-        int br = 0;
+        return assets;
     }
 
 }

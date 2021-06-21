@@ -1,9 +1,11 @@
 package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,6 +29,14 @@ public class SeriesService {
         return SERIES_COLLECTION.stream()
             .filter(x -> x.getAsset().equals(asset))
             .findFirst();
+    }
+
+    public static void putData(List<AssetSnapshot> snapshots) {
+        for (AssetSnapshot snapshot : snapshots) {
+            SERIES_COLLECTION.stream()
+                .filter(x -> x.getAsset().equals(snapshot.getAsset())).findFirst()
+                .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
+        }
     }
 
     public static void save(Series series) {

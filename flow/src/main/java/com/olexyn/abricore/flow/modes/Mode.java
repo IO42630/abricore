@@ -1,5 +1,7 @@
 package com.olexyn.abricore.flow.modes;
 
+import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.datastore.SymbolsService;
 import com.olexyn.abricore.flow.Main;
 import com.olexyn.abricore.flow.Timer;
 import com.olexyn.abricore.model.Asset;
@@ -11,21 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Mode {
+public abstract class Mode implements Runnable {
 
      protected Timer timer = new Timer();
-
-     public  abstract void run() throws InterruptedException;
 
      /**
       * Initialize utilities for Login and Navigation. Depends on target Webservice.
       */
      public abstract void start();
 
-     public void sleep() throws InterruptedException {
+     public void sleep(long interval){
           timer.start();
           while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
-               Thread.sleep(1000L);
+               try {
+                    Thread.sleep(interval);
+               } catch (InterruptedException ignored) {
+
+               }
           }
      }
 
@@ -61,12 +65,6 @@ public abstract class Mode {
 
      }
 
-     protected void putData(List<AssetSnapshot> snapshots) {
-          for (AssetSnapshot snapshot : snapshots) {
-               cdfSeriesList.stream()
-                   .filter(x -> x.getAsset().equals(snapshot.getAsset())).findFirst()
-                   .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
-          }
-     }
+
 
 }
