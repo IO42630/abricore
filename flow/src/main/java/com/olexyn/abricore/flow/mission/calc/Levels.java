@@ -3,7 +3,6 @@ package com.olexyn.abricore.flow.mission.calc;
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 import com.olexyn.abricore.util.ANum;

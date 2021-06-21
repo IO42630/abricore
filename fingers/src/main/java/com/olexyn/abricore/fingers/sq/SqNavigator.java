@@ -3,11 +3,10 @@ package com.olexyn.abricore.fingers.sq;
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
-import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 import org.openqa.selenium.By;
@@ -15,7 +14,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

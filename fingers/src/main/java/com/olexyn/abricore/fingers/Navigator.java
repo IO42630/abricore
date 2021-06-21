@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 
 /**

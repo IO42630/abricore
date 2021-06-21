@@ -1,16 +1,9 @@
 package com.olexyn.abricore.visualization;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.XYChart;
 
 import java.time.Duration;
-import java.time.Instant;
 
 public class ChartDemo {
 

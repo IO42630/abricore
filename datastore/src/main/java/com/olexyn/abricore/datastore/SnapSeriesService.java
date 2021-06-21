@@ -1,7 +1,6 @@
 package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.util.HashSet;

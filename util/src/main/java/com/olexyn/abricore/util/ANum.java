@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 
 import static com.olexyn.abricore.util.Constants.DOT;
 import static com.olexyn.abricore.util.Constants.DOT_REGEX;
+import static com.olexyn.abricore.util.Constants.NULL;
 import static com.olexyn.abricore.util.Constants.ZERO_STR;
 
 /**
@@ -36,6 +37,9 @@ public class ANum {
 
 
     public static ANum of(String string) {
+        if (string == null || string.equals(NULL)) {
+            return null;
+        }
 
         if (string.contains(DOT)) {
             String[] split = string.split(DOT_REGEX);
@@ -44,9 +48,10 @@ public class ANum {
             while (decStringBuilder.length() < 9) {
                 decStringBuilder.append(ZERO_STR);
             }
-            int dec = Integer.parseInt(decStringBuilder.toString());
+            int dec = Integer.parseInt(decStringBuilder.substring(0, 9));
             return new ANum(num, dec);
         } else {
+            System.out.println(string);
             long num = Long.parseLong(string);
             int dec = 0;
             return new ANum(num, dec);
@@ -174,6 +179,14 @@ public class ANum {
 
     public ANum copy() {
         return new ANum(num, dec);
+    }
+
+    public ANum num() {
+        return new ANum(num, 0);
+    }
+
+    public ANum dec() {
+        return new ANum(0, dec);
     }
 
     @Override

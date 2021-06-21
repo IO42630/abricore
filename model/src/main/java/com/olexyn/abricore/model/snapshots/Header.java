@@ -13,6 +13,6 @@ public enum Header {
     VOLUME;
 
     public static String getHeader() {
-        return Arrays.stream(Header.values()).map(Enum::name).collect(Collectors.joining(COMMA));
+        return Arrays.stream(Header.values()).map(Enum::name).collect(Collectors.joining(COMMA)) + "\n";
     }
 }

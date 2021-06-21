@@ -1,7 +1,6 @@
 package com.olexyn.abricore.model.snapshots;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
 
 import java.time.Instant;
 import java.util.List;

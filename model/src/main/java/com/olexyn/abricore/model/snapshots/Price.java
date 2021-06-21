@@ -32,4 +32,8 @@ public class Price {
     public void setAsk(ANum ask) {
         this.ask = ask;
     }
+
+    public ANum getSpread() {
+        return ask.minus(bid);
+    }
 }

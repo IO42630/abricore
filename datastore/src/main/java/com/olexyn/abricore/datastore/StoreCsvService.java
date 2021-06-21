@@ -1,11 +1,10 @@
 package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Header;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
-import com.olexyn.abricore.util.Parameters;
+import com.olexyn.abricore.util.ANum;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -14,41 +13,30 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import static com.olexyn.abricore.datastore.SymbolsService.SYMBOLS;
+import static com.olexyn.abricore.util.Constants.COMMA;
+import static com.olexyn.abricore.util.Constants.NEWLINE;
+import static com.olexyn.abricore.util.Constants.NULL;
+
+
 
 public class StoreCsvService {
 
     /**
-     * Wrapper for readFromDisk(Asset asset, Interval interval).
-     */
-    public static SnapShotSeries readFromDisk(Path path) {
-        Asset asset;
-        Interval interval;
-        try {
-            asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
-            interval = mapToFirstInterval(path.getFileName().toString());
-            return readFromDisk(asset);
-        } catch (StoreException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Read a SnapShotSeries from any CSV. <br>
+     * Read a SnapShotSeries from Store. <br>
      * This is done by mapping the columns of the CSV to fields recognized by the AssetSnapshot.
      */
     public static SnapShotSeries readFromDisk(Asset asset) {
-        Path path = getStorePath(asset);
+        Path path = FileNameUtil.getStorePath(asset);
         SnapShotSeries out = new SnapShotSeries(asset);
 
         try {
-            asset = mapToFirstAsset(path.getFileName().toString(), SYMBOLS);
+            asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());
         } catch (StoreException e) {
             return  out;
         }
@@ -63,8 +51,10 @@ public class StoreCsvService {
             }
 
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot assetSnapshot = new AssetSnapshot(asset);
-                AssetSnapshot.mapData(assetSnapshot, headerArray, lineInArray);
+
+                System.out.println(lineInArray == null);
+                System.out.println(Arrays.deepToString(lineInArray));
+                AssetSnapshot assetSnapshot = mapData(headerArray, lineInArray, asset);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
@@ -73,41 +63,23 @@ public class StoreCsvService {
         return out;
     }
 
-    private static Asset mapToFirstAsset(String candidate, Set<Asset> tokens) throws StoreException {
-        for (Asset asset : new ArrayList<>(tokens)) {
-            if (candidate.contains(asset.getName())) {
-                return asset;
-            }
-        }
-        throw new StoreException();
-    }
 
-    private static Interval mapToFirstInterval(String candidate) throws StoreException {
-        for (Interval interval : Interval.values()) {
-            if (candidate.contains(interval.getFileLabel())) {
-                return interval;
-            }
-        }
-        throw new StoreException();
-    }
 
     /**
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    private static void writeToStore(SnapShotSeries assetSnapshotTreeMap) {
+    private static void writeToStore(SnapShotSeries series) {
 
-        AssetSnapshot firstSnapshot = assetSnapshotTreeMap.firstEntry().getValue();
-        Path path = getStorePath(firstSnapshot.getAsset());
-
+        Path path = FileNameUtil.getStorePath(series.getAsset());
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
             bufferedWriter.write(Header.getHeader());
             StringBuilder lineBuilder = new StringBuilder();
             int size = 0;
-            for (Entry<Instant, AssetSnapshot> entry : assetSnapshotTreeMap.entrySet()) {
+            for (Entry<Instant, AssetSnapshot> entry : series.entrySet()) {
 
-                entry.getValue().buildLine(lineBuilder);
+                buildLine(lineBuilder, entry.getValue());
                 size++;
 
                 if (size > 100) {
@@ -126,7 +98,7 @@ public class StoreCsvService {
      * Update CSV by adding AssesSnapshots from SnapShotSeries .
      */
     public static void update(SnapShotSeries newEntries) {
-        Asset asset = newEntries.firstEntry().getValue().getAsset();
+        Asset asset = newEntries.getAsset();
 
         SnapShotSeries storedMap = readFromDisk(asset);
 
@@ -136,8 +108,49 @@ public class StoreCsvService {
         writeToStore(storedMap);
     }
 
-    private static Path getStorePath(Asset asset) {
-        return Paths.get(Parameters.QUOTES_DIR_STORE + asset.getName() + ".csv");
+    public static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset) {
+        AssetSnapshot snapshot = new AssetSnapshot(asset);
+        for (int i = 0; i < headerArray.length; i++) {
+            switch (headerArray[i].toUpperCase().trim()) {
+                case "TIME":
+                    snapshot.setInstant(Instant.parse(lineArray[i]));
+                    break;
+                case "PRICE_TRADED":
+                    snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
+                    break;
+                case "PRICE_BID":
+                    snapshot.getPrice().setBid(ANum.of(lineArray[i]));
+                    break;
+                case "PRICE_ASK":
+                    snapshot.getPrice().setAsk(ANum.of(lineArray[i]));
+                    break;
+                case "VOLUME":
+                    snapshot.setVolume(ANum.of(lineArray[i]));
+                    break;
+                default:
+                    break;
+            }
+        }
+        return snapshot;
+    }
+
+    public static void buildLine(StringBuilder lineBuilder, AssetSnapshot snapshot) {
+        List<ANum> values = new ArrayList<>();
+        values.add(snapshot.getPrice().getTraded());
+        values.add(snapshot.getPrice().getBid());
+        values.add(snapshot.getPrice().getAsk());
+        values.add(snapshot.getVolume());
+
+        lineBuilder.append(snapshot.getInstant().toString()).append(COMMA);
+        for (int i = 0 ; i< values.size(); i++) {
+            String value = values.get(i) == null ? NULL : values.get(i).toString();
+            lineBuilder.append(value);
+            if (i + 1 < values.size()) {
+                lineBuilder.append(COMMA);
+            } else {
+                lineBuilder.append(NEWLINE);
+            }
+        }
     }
 
 }

@@ -3,7 +3,7 @@ package com.olexyn.abricore.fingers.paper;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 

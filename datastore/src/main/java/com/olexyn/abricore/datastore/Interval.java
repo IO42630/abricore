@@ -1,15 +1,12 @@
-package com.olexyn.abricore.model;
+package com.olexyn.abricore.datastore;
 
 import java.time.Duration;
-import java.time.Period;
-import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
 public enum Interval {
-    I(Duration.ofSeconds(0), null, "0"),
     S_1(Duration.ofSeconds(1), "1 second", "1s"),
     S_5(Duration.ofSeconds(5), "5 seconds", "5s"),
     S_15(Duration.ofSeconds(15), "15 seconds", "15s"),
@@ -23,12 +20,9 @@ public enum Interval {
     H_1(Duration.ofHours(1), "1 hour", "60"),
     H_2(Duration.ofHours(2), "2 hours", "120"),
     H_3(Duration.ofHours(3), "3 hours", "180"),
-    H_4(Duration.ofHours(4), "4 hours", "240"),
-    D_1(Period.ofDays(1), "1 day", "1D"),
-    W_1(Period.ofWeeks(1), "1 week", "1W"),
-    MONTH_1(Period.ofMonths(1), "1 month", "M");
+    H_4(Duration.ofHours(4), "4 hours", "240");
 
-    public final TemporalAmount size;
+    public final Duration duration;
     private final String twLabel;
     private final String fileLabel;
 
@@ -38,8 +32,8 @@ public enum Interval {
 
     public String getFileLabel() { return  fileLabel;}
 
-    Interval(TemporalAmount size, String twLabel, String fileLabel) {
-        this.size = size;
+    Interval(Duration duration, String twLabel, String fileLabel) {
+        this.duration = duration;
         this.twLabel = twLabel;
         this.fileLabel = fileLabel;
     }

@@ -4,7 +4,7 @@ import com.olexyn.abricore.fingers.DriverTools;
 import com.olexyn.abricore.fingers.DriverTools.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
 import org.openqa.selenium.By;

@@ -3,15 +3,12 @@ package com.olexyn.abricore.flow.mission.calc;
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SnapSeriesService;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.GetFromSnapshot;
 import com.olexyn.abricore.model.snapshots.SnapShotSeries;
 
 import java.time.Instant;
-
-import static com.olexyn.abricore.model.snapshots.RangeEnum.R20;
-import static com.olexyn.abricore.model.snapshots.RangeEnum.R5;
 
 public class Cross {
 

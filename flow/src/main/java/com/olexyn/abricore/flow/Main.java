@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.batch.ParseTmpCsvBatch;
+import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.DownloadTwMode;
@@ -10,12 +10,11 @@ import com.olexyn.abricore.flow.modes.ObserveMode;
 import com.olexyn.abricore.flow.modes.ObserveTwMode;
 import com.olexyn.abricore.flow.modes.TradeMode;
 import com.olexyn.abricore.flow.modes.TradeSqMode;
-import com.olexyn.abricore.model.Interval;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -41,9 +40,9 @@ public class Main {
             case DOWNLOAD_TW:
                 Mode downloadMode = new DownloadTwMode();
                 // downloadMode.addAsset(AssetService.ofName("XAGUSD"));
-                downloadMode.start();
-                downloadMode.updateQuote();
-                new ParseTmpCsvBatch().parseTmpCsv();
+                // downloadMode.start();
+                // downloadMode.updateQuote();
+                new TmpCsvService().parseTmpCsv();
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode();
