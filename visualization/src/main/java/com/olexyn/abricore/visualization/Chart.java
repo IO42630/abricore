@@ -1,29 +1,25 @@
 package com.olexyn.abricore.visualization;
 
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.GetFromSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
-import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 
 public class Chart {
 
 
-    public static XYChart makeChart(SnapShotSeries series, Instant from, Instant to, GetFromSnapshot getFromSnapshot) {
+    public static XYChart makeChart(Series series, Instant from, Instant to, GetFromSnapshot getFromSnapshot) {
        return makeChart(series, from, to, 100, getFromSnapshot);
     }
 
     public static XYChart makeChart(
-        SnapShotSeries series,
+        Series series,
         Instant from,
         Instant to,
         int resolution,
@@ -40,7 +36,7 @@ public class Chart {
 
 
     private static  XYChart makeMergedChart(
-        SnapShotSeries series,
+        Series series,
         Instant from,
         Instant to,
         int resolution,
@@ -78,7 +74,7 @@ public class Chart {
     }
 
     private static  XYChart makeDefaultChart(
-        SnapShotSeries series,
+        Series series,
         Instant from,
         Instant to,
         GetFromSnapshot getFromSnapshot
@@ -98,7 +94,7 @@ public class Chart {
         return null;
     }
 
-    private static String makeTitle(SnapShotSeries series, Instant from, Instant to) {
+    private static String makeTitle(Series series, Instant from, Instant to) {
         String title = "";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm", Locale.US);
         title += series.getAsset().getName() + " ";

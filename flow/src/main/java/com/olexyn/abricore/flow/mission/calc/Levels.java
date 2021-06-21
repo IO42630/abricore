@@ -1,10 +1,10 @@
 package com.olexyn.abricore.flow.mission.calc;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
@@ -15,12 +15,12 @@ public class Levels {
 
     public static void main(String... args) {
         Asset asset = AssetService.ofName("XAGUSD");
-        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset);
+        Series series = SeriesService.of(asset);
 
         ANum max = new ANum(0,0);
 
 
-        for (Entry<Instant, AssetSnapshot> entry : snapShotSeries.entrySet()) {
+        for (Entry<Instant, AssetSnapshot> entry : series.entrySet()) {
             // if (entry.getValue().getHigh() > max) {
             //     max = entry.getValue().getHigh();
             // }
@@ -29,7 +29,7 @@ public class Levels {
         int br = 0;
 
         TreeMap<Integer, Integer> values = new TreeMap<>();
-        for (Entry<Instant, AssetSnapshot> entry : snapShotSeries.entrySet()) {
+        for (Entry<Instant, AssetSnapshot> entry : series.entrySet()) {
 
             AssetSnapshot snapshot = entry.getValue();
             // long level = (snapshot.getOpen() + snapshot.getClose() ) / 2;

@@ -1,12 +1,12 @@
 package com.olexyn.abricore.flow.modes.trade;
 
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.flow.Main;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Duration;
@@ -18,25 +18,19 @@ import java.util.function.Predicate;
 public abstract class TradeMode extends Mode {
 
     protected Mission mission;
-
     protected Map<String, ANum> indicators = new HashMap<>();
 
-    public TradeMode(Asset asset, Mission mission) {
-        underlyingSeries = SnapSeriesService.of(asset);
+    public TradeMode(Mission mission) {
         this.mission = mission;
-        addAsset(mission.getUnderlyingAsset());
-        mission.getCdfList().forEach(this::addAsset);
+        underlyingSeries = SeriesService.of(mission.getUnderlyingAsset());
+        mission.getCdfList().forEach(this::addCdf);
     }
 
     @Override
     public void run() throws InterruptedException {
         start();
-        SnapSeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
-
-        timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
-            Thread.sleep(1000L);
-        }
+        SeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
+        sleep();
         stop();
     }
 
@@ -61,7 +55,7 @@ public abstract class TradeMode extends Mode {
 
     public ANum checkBuyConditions() {
         ANum result = new ANum(1);
-        for (Predicate<SnapShotSeries> buyCondition : mission.getStrategy().buyConditions) {
+        for (Predicate<Series> buyCondition : mission.getStrategy().buyConditions) {
             if (!buyCondition.test(underlyingSeries)) {
                 result = new ANum(0);
             }
@@ -82,7 +76,7 @@ public abstract class TradeMode extends Mode {
 
     public ANum checkSellConditions() {
         ANum result = new ANum(1);
-        for (Predicate<SnapShotSeries> sellCondition : mission.getStrategy().sellConditions) {
+        for (Predicate<Series> sellCondition : mission.getStrategy().sellConditions) {
             if (!sellCondition.test(underlyingSeries)) {
                 result = new ANum(0);
             }

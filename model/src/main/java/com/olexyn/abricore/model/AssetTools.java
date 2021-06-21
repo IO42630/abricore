@@ -1,7 +1,7 @@
 package com.olexyn.abricore.model;
 
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Duration;
@@ -10,7 +10,7 @@ public class AssetTools {
 
     private final Asset asset;
     private final AssetSnapshot snapshot;
-    private final SnapShotSeries series;
+    private final Series series;
 
     public AssetTools(AssetSnapshot snapshot) {
         this.snapshot = snapshot;

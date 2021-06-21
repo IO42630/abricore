@@ -34,7 +34,7 @@ public class Main {
 
 
         ObserveMode a = new SyncQuoteSqMode(AssetService.ofName("XAGUSD"));
-        a.addAsset(AssetService.ofName("XAGUSD"));
+        a.addCdf(AssetService.ofName("XAGUSD"));
         a.run();
 
 
@@ -49,11 +49,11 @@ public class Main {
                 break;
             case OBSERVE_TW:
                 ObserveMode observeMode = new ObserveTwMode(AssetService.ofName("XAGUSD"));
-                observeMode.addAsset(AssetService.ofName("XAGUSD"));
+                observeMode.addCdf(AssetService.ofName("XAGUSD"));
                 observeMode.run();
                 break;
             case TRADE_SQ:
-                TradeMode tradeMode = new TradeSqMode(AssetService.ofName("XAGUSD"), new Mission());
+                TradeMode tradeMode = new TradeSqMode(new Mission());
                 tradeMode.run();
                 break;
             case TRAIN:

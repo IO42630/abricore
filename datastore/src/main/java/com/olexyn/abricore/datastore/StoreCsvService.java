@@ -3,7 +3,7 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Header;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -28,12 +28,12 @@ import static com.olexyn.abricore.util.Constants.NULL;
 public class StoreCsvService {
 
     /**
-     * Read a SnapShotSeries from Store. <br>
+     * Read a Series from Store. <br>
      * This is done by mapping the columns of the CSV to fields recognized by the AssetSnapshot.
      */
-    public static SnapShotSeries readFromDisk(Asset asset) {
+    public static Series readFromDisk(Asset asset) {
         Path path = FileNameUtil.getStorePath(asset);
-        SnapShotSeries out = new SnapShotSeries(asset);
+        Series out = new Series(asset);
 
         try {
             asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());
@@ -69,7 +69,7 @@ public class StoreCsvService {
      * Write AssetSnapshots to Storage in .csv.
      * The columns are manually mapped.
      */
-    private static void writeToStore(SnapShotSeries series) {
+    private static void writeToStore(Series series) {
 
         Path path = FileNameUtil.getStorePath(series.getAsset());
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
@@ -95,12 +95,12 @@ public class StoreCsvService {
     }
 
     /**
-     * Update CSV by adding AssesSnapshots from SnapShotSeries .
+     * Update CSV by adding AssesSnapshots from Series .
      */
-    public static void update(SnapShotSeries newEntries) {
+    public static void update(Series newEntries) {
         Asset asset = newEntries.getAsset();
 
-        SnapShotSeries storedMap = readFromDisk(asset);
+        Series storedMap = readFromDisk(asset);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
             storedMap.put(newEntry.getKey(), newEntry.getValue());

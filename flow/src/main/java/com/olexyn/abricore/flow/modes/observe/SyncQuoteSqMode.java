@@ -1,13 +1,13 @@
 package com.olexyn.abricore.flow.modes.observe;
 
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.Commodity;
 import com.olexyn.abricore.model.options.BarrierOption;
 import com.olexyn.abricore.model.options.OptionType;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Duration;
@@ -32,8 +32,8 @@ public class SyncQuoteSqMode extends  ObserveMode {
             fetchData();
             Thread.sleep(10L);
         }
-        SnapShotSeries snapShotSeries = getCdfSeriesList().get(0);
-        SnapSeriesService.save(snapShotSeries);
+        Series series = getCdfSeriesList().get(0);
+        SeriesService.save(series);
         stop();
     }
 

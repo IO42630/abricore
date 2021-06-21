@@ -1,12 +1,12 @@
 package com.olexyn.abricore.flow.modes.trade;
 
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
@@ -14,7 +14,7 @@ import static com.olexyn.abricore.flow.mission.MissionUtil.isMarketOpen;
 public class TrainMode extends TradeMode {
 
     public TrainMode(Asset asset, Mission mission) {
-        super(asset, mission);
+        super(mission);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TrainMode extends TradeMode {
 
         Asset asset = mission.getUnderlyingAsset();
         Interval interval = mission.getInterval();
-        SnapShotSeries snapShotSeries = SnapSeriesService.of(asset);
+        Series series = SeriesService.of(asset);
         SqNavigator sqNavigator = new SqNavigator(null);
 
         // TODO
@@ -57,7 +57,7 @@ public class TrainMode extends TradeMode {
         while (isMarketOpen(sqNavigator.resolveQuote(cdf))) {
             AssetSnapshot assetSnapshot = sqNavigator.resolveQuote(cdf);
             if (isMarketOpen(assetSnapshot)) {
-                snapShotSeries.put(assetSnapshot.getInstant(), assetSnapshot );
+                series.put(assetSnapshot.getInstant(), assetSnapshot );
                 // Test conditions.
 
             }

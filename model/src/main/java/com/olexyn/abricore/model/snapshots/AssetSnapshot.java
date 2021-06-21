@@ -4,18 +4,13 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.olexyn.abricore.util.Constants.COMMA;
-import static com.olexyn.abricore.util.Constants.NEWLINE;
 
 /**
  *
  */
 public class AssetSnapshot {
 
-    private SnapShotSeries series;
+    private Series series;
     private final Asset asset;
 
     private Instant instant;
@@ -29,11 +24,11 @@ public class AssetSnapshot {
 
     // GETTERS / SETTERS
 
-    public SnapShotSeries getSeries() {
+    public Series getSeries() {
         return series;
     }
 
-    public void setSeries(SnapShotSeries series) {
+    public void setSeries(Series series) {
         this.series = series;
     }
 

@@ -1,7 +1,7 @@
 package com.olexyn.abricore.model.snapshots;
 
+import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
-import util.Observer;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -12,17 +12,17 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * A SnapShotSeries is the static runtime container of AssetSnapShot for each known Asset/Interval combination.
+ * A Series is the static runtime container of AssetSnapShot for each known Asset/Interval combination.
  */
-public class SnapShotSeries {
+public class Series {
 
-    public List<Observer> observers = new ArrayList<>();
+    public List<Mode> observers = new ArrayList<>();
 
     private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
 
     private Asset asset;
 
-    public SnapShotSeries(Asset asset) {
+    public Series(Asset asset) {
         this.asset = asset;
     }
 
@@ -75,8 +75,8 @@ public class SnapShotSeries {
     /**
      * @return returns a sequence of the Series between "from" and "to"
      */
-    public SnapShotSeries limitSeries(Instant from, Instant to) {
-        SnapShotSeries limitedSeries = new SnapShotSeries(getAsset());
+    public Series limitSeries(Instant from, Instant to) {
+        Series limitedSeries = new Series(getAsset());
         Instant first = getFirstAfter(from);
         Instant last = getFirstBefore(to);
         limitedSeries.put(first, treeMap.get(first));
@@ -90,7 +90,7 @@ public class SnapShotSeries {
 
     public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
-        for (Observer observer : observers) {
+        for (Mode observer : observers) {
             observer.onSeriesUpdate();
         }
         return treeMap.put(instant, snapshot);

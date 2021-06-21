@@ -2,7 +2,7 @@ package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +48,7 @@ public class TmpCsvService {
     /**
      * Wrapper for readFromDisk(Asset asset, Interval interval).
      */
-    private static SnapShotSeries readFromDisk(Path path) {
+    private static Series readFromDisk(Path path) {
         Asset asset;
         Interval interval;
         try {
@@ -61,8 +60,8 @@ public class TmpCsvService {
         }
     }
 
-    private static SnapShotSeries readFromDisk(Path path, Asset asset, Interval interval) {
-        SnapShotSeries out = new SnapShotSeries(asset);
+    private static Series readFromDisk(Path path, Asset asset, Interval interval) {
+        Series out = new Series(asset);
 
         try {
             asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());

@@ -14,37 +14,26 @@ public class TradeSqMode extends TradeMode {
     private SqSession sqSession;
     private SqNavigator sqNavigator;
 
-
-    public TradeSqMode(Asset asset, Mission mission) {
-        super(asset, mission);
+    public TradeSqMode(Mission mission) {
+        super(mission);
     }
 
-
-
+    @Override
     public void start() {
         sqSession = new SqSession();
         sqNavigator = new SqNavigator(sqSession.doLogin());
     }
-
 
     /**
      * Fetch CDF data from SQ.
      */
     @Override
     public void fetchData() {
-
         List<AssetSnapshot> snapshots = new ArrayList<>();
-
         for (Asset cdf : mission.getCdfList()) {
             snapshots.add(sqNavigator.resolveQuote(cdf));
         }
-
-        for (AssetSnapshot snapshot : snapshots) {
-            cdfSeriesList.stream()
-                .filter(x -> x.getAsset().equals(snapshot.getAsset())).findFirst()
-                .ifPresent(series -> series.put(snapshot.getInstant(), snapshot));
-        }
-
+        putData(snapshots);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.olexyn.abricore.flow.mission.calc;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.datastore.SnapSeriesService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.SnapShotSeries;
+import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
 import java.time.Instant;
@@ -14,7 +14,7 @@ public class Max {
 
     public static void calcGlobalMax(String... args) {
         Asset asset = AssetService.ofName("XAGUSD");
-        SnapShotSeries treeMap = SnapSeriesService.of(asset);
+        Series treeMap = SeriesService.of(asset);
 
         ANum max = new ANum(0,0);
 
@@ -29,18 +29,18 @@ public class Max {
 
     }
 
-    public SnapShotSeries calcMaximas(SnapShotSeries baseSeries, int radius, Instant seriesStart, Instant seriesEnd) {
+    public Series calcMaximas(Series baseSeries, int radius, Instant seriesStart, Instant seriesEnd) {
         return calc( baseSeries,  radius,  seriesStart,  seriesEnd,  Extreme.MAX);
     }
 
-    public SnapShotSeries calcMinimas(SnapShotSeries baseSeries, int radius, Instant seriesStart, Instant seriesEnd) {
+    public Series calcMinimas(Series baseSeries, int radius, Instant seriesStart, Instant seriesEnd) {
         return calc( baseSeries,  radius,  seriesStart,  seriesEnd,  Extreme.MIN);
     }
 
 
-    private SnapShotSeries calc(SnapShotSeries baseSeries, int radius, Instant seriesStart, Instant seriesEnd, Extreme extremeType) {
+    private Series calc(Series baseSeries, int radius, Instant seriesStart, Instant seriesEnd, Extreme extremeType) {
 
-        SnapShotSeries extremes = new SnapShotSeries(baseSeries.getAsset());
+        Series extremes = new Series(baseSeries.getAsset());
 
         ANum flip;
         if (extremeType == Extreme.MAX) { flip = new ANum(1,0); } else { flip = new ANum(-1,0); }
@@ -79,7 +79,7 @@ public class Max {
         return extremes;
     }
 
-    Entry<Instant, AssetSnapshot> getEntryFromInstant(SnapShotSeries snapshots, Instant instant) {
+    Entry<Instant, AssetSnapshot> getEntryFromInstant(Series snapshots, Instant instant) {
         for (Entry<Instant, AssetSnapshot> entry : snapshots.entrySet()) {
             if (entry.getKey().equals(instant)) {
                 return entry;
