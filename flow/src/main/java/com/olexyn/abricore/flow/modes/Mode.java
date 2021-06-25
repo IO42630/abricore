@@ -1,11 +1,9 @@
 package com.olexyn.abricore.flow.modes;
 
-import com.olexyn.abricore.datastore.SeriesService;
-import com.olexyn.abricore.datastore.SymbolsService;
 import com.olexyn.abricore.flow.Main;
 import com.olexyn.abricore.flow.Timer;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
+import com.olexyn.abricore.model.snapshots.Observer;
 import com.olexyn.abricore.model.snapshots.Series;
 
 import java.time.Duration;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Mode implements Runnable {
+public abstract class Mode implements Runnable, Observer {
 
      protected Timer timer = new Timer();
 

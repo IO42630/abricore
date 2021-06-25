@@ -1,6 +1,5 @@
 package com.olexyn.abricore.model.snapshots;
 
-import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
 
 import java.time.Instant;
@@ -16,7 +15,7 @@ import java.util.TreeMap;
  */
 public class Series {
 
-    public List<Mode> observers = new ArrayList<>();
+    public List<Observer> observers = new ArrayList<>();
 
     private final TreeMap<Instant, AssetSnapshot> treeMap = new TreeMap<>();
 
@@ -90,7 +89,7 @@ public class Series {
 
     public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
-        for (Mode observer : observers) {
+        for (Observer observer : observers) {
             observer.onSeriesUpdate();
         }
         return treeMap.put(instant, snapshot);

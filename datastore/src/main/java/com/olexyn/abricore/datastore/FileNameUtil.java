@@ -6,7 +6,7 @@ import com.olexyn.abricore.util.Parameters;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.olexyn.abricore.datastore.SymbolsService.SYMBOLS;
+import static com.olexyn.abricore.datastore.AssetService.SYMBOLS;
 
 public class FileNameUtil {
 

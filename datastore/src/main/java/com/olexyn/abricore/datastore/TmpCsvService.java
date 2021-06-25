@@ -29,7 +29,7 @@ public class TmpCsvService {
     public void parseTmpCsv() throws IOException {
         Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);
         Files.list(tmpQuotes)
-            .filter(x -> containsAnyToken(x.toString(), SymbolsService.getNames()))
+            .filter(x -> containsAnyToken(x.toString(), AssetService.getNames()))
             .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
             .map(TmpCsvService::readFromDisk)
             .filter(Objects::nonNull)
