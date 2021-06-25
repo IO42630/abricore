@@ -31,6 +31,7 @@ public abstract class TradeMode extends Mode {
         start();
         SeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
         sleep(1000L);
+        SeriesService.of(mission.getUnderlyingAsset()).observers.remove(this);
         stop();
     }
 
