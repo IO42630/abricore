@@ -13,33 +13,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import static com.olexyn.abricore.util.Constants.CSV;
+import static com.olexyn.abricore.util.Constants.EMPTY;
 
 public class TmpCsvService {
 
     /**
      * TODO fix.
      */
-    public void parseTmpCsv() throws IOException {
+    public static void parseTmpCsv() throws IOException {
         Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);
         Files.list(tmpQuotes)
-            .filter(x -> containsAnyToken(x.toString(), AssetService.getNames()))
-            .filter(x -> containsAnyToken(x.toString(), Interval.getFileLabels()))
+            .filter(x -> containsAnyToken(x, AssetService.getNames()))
+            .filter(x -> containsAnyToken(x, Interval.getFileLabels()))
             .map(TmpCsvService::readFromDisk)
             .filter(Objects::nonNull)
             .forEach(StoreCsvService::update);
     }
 
-    private static boolean containsAnyToken(String candidate, Set<String> tokens) {
-        for (String token : new ArrayList<>(tokens)) {
-            if (candidate.contains(token)) {
-                return true;
+    private static boolean containsAnyToken(Path candidate, Set<String> tokens) {
+        String fileName = candidate.getFileName().toString();
+        fileName = fileName.replace(CSV, EMPTY);
+        String[] words = fileName.split("[_, ]");
+        for (String word : words) {
+            for (String token : new ArrayList<>(tokens)) {
+                if (word.equals(token)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -78,9 +83,8 @@ public class TmpCsvService {
                 throw new NullPointerException("");
             }
             while ((lineInArray = reader.readNext()) != null) {
-                System.out.println(lineInArray == null);
-                System.out.println(Arrays.deepToString(lineInArray));
-                mapData(headerArray, lineInArray, asset, interval).forEach(x -> out.put(x.getInstant(), x));
+                AssetSnapshot snapshot = mapData(headerArray, lineInArray, asset, interval);
+                out.put(snapshot.getInstant(), snapshot);
             }
         } catch (CsvValidationException | IOException e) {
             out.clear();
@@ -88,54 +92,41 @@ public class TmpCsvService {
         return out;
     }
 
-    private static List<AssetSnapshot> mapData(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
+    private static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
 
-        AssetSnapshot open = new AssetSnapshot(asset);
-        AssetSnapshot high = new AssetSnapshot(asset);
-        AssetSnapshot low = new AssetSnapshot(asset);
-        AssetSnapshot close = new AssetSnapshot(asset);
+        AssetSnapshot snapshot = new AssetSnapshot(asset);
+        ANum low = null;
+        ANum high = null;
 
         for (int i = 0; i < headerArray.length; i++) {
             switch (headerArray[i].toUpperCase().trim()) {
                 case "TIME":
-                    open.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
+                    snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
                     break;
                 case "OPEN":
-                    open.getPrice().setTraded(ANum.of(lineArray[i]));
-                    break;
-                case "HIGH":
-                    high.getPrice().setTraded(ANum.of(lineArray[i]));
+                    snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
                     break;
                 case "LOW":
-                    low.getPrice().setTraded(ANum.of(lineArray[i]));
+                    low = ANum.of(lineArray[i]);
                     break;
                 case "CLOSE":
-                    close.getPrice().setTraded(ANum.of(lineArray[i]));
+                    high = ANum.of(lineArray[i]);
                     break;
                 case "VOLUME":
-                    ANum avgVolume = ANum.of(lineArray[i]).div(new ANum(3)).num();
-                    high.setVolume(avgVolume);
-                    low.setVolume(avgVolume);
-                    close.setVolume(avgVolume);
+                    // Convention: only track volume on the 1 minute interval.
+                    if (interval == Interval.M_1) {
+                        snapshot.setVolume(ANum.of(lineArray[i]));
+                    }
                     break;
                 default:
                     break;
             }
         }
 
-        Duration oneThird = interval.duration.dividedBy(3);
-        Duration twoThirds = interval.duration.dividedBy(3).multipliedBy(2);
-        Duration threeThirds = interval.duration;
-
-        close.setInstant(open.getInstant().plus(threeThirds));
-        if (open.getPrice().getTraded().lesser(close.getPrice().getTraded())) {
-            low.setInstant(open.getInstant().plus(oneThird));
-            high.setInstant(open.getInstant().plus(twoThirds));
-        } else {
-            high.setInstant(open.getInstant().plus(oneThird));
-            low.setInstant(open.getInstant().plus(twoThirds));
+        if (high != null && low != null) {
+            snapshot.setRange(high.minus(low));
         }
 
-        return List.of(high, low, close);
+        return snapshot;
     }
 }

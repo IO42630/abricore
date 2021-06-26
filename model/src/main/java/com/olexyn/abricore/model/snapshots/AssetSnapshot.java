@@ -16,6 +16,7 @@ public class AssetSnapshot {
     private Instant instant;
     private Price price = new Price();
     private ANum volume;
+    private ANum range;
 
     public AssetSnapshot(Asset asset) {
         this.asset = asset;
@@ -59,6 +60,33 @@ public class AssetSnapshot {
 
     public void setVolume(ANum volume) {
         this.volume = volume;
+    }
+
+    public ANum getRange() {
+        return range;
+    }
+
+    public void setRange(ANum range) {
+        this.range = range;
+    }
+
+    public void mergeFrom(AssetSnapshot newSnap) {
+        boolean sameAsset = this.getAsset().equals(newSnap.getAsset());
+        boolean sameInstant = this.getInstant().equals(newSnap.getInstant());
+        if (!sameAsset || !sameInstant) {
+            return;
+        }
+        this.getPrice().mergeFrom(newSnap.getPrice());
+        if (this.volume == null) {
+            this.volume = newSnap.getVolume();
+        } else {
+            this.getVolume().mergeFrom(newSnap.getVolume());
+        }
+        if (this.range == null) {
+            this.range = newSnap.getRange();
+        } else {
+            this.getRange().mergeFrom(newSnap.getRange());
+        }
     }
 
 

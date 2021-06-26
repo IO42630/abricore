@@ -2,11 +2,9 @@ package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.Interval;
+import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
-import com.olexyn.abricore.flow.modes.observe.ObserveTwMode;
-import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
-import com.olexyn.abricore.flow.modes.trade.TradeSqMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
@@ -28,10 +26,13 @@ public class Main {
 
         loadProperties();
 
+        TmpCsvService.parseTmpCsv();
+
         Asset underlyingAsset = AssetService.ofName("XAGUSD");
-        new Thread(new SyncCdfSqMode(underlyingAsset)).start();
-        new Thread(new ObserveTwMode(underlyingAsset)).start();
-        new Thread(new TradeSqMode(new Mission())).start();
+        // new Thread(new DownloadTwMode(underlyingAsset)).start();
+        // new Thread(new SyncCdfSqMode(underlyingAsset)).start();
+        // new Thread(new ObserveTwMode(underlyingAsset)).start();
+        // new Thread(new TradeSqMode(new Mission())).start();
     }
 
 

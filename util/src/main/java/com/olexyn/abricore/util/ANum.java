@@ -204,4 +204,11 @@ public class ANum {
         return num == aNum.num && dec == aNum.dec;
     }
 
+    public void mergeFrom(ANum newValue) {
+        if (newValue != null) {
+            this.num = newValue.num;
+            this.dec = newValue.dec;
+        }
+    }
+
 }

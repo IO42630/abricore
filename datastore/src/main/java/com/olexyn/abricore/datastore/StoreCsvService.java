@@ -103,7 +103,13 @@ public class StoreCsvService {
         Series storedMap = readFromDisk(asset);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
-            storedMap.put(newEntry.getKey(), newEntry.getValue());
+            if (storedMap.containsKey(newEntry.getKey())) {
+                // directly updates the existing SnapShot
+                storedMap.get(newEntry.getKey()).mergeFrom(newEntry.getValue());
+            } else {
+                storedMap.put(newEntry.getKey(), newEntry.getValue());
+            }
+
         }
         writeToStore(storedMap);
     }
