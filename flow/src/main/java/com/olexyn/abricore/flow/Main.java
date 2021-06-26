@@ -9,12 +9,12 @@ import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.LogUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -75,23 +75,19 @@ public class Main {
         return mission;
     }
 
-    protected static void loadProperties(Properties properties, String fileName) throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
-        if (url != null) {
-            FileInputStream fis = new FileInputStream(url.getPath());
-            properties.load(fis);
-            fis.close();
-        }
+    public static void loadProperties(Properties properties, String fileName) throws IOException {
+        String dir = System.getProperty("user.dir") + "/flow/src/main/resources/" + fileName;
+        FileInputStream fis = new FileInputStream(dir);
+        properties.load(fis);
+        fis.close();
     }
 
-    protected static void saveProperties(Properties properties, String fileName) throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
-        if (url != null) {
-            FileOutputStream fos = new FileOutputStream(url.getPath());
-            properties.store(fos, "");
-            fos.flush();
-            fos.close();
-        }
+    public static void saveProperties(Properties properties, String fileName) throws IOException {
+        String dir = System.getProperty("user.dir") + "/flow/src/main/resources/" + fileName;
+        FileOutputStream fos = new FileOutputStream(dir);
+        properties.store(fos, "");
+        fos.flush();
+        fos.close();
         loadProperties(properties, fileName);
     }
 
