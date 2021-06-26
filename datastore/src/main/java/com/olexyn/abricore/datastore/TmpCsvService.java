@@ -80,7 +80,7 @@ public class TmpCsvService {
 
             headerArray = reader.readNext();
             if (headerArray == null) {
-                throw new NullPointerException("");
+                throw new StoreException();
             }
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot snapshot = mapData(headerArray, lineInArray, asset, interval);
@@ -92,27 +92,27 @@ public class TmpCsvService {
         return out;
     }
 
-    private static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
+    public static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
 
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         ANum low = null;
         ANum high = null;
 
         for (int i = 0; i < headerArray.length; i++) {
-            switch (headerArray[i].toUpperCase().trim()) {
-                case "TIME":
+            switch (TmpHeader.valueOf(headerArray[i].toUpperCase().trim())) {
+                case TIME:
                     snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
                     break;
-                case "OPEN":
+                case OPEN:
                     snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
                     break;
-                case "LOW":
+                case LOW:
                     low = ANum.of(lineArray[i]);
                     break;
-                case "CLOSE":
+                case CLOSE:
                     high = ANum.of(lineArray[i]);
                     break;
-                case "VOLUME":
+                case VOLUME:
                     // Convention: only track volume on the 1 minute interval.
                     if (interval == Interval.M_1) {
                         snapshot.setVolume(ANum.of(lineArray[i]));
@@ -123,7 +123,7 @@ public class TmpCsvService {
             }
         }
 
-        if (high != null && low != null) {
+        if (interval == Interval.M_1 && high != null && low != null) {
             snapshot.setRange(high.minus(low));
         }
 

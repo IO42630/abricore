@@ -2,7 +2,6 @@ package com.olexyn.abricore.datastore;
 
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.Header;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 import com.opencsv.CSVReader;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -51,9 +49,6 @@ public class StoreCsvService {
             }
 
             while ((lineInArray = reader.readNext()) != null) {
-
-                System.out.println(lineInArray == null);
-                System.out.println(Arrays.deepToString(lineInArray));
                 AssetSnapshot assetSnapshot = mapData(headerArray, lineInArray, asset);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
@@ -74,7 +69,7 @@ public class StoreCsvService {
         Path path = FileNameUtil.getStorePath(series.getAsset());
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
-            bufferedWriter.write(Header.getHeader());
+            bufferedWriter.write(StoreHeader.getHeader());
             StringBuilder lineBuilder = new StringBuilder();
             int size = 0;
             for (Entry<Instant, AssetSnapshot> entry : series.entrySet()) {
@@ -117,20 +112,23 @@ public class StoreCsvService {
     public static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset) {
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         for (int i = 0; i < headerArray.length; i++) {
-            switch (headerArray[i].toUpperCase().trim()) {
-                case "TIME":
+            switch (StoreHeader.valueOf(headerArray[i].toUpperCase().trim())) {
+                case TIME:
                     snapshot.setInstant(Instant.parse(lineArray[i]));
                     break;
-                case "PRICE_TRADED":
+                case PRICE_TRADED:
                     snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
                     break;
-                case "PRICE_BID":
+                case PRICE_BID:
                     snapshot.getPrice().setBid(ANum.of(lineArray[i]));
                     break;
-                case "PRICE_ASK":
+                case PRICE_ASK:
                     snapshot.getPrice().setAsk(ANum.of(lineArray[i]));
                     break;
-                case "VOLUME":
+                case RANGE:
+                    snapshot.setRange(ANum.of(lineArray[i]));
+                    break;
+                case VOLUME:
                     snapshot.setVolume(ANum.of(lineArray[i]));
                     break;
                 default:

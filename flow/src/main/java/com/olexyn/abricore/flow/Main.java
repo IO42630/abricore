@@ -36,11 +36,10 @@ public class Main {
         loadProperties(config, "config.properties");
         loadProperties(events, "events.properties");
 
-        System.exit(0);
+        // System.exit(0);
 
         TmpCsvService.parseTmpCsv();
 
-        Asset underlyingAsset = AssetService.ofName("XAGUSD");
 
         new Thread(new DownloadTwMode(new ArrayList<>(AssetService.SYMBOLS))).start();
         // new Thread(new SyncCdfSqMode(underlyingAsset)).start();
