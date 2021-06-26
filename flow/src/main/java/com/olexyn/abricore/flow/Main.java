@@ -5,6 +5,7 @@ import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
+import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
@@ -13,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,7 +31,8 @@ public class Main {
         TmpCsvService.parseTmpCsv();
 
         Asset underlyingAsset = AssetService.ofName("XAGUSD");
-        // new Thread(new DownloadTwMode(underlyingAsset)).start();
+
+        new Thread(new DownloadTwMode(new ArrayList<>(AssetService.SYMBOLS))).start();
         // new Thread(new SyncCdfSqMode(underlyingAsset)).start();
         // new Thread(new ObserveTwMode(underlyingAsset)).start();
         // new Thread(new TradeSqMode(new Mission())).start();

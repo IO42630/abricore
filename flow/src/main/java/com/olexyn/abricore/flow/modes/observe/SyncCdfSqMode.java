@@ -17,7 +17,7 @@ import java.util.Set;
  * CDFs must be in range of the current price of the underlying Asset.
  * Thus fetch the CDFs and put them as Assets.
  */
-public class SyncCdfSqMode extends  ObserveMode {
+public class SyncCdfSqMode extends ObserveMode {
 
     private SqSession sqSession;
     private SqNavigator sqNavigator;
