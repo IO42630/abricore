@@ -18,8 +18,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private static final Logger LOGGER = LogUtil.get(Main.class);
 
     public static final Properties config = new Properties();
     public static final Properties events = new Properties();
@@ -28,8 +31,12 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
+        LOGGER.info("Starting the application.");
+
         loadProperties(config, "config.properties");
         loadProperties(events, "events.properties");
+
+        System.exit(0);
 
         TmpCsvService.parseTmpCsv();
 
