@@ -23,10 +23,10 @@ public class ObserveTwMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(Main.properties.getProperty("tw.update.interval")));
+                Thread.sleep(Long.parseLong(Main.config.getProperty("tw.update.interval")));
             } catch (InterruptedException ignored) {
 
             }

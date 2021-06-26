@@ -30,10 +30,10 @@ public class SyncCdfSqMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
+        while (timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(Main.properties.getProperty("cdf.update.interval")));
+                Thread.sleep(Long.parseLong(Main.config.getProperty("cdf.update.interval")));
             } catch (InterruptedException ignored) {}
         }
         for (Series cdfSeries : cdfSeriesList) {

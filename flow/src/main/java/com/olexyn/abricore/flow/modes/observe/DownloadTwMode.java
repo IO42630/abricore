@@ -10,6 +10,7 @@ import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +30,18 @@ public class DownloadTwMode extends Mode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
             try {
-                fetchData();
-                Thread.sleep(Long.parseLong(Main.properties.getProperty("tw.update.interval")));
+
+                Instant lastTwDownload = Instant.parse(Main.events.getProperty("tw.last.download"));
+                if (lastTwDownload.plus(Duration.ofHours(8)).isBefore(Instant.now())) {
+                    fetchData();
+                }
+                Thread.sleep(Long.parseLong(Main.config.getProperty("tw.download.check.interval")));
             } catch (InterruptedException ignored) {
 
             }
         }
-        Series series = getCdfSeriesList().get(0);
-        SeriesService.save(series);
         stop();
     }
 

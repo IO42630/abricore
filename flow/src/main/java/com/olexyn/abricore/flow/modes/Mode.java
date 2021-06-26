@@ -22,7 +22,7 @@ public abstract class Mode implements Runnable, Observer {
 
      public void sleep(long interval){
           timer.start();
-          while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.properties.getProperty("run.time"))))) {
+          while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
                try {
                     Thread.sleep(interval);
                } catch (InterruptedException ignored) {

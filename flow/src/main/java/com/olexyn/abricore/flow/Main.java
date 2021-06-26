@@ -11,6 +11,7 @@ import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -20,13 +21,15 @@ import java.util.Properties;
 
 public class Main {
 
-    public static final Properties properties = new Properties();
+    public static final Properties config = new Properties();
+    public static final Properties events = new Properties();
 
     /**
      */
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
-        loadProperties();
+        loadProperties(config, "config.properties");
+        loadProperties(events, "events.properties");
 
         TmpCsvService.parseTmpCsv();
 
@@ -65,11 +68,24 @@ public class Main {
         return mission;
     }
 
-    private static void loadProperties() throws IOException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("config.properties");
+    protected static void loadProperties(Properties properties, String fileName) throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
         if (url != null) {
-            properties.load(new FileInputStream(url.getPath()));
+            FileInputStream fis = new FileInputStream(url.getPath());
+            properties.load(fis);
+            fis.close();
         }
+    }
+
+    protected static void saveProperties(Properties properties, String fileName) throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
+        if (url != null) {
+            FileOutputStream fos = new FileOutputStream(url.getPath());
+            properties.store(fos, "");
+            fos.flush();
+            fos.close();
+        }
+        loadProperties(properties, fileName);
     }
 
 }
