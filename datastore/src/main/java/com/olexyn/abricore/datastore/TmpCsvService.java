@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -99,7 +100,11 @@ public class TmpCsvService {
         ANum high = null;
 
         for (int i = 0; i < headerArray.length; i++) {
-            switch (TmpHeader.valueOf(headerArray[i].toUpperCase().trim())) {
+            String columnName = headerArray[i].toUpperCase().trim();
+            if (Arrays.stream(TmpHeader.values()).anyMatch(x -> !x.name().equals(columnName))) {
+                break;
+            }
+            switch (TmpHeader.valueOf(columnName)) {
                 case TIME:
                     snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
                     break;
@@ -109,7 +114,7 @@ public class TmpCsvService {
                 case LOW:
                     low = ANum.of(lineArray[i]);
                     break;
-                case CLOSE:
+                case HIGH:
                     high = ANum.of(lineArray[i]);
                     break;
                 case VOLUME:

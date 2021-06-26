@@ -11,11 +11,7 @@ import static com.olexyn.abricore.util.Constants.COMMA;
 public enum TmpHeader {
     TIME,
     OPEN,
+    HIGH,
     LOW,
-    CLOSE,
     VOLUME;
-
-    public static String getHeader() {
-        return Arrays.stream(TmpHeader.values()).map(Enum::name).collect(Collectors.joining(COMMA)) + "\n";
-    }
 }
