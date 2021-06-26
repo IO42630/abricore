@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -101,7 +100,7 @@ public class TmpCsvService {
 
         for (int i = 0; i < headerArray.length; i++) {
             String columnName = headerArray[i].toUpperCase().trim();
-            if (Arrays.stream(TmpHeader.values()).anyMatch(x -> !x.name().equals(columnName))) {
+            if (!TmpHeader.getHeader().contains(columnName)) {
                 break;
             }
             switch (TmpHeader.valueOf(columnName)) {

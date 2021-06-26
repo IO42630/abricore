@@ -1,6 +1,7 @@
 package com.olexyn.abricore.datastore;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.olexyn.abricore.util.Constants.COMMA;
@@ -14,4 +15,8 @@ public enum TmpHeader {
     HIGH,
     LOW,
     VOLUME;
+
+    public static List<String> getHeader() {
+        return Arrays.stream(TmpHeader.values()).map(Enum::name).collect(Collectors.toList());
+    }
 }
