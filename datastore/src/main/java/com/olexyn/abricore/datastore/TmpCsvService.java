@@ -101,7 +101,7 @@ public class TmpCsvService {
         for (int i = 0; i < headerArray.length; i++) {
             String columnName = headerArray[i].toUpperCase().trim();
             if (!TmpHeader.getHeader().contains(columnName)) {
-                break;
+                continue;
             }
             switch (TmpHeader.valueOf(columnName)) {
                 case TIME:
