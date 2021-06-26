@@ -3,6 +3,8 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.AssetType;
 import com.olexyn.abricore.model.Commodity;
+import com.olexyn.abricore.model.Crypto;
+import com.olexyn.abricore.model.Etf;
 import com.olexyn.abricore.model.GenericAsset;
 import com.olexyn.abricore.model.Stock;
 import com.olexyn.abricore.model.options.BarrierOption;
@@ -41,6 +43,12 @@ public class AssetService {
                         break;
                     case BARRIER_OPTION:
                         asset = new BarrierOption(name);
+                        break;
+                    case ETF:
+                        asset = new Etf(name);
+                        break;
+                    case CRYPTO:
+                        asset = new Crypto(name);
                         break;
                     default:
                         asset = new GenericAsset("unknown");

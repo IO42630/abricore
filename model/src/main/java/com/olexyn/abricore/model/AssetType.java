@@ -4,4 +4,6 @@ public enum AssetType {
     COMMODITY,
     STOCK,
     BARRIER_OPTION,
+    ETF,
+    CRYPTO
 }

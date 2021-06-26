@@ -13,3 +13,10 @@ There are two type of batches:
 
 * `ParseTmpCsv` : loads data from `tmp CSV` to `store CSV`.
 * `XYANum` : calculates some values, and stores them to `store CSV`.
+
+{empty} +
+
+==== `resources`
+
+* `symbols.json`
+**  switching data sources, e.g. from OANDA:XAGUSD to FX:XAGUSD will cause data to be overwritten.

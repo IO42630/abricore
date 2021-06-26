@@ -1,28 +1,43 @@
 {
   "SYMBOLS" : [{
     "NAME": "XAUUSD",
-    "TW_SYMBOL":"OANDA:XAUUSD",
+    "TW_SYMBOL":"FX:XAUUSD",
     "TYPE":"COMMODITY",
     "SQ_ISIN":""
   }, {
     "NAME": "XAGUSD",
-    "TW_SYMBOL":"OANDA:XAGUSD",
+    "TW_SYMBOL":"FX:XAGUSD",
     "TYPE":"COMMODITY",
     "SQ_ISIN":"XC0009653103"
   }, {
-    "NAME": "A",
-    "TW_SYMBOL":"OANDA:XAGUSD",
+    "NAME": "BTCUSD",
+    "TW_SYMBOL":"COINBASE:BTCUSD",
+    "TYPE":"CRYPTO",
+    "SQ_ISIN":""
+  }, {
+    "NAME": "AMD",
+    "TW_SYMBOL":"NASDAQ:AMD",
     "TYPE":"STOCK",
     "SQ_ISIN":""
   }, {
-    "NAME": "B",
-    "TW_SYMBOL":"OANDA:XAGUSD",
-    "TYPE":"COMMODITY",
+    "NAME": "PLTR",
+    "TW_SYMBOL":"NYSE:PLTR",
+    "TYPE":"STOCK",
     "SQ_ISIN":""
   }, {
-    "NAME": "C",
-    "TW_SYMBOL":"OANDA:XAGUSD",
-    "TYPE":"COMMODITY",
+    "NAME": "UBSG",
+    "TW_SYMBOL":"SIX:UBSG",
+    "TYPE":"STOCK",
+    "SQ_ISIN":""
+  }, {
+    "NAME": "TSLA",
+    "TW_SYMBOL":"NASDAQ:TSLA",
+    "TYPE":"STOCK",
+    "SQ_ISIN":""
+  }, {
+    "NAME": "TLT",
+    "TW_SYMBOL":"NASDAQ:TLT",
+    "TYPE":"ETF",
     "SQ_ISIN":""
   }]
 }
