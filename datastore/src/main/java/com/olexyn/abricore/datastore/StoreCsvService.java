@@ -145,6 +145,7 @@ public class StoreCsvService {
         values.add(snapshot.getPrice().getTraded());
         values.add(snapshot.getPrice().getBid());
         values.add(snapshot.getPrice().getAsk());
+        values.add(snapshot.getRange());
         values.add(snapshot.getVolume());
 
         lineBuilder.append(snapshot.getInstant().toString()).append(COMMA);
