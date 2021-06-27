@@ -20,7 +20,7 @@ public class SeriesService {
      */
     public static Series of(Asset asset) {
         if (getSeries(asset).isEmpty()) {
-            SERIES_COLLECTION.add(StoreCsvService.readFromDisk(asset));
+            SERIES_COLLECTION.add(StoreCsvService.readFromStoreCsv(asset));
         }
         return getSeries(asset).get();
     }

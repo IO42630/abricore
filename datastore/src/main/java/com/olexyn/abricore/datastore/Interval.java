@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 
 public enum Interval {
-    S_1(Duration.ofSeconds(1), "1 second", "1s"),
-    S_5(Duration.ofSeconds(5), "5 seconds", "5s"),
-    S_15(Duration.ofSeconds(15), "15 seconds", "15s"),
+    S_1(Duration.ofSeconds(1), "1 second", "1S"),
+    S_5(Duration.ofSeconds(5), "5 seconds", "5S"),
+    S_15(Duration.ofSeconds(15), "15 seconds", "15S"),
     S_30(Duration.ofSeconds(30), "30 seconds", "30S"),
     M_1(Duration.ofMinutes(1), "1 minute", "1"),
     M_3(Duration.ofMinutes(3), "3 minutes", "3"),
@@ -24,22 +24,26 @@ public enum Interval {
 
     public final Duration duration;
     private final String twLabel;
-    private final String fileLabel;
+    private final String fileToken;
 
     public String getTwLabel(){
         return  twLabel;
     }
 
-    public String getFileLabel() { return  fileLabel;}
+    public String getFileToken() { return fileToken;}
 
-    Interval(Duration duration, String twLabel, String fileLabel) {
+    Interval(Duration duration, String twLabel, String fileToken) {
         this.duration = duration;
         this.twLabel = twLabel;
-        this.fileLabel = fileLabel;
+        this.fileToken = fileToken;
     }
 
-    public static Set<String> getFileLabels() {
-        return Arrays.stream(Interval.values()).map(Interval::getFileLabel).collect(Collectors.toSet());
+    public static Set<String> getFileTokens() {
+        return Arrays.stream(Interval.values()).map(Interval::getFileToken).collect(Collectors.toSet());
+    }
+
+    public static Interval ofFileToken(String token) {
+        return Arrays.stream(values()).filter(interval -> interval.fileToken.equals(token)).findAny().orElseThrow();
     }
 }
 

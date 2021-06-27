@@ -14,27 +14,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
-
-import static com.olexyn.abricore.util.Constants.CSV;
-import static com.olexyn.abricore.util.Constants.EMPTY;
 
 public class TmpCsvService {
 
     /**
-     * TODO fix.
+     *
      */
     public static void parseTmpCsv() throws IOException {
         Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);
         Files.list(tmpQuotes)
-            .filter(x -> containsAnyToken(x, AssetService.getNames()))
-            .filter(x -> containsAnyToken(x, Interval.getFileLabels()))
-            .map(x -> {
-                Series series = readFromDisk(x);
+            .filter(path -> FileNameUtil.containsAnyToken(path, AssetService.getNames()))
+            .filter(path -> FileNameUtil.containsAnyToken(path, Interval.getFileTokens()))
+            .map(path -> {
+                Series series = readFromTmpCsv(path);
                 try {
-                    Files.move(x, Paths.get(Parameters.QUOTES_DIR_PROCESSED + x.getFileName().toString()));
+                    Files.move(path, FileNameUtil.getProcessedPath(path));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -44,40 +39,28 @@ public class TmpCsvService {
             .forEach(StoreCsvService::update);
     }
 
-    private static boolean containsAnyToken(Path candidate, Set<String> tokens) {
-        String fileName = candidate.getFileName().toString();
-        fileName = fileName.replace(CSV, EMPTY);
-        String[] words = fileName.split("[_, ]");
-        for (String word : words) {
-            for (String token : new ArrayList<>(tokens)) {
-                if (word.toUpperCase().equals(token.toUpperCase())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 
     /**
      * Wrapper for readFromDisk(Asset asset, Interval interval).
      */
-    private static Series readFromDisk(Path path) {
+    private static Series readFromTmpCsv(Path path) {
         Asset asset;
         Interval interval;
         try {
-            asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());
-            interval = FileNameUtil.mapToFirstInterval(path.getFileName().toString());
-            return readFromDisk(path, asset, interval);
+            asset = FileNameUtil.mapToFirstAsset(path);
+            interval = FileNameUtil.mapToFirstInterval(path);
+            return readFromTmpCsv(path, asset, interval);
         } catch (StoreException e) {
             return null;
         }
     }
 
-    private static Series readFromDisk(Path path, Asset asset, Interval interval) {
+    private static Series readFromTmpCsv(Path path, Asset asset, Interval interval) {
         Series out = new Series(asset);
 
         try {
-            asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());
+            asset = FileNameUtil.mapToFirstAsset(path);
         } catch (StoreException e) {
             return  out;
         }
@@ -91,7 +74,7 @@ public class TmpCsvService {
                 throw new StoreException();
             }
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot snapshot = mapData(headerArray, lineInArray, asset, interval);
+                AssetSnapshot snapshot = mapDataFromTmpCsvLine(headerArray, lineInArray, asset, interval);
                 out.put(snapshot.getInstant(), snapshot);
             }
         } catch (CsvValidationException | IOException e) {
@@ -100,7 +83,7 @@ public class TmpCsvService {
         return out;
     }
 
-    public static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
+    public static AssetSnapshot mapDataFromTmpCsvLine(String[] headerArray, String[] lineArray, Asset asset, Interval interval) {
 
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         ANum low = null;
@@ -135,7 +118,7 @@ public class TmpCsvService {
             }
         }
 
-        if (interval == Interval.M_1 && high != null && low != null) {
+        if (high != null && low != null) {
             snapshot.setRange(high.minus(low));
         }
 

@@ -4,6 +4,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -12,12 +13,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import static com.olexyn.abricore.util.Constants.COMMA;
+import static com.olexyn.abricore.util.Constants.CSV;
 import static com.olexyn.abricore.util.Constants.NEWLINE;
 import static com.olexyn.abricore.util.Constants.NULL;
 
@@ -29,12 +32,12 @@ public class StoreCsvService {
      * Read a Series from Store. <br>
      * This is done by mapping the columns of the CSV to fields recognized by the AssetSnapshot.
      */
-    public static Series readFromDisk(Asset asset) {
-        Path path = FileNameUtil.getStorePath(asset);
+    public static Series readFromStoreCsv(Asset asset) {
+        Path path = getStorePath(asset);
         Series out = new Series(asset);
 
         try {
-            asset = FileNameUtil.mapToFirstAsset(path.getFileName().toString());
+            asset = FileNameUtil.mapToFirstAsset(path);
         } catch (StoreException e) {
             return  out;
         }
@@ -49,7 +52,7 @@ public class StoreCsvService {
             }
 
             while ((lineInArray = reader.readNext()) != null) {
-                AssetSnapshot assetSnapshot = mapData(headerArray, lineInArray, asset);
+                AssetSnapshot assetSnapshot = mapDataFromStoreCsvLine(headerArray, lineInArray, asset);
                 out.put(assetSnapshot.getInstant(), assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
@@ -66,7 +69,7 @@ public class StoreCsvService {
      */
     private static void writeToStore(Series series) {
 
-        Path path = FileNameUtil.getStorePath(series.getAsset());
+        Path path = getStorePath(series.getAsset());
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.toFile()))) {
 
             bufferedWriter.write(StoreHeader.getHeader());
@@ -95,7 +98,7 @@ public class StoreCsvService {
     public static void update(Series newEntries) {
         Asset asset = newEntries.getAsset();
 
-        Series storedMap = readFromDisk(asset);
+        Series storedMap = readFromStoreCsv(asset);
 
         for (Entry<Instant, AssetSnapshot> newEntry : newEntries.entrySet()) {
             if (storedMap.containsKey(newEntry.getKey())) {
@@ -109,7 +112,7 @@ public class StoreCsvService {
         writeToStore(storedMap);
     }
 
-    public static AssetSnapshot mapData(String[] headerArray, String[] lineArray, Asset asset) {
+    private static AssetSnapshot mapDataFromStoreCsvLine(String[] headerArray, String[] lineArray, Asset asset) {
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         for (int i = 0; i < headerArray.length; i++) {
             switch (StoreHeader.valueOf(headerArray[i].toUpperCase().trim())) {
@@ -138,7 +141,7 @@ public class StoreCsvService {
         return snapshot;
     }
 
-    public static void buildLine(StringBuilder lineBuilder, AssetSnapshot snapshot) {
+    private static void buildLine(StringBuilder lineBuilder, AssetSnapshot snapshot) {
         List<ANum> values = new ArrayList<>();
         values.add(snapshot.getPrice().getTraded());
         values.add(snapshot.getPrice().getBid());
@@ -156,6 +159,10 @@ public class StoreCsvService {
                 lineBuilder.append(NEWLINE);
             }
         }
+    }
+
+    static Path getStorePath(Asset asset) {
+        return Paths.get(Parameters.QUOTES_DIR_STORE + asset.getName() + CSV);
     }
 
 }

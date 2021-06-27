@@ -104,7 +104,7 @@ public class TwFetch extends Fetch {
 
     private static void setInterval(WebDriver driver, Interval interval) {
         driver.findElement(By.id("header-toolbar-intervals")).click();
-        DriverUtil.getByFieldValue(driver, "div", "data-value", interval.getFileLabel().toUpperCase()).click();
+        DriverUtil.getByFieldValue(driver, "div", "data-value", interval.getFileToken().toUpperCase()).click();
     }
 
     private static void download(WebDriver driver) {

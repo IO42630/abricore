@@ -70,7 +70,7 @@ public class DownloadTwMode extends Mode {
         TmpCsvService.parseTmpCsv();
         for (Asset asset : assets) {
             // TODO make sure it merges with runtime data.
-            StoreCsvService.readFromDisk(asset);
+            StoreCsvService.readFromStoreCsv(asset);
         }
     }
 
