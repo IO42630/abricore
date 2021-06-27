@@ -21,8 +21,7 @@ public class DownloadTwMode extends Mode {
 
     private static final Logger LOGGER = LogUtil.get(DownloadTwMode.class);
 
-    private static final long DOWNLOAD_INTERVAL = Long.parseLong(Main.config.getProperty("tw.download.interval.hours"));
-
+    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(Main.config.getProperty("tw.download.interval.minutes"));
 
     private TwSession twSession;
     private TwFetch twFetch;
@@ -40,7 +39,7 @@ public class DownloadTwMode extends Mode {
             try {
 
                 Instant lastTwDownload = Instant.parse(Main.events.getProperty("tw.last.download"));
-                if (lastTwDownload.plus(Duration.ofHours(DOWNLOAD_INTERVAL)).isBefore(Instant.now())) {
+                if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                     fetchData();
                     Main.events.setProperty("tw.last.download", Instant.now().toString());
                     Main.saveProperties(Main.events, "events.properties");
@@ -66,7 +65,7 @@ public class DownloadTwMode extends Mode {
 
     @Override
     public void fetchData() throws InterruptedException, IOException {
-        twFetch.fetchHistoricalData(assets, DOWNLOAD_INTERVAL);
+        twFetch.fetchHistoricalData(assets, INTERVAL_BETWEEN_DOWNLOADS);
         TmpCsvService.parseTmpCsv();
         for (Asset asset : assets) {
             // TODO make sure it merges with runtime data.

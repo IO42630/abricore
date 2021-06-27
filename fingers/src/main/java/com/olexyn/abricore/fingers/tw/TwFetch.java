@@ -31,7 +31,7 @@ public class TwFetch extends Fetch {
         this.assetToScrape = null;
     }
 
-    public void fetchHistoricalData(List<Asset> assets, long interval) throws InterruptedException {
+    public void fetchHistoricalData(List<Asset> assets, long intervalBetweenDownloads) throws InterruptedException {
 
         Thread.sleep(1000);
 
@@ -45,7 +45,8 @@ public class TwFetch extends Fetch {
         WebElement goToDateButton = DriverUtil.getByFieldValue(driver, "div", "data-name", "go-to-date");
         goToDateButton.click();
 
-        LocalDateTime startDateTime = LocalDateTime.now().minus(Duration.ofHours(6));
+        int buffer = 5;
+        LocalDateTime startDateTime = LocalDateTime.now().minus(Duration.ofMinutes(intervalBetweenDownloads + buffer));
 
         LocalDate startDate = startDateTime.toLocalDate();
         LocalTime startTime = startDateTime.toLocalTime();
