@@ -2,6 +2,7 @@ package com.olexyn.abricore.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.logging.Logger;
 
 import static com.olexyn.abricore.util.Constants.DOT;
 import static com.olexyn.abricore.util.Constants.DOT_REGEX;
@@ -17,6 +18,8 @@ import static com.olexyn.abricore.util.Constants.ZERO_STR;
  * 9 223 372 036 854 775 807 . 999 999 999
  */
 public class ANum {
+
+    private static final Logger LOGGER = LogUtil.get(ANum.class);
 
     private long num;
     private int dec;
@@ -37,27 +40,32 @@ public class ANum {
 
 
     public static ANum of(String string) {
-        if (string == null
-            || string.equals(NULL)
-            || string.equals("NaN")
-            || string.contains("e")
-        ) {
-            return null;
-        }
-
-        if (string.contains(DOT)) {
-            String[] split = string.split(DOT_REGEX);
-            long num = Long.parseLong(split[0]);
-            StringBuilder decStringBuilder = new StringBuilder(split[1]);
-            while (decStringBuilder.length() < 9) {
-                decStringBuilder.append(ZERO_STR);
+        try {
+            if (string == null
+                || string.equals(NULL)
+                || string.equals("NaN")
+                || string.contains("e")
+            ) {
+                return null;
             }
-            int dec = Integer.parseInt(decStringBuilder.substring(0, 9));
-            return new ANum(num, dec);
-        } else {
-            long num = Long.parseLong(string);
-            int dec = 0;
-            return new ANum(num, dec);
+
+            if (string.contains(DOT)) {
+                String[] split = string.split(DOT_REGEX);
+                long num = Long.parseLong(split[0]);
+                StringBuilder decStringBuilder = new StringBuilder(split[1]);
+                while (decStringBuilder.length() < 9) {
+                    decStringBuilder.append(ZERO_STR);
+                }
+                int dec = Integer.parseInt(decStringBuilder.substring(0, 9));
+                return new ANum(num, dec);
+            } else {
+                long num = Long.parseLong(string);
+                int dec = 0;
+                return new ANum(num, dec);
+            }
+        } catch (NumberFormatException e) {
+            LOGGER.severe("FAILED to parse >" + string + "<.");
+            throw e;
         }
     }
 
