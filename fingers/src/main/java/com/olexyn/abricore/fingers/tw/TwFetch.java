@@ -1,20 +1,25 @@
 package com.olexyn.abricore.fingers.tw;
 
+import com.olexyn.abricore.datastore.AssetService;
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.fingers.DriverUtil;
-import com.olexyn.abricore.fingers.DriverUtil.CRITERIA;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TwFetch extends Fetch {
 
@@ -26,25 +31,51 @@ public class TwFetch extends Fetch {
         this.assetToScrape = null;
     }
 
-    public Map<Asset, List<AssetSnapshot>> fetchHistoricalData(List<Asset> assets) throws InterruptedException {
+    public void fetchHistoricalData(List<Asset> assets, long interval) throws InterruptedException {
+
+        Thread.sleep(1000);
+
+        Asset asset = AssetService.ofName("BTCUSD");
+        String url = asset.getTwSymbol().replace(":", "%3A");
+
+        driver.get("https://www.tradingview.com/" + "chart?symbol=" + url);
+        setInterval(driver, Interval.S_1);
 
 
-        Instant oldEarly = Instant.now();
-            driver.get("https://www.tradingview.com/" + "chart?symbol=FX%3AXAGUSD");
-            setInterval(driver, Interval.M_30);
-            while (cont) {
+        WebElement goToDateButton = DriverUtil.getByFieldValue(driver, "div", "data-name", "go-to-date");
+        goToDateButton.click();
 
-                download(driver);
+        LocalDateTime startDateTime = LocalDateTime.now().minus(Duration.ofHours(6));
 
-                Instant newEarly = null; //StoreCsvService.getInstance().read(new Stock(""), Interval.M_30).firstEntry().getKey();
-                if (newEarly.isBefore(oldEarly)) {
-                    oldEarly = newEarly;
-                    // TODO goto DATE - FOO (foo depends on Interval chosen)
-                } else {
-                    cont = false;
-                }
-            }
-        return null;
+        LocalDate startDate = startDateTime.toLocalDate();
+        LocalTime startTime = startDateTime.toLocalTime();
+
+        if (startDate.isBefore(LocalDate.now())) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String startDateStr = startDate.format(dateFormatter);
+            String nowDateStr = LocalDate.now().format(dateFormatter);
+
+            WebElement dateField = DriverUtil.getByFieldValue(driver, "input", "value", nowDateStr);
+            DriverUtil.sendDeleteKeys(dateField, 10);
+            dateField.sendKeys(startDateStr);
+
+        }
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String startTimeString = startTime.format(timeFormatter);
+
+
+        WebElement timeField = DriverUtil.getByFieldValue(driver, "input", "value", "00:00");
+        timeField.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
+        timeField.sendKeys(startTimeString);
+        timeField.sendKeys(Keys.ENTER);
+
+        WebElement submitButton = DriverUtil.getByFieldValue(driver, "button", "name", "submit");
+        submitButton.click();
+
+        download(driver);
+
+
     }
 
     public List<AssetSnapshot> fetchQuotes(List<Asset> assets) throws InterruptedException {
@@ -72,14 +103,17 @@ public class TwFetch extends Fetch {
     }
 
     private static void setInterval(WebDriver driver, Interval interval) {
-        DriverUtil.getWhere(driver, "apply-common-tooltip", CRITERIA.TITLE, interval.getTwLabel()).click();
-        DriverUtil.getWhere(driver, "label-3Xqxy756", CRITERIA.TEXT, interval.getTwLabel()).click();
+        driver.findElement(By.id("header-toolbar-intervals")).click();
+        DriverUtil.getByFieldValue(driver, "div", "data-value", interval.getFileLabel().toUpperCase()).click();
     }
 
     private static void download(WebDriver driver) {
-        DriverUtil.getWhere(driver, "button-9U4gleap").click();
-        DriverUtil.getWhere(driver, "labelRow-3Q0rdE8-", CRITERIA.TEXT, "Export chart").click();
-        DriverUtil.getWhere(driver, "submitButton-2lNICzl3").click();
+        WebElement topLeftArea = DriverUtil.getByFieldValue(driver, "div", "class", "layout__area--topleft");
+        DriverUtil.getByFieldValue(topLeftArea, "div", "data-role", "button").click();
+
+        DriverUtil.getByText(driver, "Export chart data…").click();
+
+        DriverUtil.getByFieldValue(driver, "button", "name", "submit").click();
     }
 
 }

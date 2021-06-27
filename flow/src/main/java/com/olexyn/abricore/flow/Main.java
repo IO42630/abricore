@@ -40,9 +40,10 @@ public class Main {
 
         TmpCsvService.parseTmpCsv();
 
-        System.exit(0);
+
 
         new Thread(new DownloadTwMode(new ArrayList<>(AssetService.SYMBOLS))).start();
+
         // new Thread(new SyncCdfSqMode(underlyingAsset)).start();
         // new Thread(new ObserveTwMode(underlyingAsset)).start();
         // new Thread(new TradeSqMode(new Mission())).start();

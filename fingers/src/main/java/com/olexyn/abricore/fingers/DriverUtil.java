@@ -2,9 +2,9 @@ package com.olexyn.abricore.fingers;
 
 
 import com.olexyn.abricore.fingers.sq.SleepFactory;
-import com.olexyn.abricore.util.enums.Currency;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -139,5 +139,23 @@ public class DriverUtil {
         WebElement combo = driver.findElement(comboBy);
         combo.click();
         combo.findElement(By.cssSelector("li[data-value='" + dataValue + "']")).click();
+    }
+
+    public static WebElement getByFieldValue(WebDriver driver, String type, String field, String value) {
+        return driver.findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
+    }
+
+    public static WebElement getByFieldValue(WebElement element, String type, String field, String value) {
+        return element.findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
+    }
+
+    public static WebElement getByText(WebDriver driver, String text) {
+        return driver.findElement (By.xpath ("//*[contains(text(),'" + text + "')]"));
+    }
+
+    public static void sendDeleteKeys(WebElement element, int n) {
+        for (int i = 0; i < n; i++) {
+            element.sendKeys(Keys.BACK_SPACE);
+        }
     }
 }

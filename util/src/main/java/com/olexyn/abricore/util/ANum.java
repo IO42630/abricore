@@ -37,7 +37,11 @@ public class ANum {
 
 
     public static ANum of(String string) {
-        if (string == null || string.equals(NULL)) {
+        if (string == null
+            || string.equals(NULL)
+            || string.equals("NaN")
+            || string.contains("e")
+        ) {
             return null;
         }
 
@@ -51,7 +55,6 @@ public class ANum {
             int dec = Integer.parseInt(decStringBuilder.substring(0, 9));
             return new ANum(num, dec);
         } else {
-            System.out.println(string);
             long num = Long.parseLong(string);
             int dec = 0;
             return new ANum(num, dec);

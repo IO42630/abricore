@@ -31,7 +31,15 @@ public class TmpCsvService {
         Files.list(tmpQuotes)
             .filter(x -> containsAnyToken(x, AssetService.getNames()))
             .filter(x -> containsAnyToken(x, Interval.getFileLabels()))
-            .map(TmpCsvService::readFromDisk)
+            .map(x -> {
+                Series series = readFromDisk(x);
+                try {
+                    Files.move(x, Paths.get(Parameters.QUOTES_DIR_PROCESSED + x.getFileName().toString()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return series;
+            })
             .filter(Objects::nonNull)
             .forEach(StoreCsvService::update);
     }
@@ -42,7 +50,7 @@ public class TmpCsvService {
         String[] words = fileName.split("[_, ]");
         for (String word : words) {
             for (String token : new ArrayList<>(tokens)) {
-                if (word.equals(token)) {
+                if (word.toUpperCase().equals(token.toUpperCase())) {
                     return true;
                 }
             }

@@ -1,26 +1,27 @@
 package com.olexyn.abricore.flow.modes.observe;
 
+import com.olexyn.abricore.datastore.StoreCsvService;
+import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
-import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.flow.Main;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.snapshots.AssetSnapshot;
-import com.olexyn.abricore.model.snapshots.Series;
+import com.olexyn.abricore.util.LogUtil;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DownloadTwMode extends Mode {
 
     private static final Logger LOGGER = LogUtil.get(DownloadTwMode.class);
+
+    private static final long DOWNLOAD_INTERVAL = Long.parseLong(Main.config.getProperty("tw.download.interval.hours"));
 
 
     private TwSession twSession;
@@ -39,7 +40,7 @@ public class DownloadTwMode extends Mode {
             try {
 
                 Instant lastTwDownload = Instant.parse(Main.events.getProperty("tw.last.download"));
-                if (lastTwDownload.plus(Duration.ofHours(8)).isBefore(Instant.now())) {
+                if (lastTwDownload.plus(Duration.ofHours(DOWNLOAD_INTERVAL)).isBefore(Instant.now())) {
                     fetchData();
                     Main.events.setProperty("tw.last.download", Instant.now().toString());
                     Main.saveProperties(Main.events, "events.properties");
@@ -64,13 +65,12 @@ public class DownloadTwMode extends Mode {
     }
 
     @Override
-    public void fetchData() throws InterruptedException {
-        Map<Asset,List<AssetSnapshot>> historicalData = twFetch.fetchHistoricalData(assets);
-
-        for (Series series : getCdfSeriesList()) {
-            if (historicalData.containsKey(series.getAsset())) {
-                series.addAll(historicalData.get(series.getAsset()));
-            }
+    public void fetchData() throws InterruptedException, IOException {
+        twFetch.fetchHistoricalData(assets, DOWNLOAD_INTERVAL);
+        TmpCsvService.parseTmpCsv();
+        for (Asset asset : assets) {
+            // TODO make sure it merges with runtime data.
+            StoreCsvService.readFromDisk(asset);
         }
     }
 

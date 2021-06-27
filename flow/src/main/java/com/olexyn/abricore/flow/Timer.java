@@ -12,7 +12,7 @@ public class Timer {
     }
 
     public boolean hasPassed(TemporalAmount duration) {
-        return startTime.plus(duration).isAfter(Instant.now());
+        return startTime.plus(duration).isBefore(Instant.now());
     }
 
 }

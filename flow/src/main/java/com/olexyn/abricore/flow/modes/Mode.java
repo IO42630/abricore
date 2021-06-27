@@ -6,6 +6,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.Observer;
 import com.olexyn.abricore.model.snapshots.Series;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public abstract class Mode implements Runnable, Observer {
           cdfSeriesList.add(new Series(asset));
      }
 
-     public abstract void fetchData() throws InterruptedException;
+     public abstract void fetchData() throws InterruptedException, IOException;
 
      public void onSeriesUpdate() {
 
