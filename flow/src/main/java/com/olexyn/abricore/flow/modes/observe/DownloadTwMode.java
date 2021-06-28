@@ -68,7 +68,9 @@ public class DownloadTwMode extends Mode {
     public void fetchData() throws InterruptedException, IOException {
         List<Interval> intervals = new ArrayList<>();
         intervals.add(Interval.S_1);
+        LOGGER.info("STARTED downloading historical data.");
         twFetch.fetchHistoricalData(assets, intervals, INTERVAL_BETWEEN_DOWNLOADS);
+        LOGGER.info("FINISHED downloading historical data.");
         Thread.sleep(1000L);
         TmpCsvService.parseTmpCsv();
         for (Asset asset : assets) {

@@ -4,6 +4,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -15,13 +16,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class TmpCsvService {
+
+    private static final Logger LOGGER = LogUtil.get(TmpCsvService.class);
 
     /**
      *
      */
     public static void parseTmpCsv() throws IOException {
+        LOGGER.info("STARTED parsing TMP CSV.");
         Path tmpQuotes = Paths.get(Parameters.QUOTES_DIR_TMP);
         Files.list(tmpQuotes)
             .filter(path -> FileNameUtil.containsAnyToken(path, AssetService.getNames()))
@@ -37,6 +42,8 @@ public class TmpCsvService {
             })
             .filter(Objects::nonNull)
             .forEach(StoreCsvService::update);
+        LOGGER.info("FINISHED parsing TMP CSV.");
+
     }
 
 
