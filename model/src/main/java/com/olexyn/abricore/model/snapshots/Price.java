@@ -43,18 +43,12 @@ public class Price {
         if (newPrice != null) {
             if (this.traded == null) {
                 this.traded = newPrice.getTraded();
-            } else {
-                this.traded.mergeFrom(newPrice.getTraded());
             }
             if (this.bid == null) {
                 this.bid = newPrice.getBid();
-            } else {
-                this.bid.mergeFrom(newPrice.getBid());
             }
             if (this.ask == null) {
                 this.ask = newPrice.getAsk();
-            } else {
-                this.ask.mergeFrom(newPrice.getAsk());
             }
         }
     }

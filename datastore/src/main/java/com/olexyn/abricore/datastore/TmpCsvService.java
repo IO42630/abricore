@@ -99,17 +99,23 @@ public class TmpCsvService {
                     snapshot.setInstant(Instant.ofEpochSecond(Long.parseLong(lineArray[i])));
                     break;
                 case OPEN:
-                    snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
+                    if (interval == Interval.S_1) {
+                        snapshot.getPrice().setTraded(ANum.of(lineArray[i]));
+                    }
                     break;
                 case LOW:
-                    low = ANum.of(lineArray[i]);
+                    if (interval == Interval.S_1) {
+                        low = ANum.of(lineArray[i]);
+                    }
                     break;
                 case HIGH:
-                    high = ANum.of(lineArray[i]);
+                    if (interval == Interval.S_1) {
+                        high = ANum.of(lineArray[i]);
+                    }
                     break;
                 case VOLUME:
                     // Convention: only track volume on the 1 minute interval.
-                    if (interval == Interval.M_1) {
+                    if (interval == Interval.S_1) {
                         snapshot.setVolume(ANum.of(lineArray[i]));
                     }
                     break;

@@ -79,13 +79,9 @@ public class AssetSnapshot {
         this.getPrice().mergeFrom(newSnap.getPrice());
         if (this.volume == null) {
             this.volume = newSnap.getVolume();
-        } else {
-            this.getVolume().mergeFrom(newSnap.getVolume());
         }
         if (this.range == null) {
             this.range = newSnap.getRange();
-        } else {
-            this.getRange().mergeFrom(newSnap.getRange());
         }
     }
 
