@@ -11,6 +11,18 @@ import java.time.format.DateTimeFormatter;
 
 public class DataUtil {
 
+    public enum JsonKeys {
+        SYMBOLS,
+        NAME,
+        TYPE,
+        TW_SYMBOL,
+        SQ_ISIN,
+        STRIKE,
+        OPTION_TYPE,
+        UNDERLYING,
+
+    }
+
     private static final DateTimeFormatter SQ_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     public static LocalDateTime parseDate(String string) {
