@@ -8,6 +8,8 @@ import com.olexyn.abricore.util.enums.Exchange;
 
 public abstract class Asset {
 
+    private AssetType assetType;
+
     private final String name;
 
     private String twSymbol;
@@ -20,6 +22,14 @@ public abstract class Asset {
 
     public Asset(String name) {
         this.name = name;
+    }
+
+    public AssetType getAssetType() {
+        return assetType;
+    }
+
+    public void setAssetType(AssetType assetType) {
+        this.assetType = assetType;
     }
 
     public String getName() {

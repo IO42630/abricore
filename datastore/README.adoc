@@ -19,4 +19,9 @@ There are two type of batches:
 ==== `resources`
 
 * `symbols.json`
-**  switching data sources, e.g. from OANDA:XAGUSD to FX:XAGUSD will cause data to be overwritten.
+** contains description of underlying assets
+** manual editing only
+** switching data sources, e.g. from OANDA:XAGUSD to FX:XAGUSD will cause data to be overwritten.
+* `symbols-test.json`
+** contains description of cdfs
+** updated in SyncCdfMode

@@ -4,6 +4,7 @@ import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.fingers.DriverUtil;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.AssetType;
 import com.olexyn.abricore.model.options.BarrierOption;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.options.OptionType;
@@ -151,10 +152,13 @@ public class SqNavigator implements Navigator {
             switch (mod) {
                 case 0:
                     tempAsset = new BarrierOption( cellText.split("  ")[1]);
+                    tempAsset.setAssetType(AssetType.BARRIER_OPTION);
                     break;
                 case 5:
+                    assert tempAsset != null;
                     tempAsset.setStrike(ANum.of(cellText));
-                    tempAsset.setType(optionType);
+                    tempAsset.setOptionType(optionType);
+                    tempAsset.setUnderlying(asset);
                     assets.add(tempAsset);
                     break;
                 default:

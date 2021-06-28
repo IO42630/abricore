@@ -7,12 +7,12 @@ import java.time.Instant;
 
 public abstract class Option extends Asset {
 
-    private Asset underlyingAsset;
+    private Asset underlying;
     private ANum strike;
     private Instant expiry;
     private ANum ratio;
 
-    private OptionType type;
+    private OptionType optionType;
 
 
 
@@ -22,6 +22,14 @@ public abstract class Option extends Asset {
 
     public ANum getStrike() {
         return strike;
+    }
+
+    public Asset getUnderlying() {
+        return underlying;
+    }
+
+    public void setUnderlying(Asset underlying) {
+        this.underlying = underlying;
     }
 
     public void setStrike(ANum strike) {
@@ -52,11 +60,11 @@ public abstract class Option extends Asset {
         this.ratio = ratio;
     }
 
-    public OptionType getType() {
-        return type;
+    public OptionType getOptionType() {
+        return optionType;
     }
 
-    public void setType(OptionType type) {
-        this.type = type;
+    public void setOptionType(OptionType optionType) {
+        this.optionType = optionType;
     }
 }

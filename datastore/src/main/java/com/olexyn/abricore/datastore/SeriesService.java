@@ -25,6 +25,12 @@ public class SeriesService {
         return getSeries(asset).get();
     }
 
+    public static void add(Asset asset) {
+        if (getSeries(asset).isEmpty()) {
+            SERIES_COLLECTION.add(new Series(asset));
+        }
+    }
+
     private static Optional<Series> getSeries(Asset asset) {
         return SERIES_COLLECTION.stream()
             .filter(x -> x.getAsset().equals(asset))

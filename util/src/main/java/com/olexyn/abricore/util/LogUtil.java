@@ -13,7 +13,7 @@ public class LogUtil {
     public static Logger get(Class c) {
         Logger logger = Logger.getLogger(c.getName());
         try {
-            String dir = System.getProperty("user.dir") + "/flow/src/main/resources/main.log";
+            String dir = Parameters.LOGS_DIR + "main.log";
             FileHandler fh = new FileHandler(dir, true);
             fh.setFormatter(new SimpleFormatter() {
                 private static final String format = "[%1$tF %1$tT] [%2$-7s] %3$s %n";
