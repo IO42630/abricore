@@ -40,9 +40,11 @@ public class Main {
 
         TmpCsvService.parseTmpCsv();
 
+        List<Asset> assets = new ArrayList<>();
+        assets.add(AssetService.ofName("BTCUSD"));
+        assets.add(AssetService.ofName("XAGUSD"));
 
-
-        new Thread(new DownloadTwMode(new ArrayList<>(AssetService.SYMBOLS))).start();
+        new Thread(new DownloadTwMode(assets)).start();
 
         // new Thread(new SyncCdfSqMode(underlyingAsset)).start();
         // new Thread(new ObserveTwMode(underlyingAsset)).start();

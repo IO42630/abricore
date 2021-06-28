@@ -7,8 +7,10 @@ import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -31,15 +33,35 @@ public class TwFetch extends Fetch {
         this.assetToScrape = null;
     }
 
-    public void fetchHistoricalData(List<Asset> assets, long intervalBetweenDownloads) throws InterruptedException {
+    boolean timeSkipDone = false;
+
+    public void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long intervalBetweenDownloads) throws InterruptedException {
+        for (Asset asset : assets) {
+            fetchHistoricalData(asset, intervals, intervalBetweenDownloads);
+        }
+    }
+
+    public void fetchHistoricalData(Asset asset, List<Interval> intervals, long intervalBetweenDownloads) throws InterruptedException {
+        for (Interval interval : intervals) {
+            fetchHistoricalData(asset, interval, intervalBetweenDownloads);
+        }
+    }
+
+
+    public void fetchHistoricalData(Asset asset, Interval interval, long intervalBetweenDownloads) throws InterruptedException {
 
         Thread.sleep(1000);
 
-        Asset asset = AssetService.ofName("BTCUSD");
         String url = asset.getTwSymbol().replace(":", "%3A");
 
         driver.get("https://www.tradingview.com/" + "chart?symbol=" + url);
-        setInterval(driver, Interval.S_1);
+        try{
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
+        } catch(NoAlertPresentException e){
+
+        }
+        setInterval(driver, interval);
 
 
         WebElement goToDateButton = DriverUtil.getByFieldValue(driver, "div", "data-name", "go-to-date");
@@ -50,29 +72,33 @@ public class TwFetch extends Fetch {
 
         LocalDate startDate = startDateTime.toLocalDate();
         LocalTime startTime = startDateTime.toLocalTime();
+        boolean timeSkip = startDate.isBefore(LocalDate.now());
 
-        if (startDate.isBefore(LocalDate.now())) {
+        if (timeSkip && !timeSkipDone) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String startDateStr = startDate.format(dateFormatter);
             String nowDateStr = LocalDate.now().format(dateFormatter);
-
             WebElement dateField = DriverUtil.getByFieldValue(driver, "input", "value", nowDateStr);
             DriverUtil.sendDeleteKeys(dateField, 10);
             dateField.sendKeys(startDateStr);
-
+            timeSkipDone = true;
         }
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String startTimeString = startTime.format(timeFormatter);
 
 
-        WebElement timeField = DriverUtil.getByFieldValue(driver, "input", "value", "00:00");
+        WebElement timeField = DriverUtil.getByFieldValue(driver, "input", "maxlength", "5");
+
+
         timeField.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
         timeField.sendKeys(startTimeString);
         timeField.sendKeys(Keys.ENTER);
 
         WebElement submitButton = DriverUtil.getByFieldValue(driver, "button", "name", "submit");
         submitButton.click();
+
+        Thread.sleep(5000);
 
         download(driver);
 

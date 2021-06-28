@@ -1,5 +1,6 @@
 package com.olexyn.abricore.flow.modes.observe;
 
+import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.datastore.StoreCsvService;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.fingers.tw.TwFetch;
@@ -65,7 +66,11 @@ public class DownloadTwMode extends Mode {
 
     @Override
     public void fetchData() throws InterruptedException, IOException {
-        twFetch.fetchHistoricalData(assets, INTERVAL_BETWEEN_DOWNLOADS);
+        List<Interval> intervals = new ArrayList<>();
+        intervals.add(Interval.S_1);
+        intervals.add(Interval.M_1);
+        twFetch.fetchHistoricalData(assets, intervals, INTERVAL_BETWEEN_DOWNLOADS);
+        Thread.sleep(1000L);
         TmpCsvService.parseTmpCsv();
         for (Asset asset : assets) {
             // TODO make sure it merges with runtime data.
