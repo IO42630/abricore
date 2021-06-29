@@ -1,6 +1,6 @@
 === Flow
 
-* `Main` is located here.
+* `MainApp` is located here.
 * Determines which `WebMode` the application is run in.
 
 {empty} +

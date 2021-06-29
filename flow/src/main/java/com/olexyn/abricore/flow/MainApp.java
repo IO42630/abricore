@@ -5,8 +5,9 @@ import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
-import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
+import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
 import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.UnderlyingAsset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.LogUtil;
@@ -15,14 +16,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-public class Main {
+public class MainApp {
 
-    private static final Logger LOGGER = LogUtil.get(Main.class);
+    private static final Logger LOGGER = LogUtil.get(MainApp.class);
 
     public static final Properties config = new Properties();
     public static final Properties events = new Properties();
@@ -40,14 +41,15 @@ public class Main {
 
         TmpCsvService.parseTmpCsv();
 
-        List<Asset> assets = new ArrayList<>();
-        // assets.add(AssetService.ofName("BTCUSD"));
-        assets.add(AssetService.ofName("XAGUSD"));
+        List<Asset> assets = AssetService.SYMBOLS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
+        //assets.add(AssetService.ofName("BTCUSD"));
+        //assets.add(AssetService.ofName("XAGUSD"));
 
-        // new Thread(new DownloadTwMode(assets)).start();
+        new Thread(new DownloadTwMode(assets)).start();
+
 
         for (Asset asset : assets) {
-            new Thread(new SyncCdfSqMode(asset)).start();
+           // new Thread(new SyncCdfSqMode(asset)).start();
         }
 
         // new Thread(new ObserveTwMode(underlyingAsset)).start();

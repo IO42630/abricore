@@ -1,6 +1,6 @@
 package com.olexyn.abricore.flow.modes;
 
-import com.olexyn.abricore.flow.Main;
+import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.Timer;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.Observer;
@@ -23,7 +23,7 @@ public abstract class Mode implements Runnable, Observer {
 
      public void sleep(long interval){
           timer.start();
-          while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
+          while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
                try {
                     Thread.sleep(interval);
                } catch (InterruptedException ignored) {

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit test for simple Main.
+ * Unit test for simple MainApp.
  */
 public class PropertiesTest{
     /**
@@ -19,14 +19,14 @@ public class PropertiesTest{
 
         System.setProperty("user.dir", System.getProperty("user.dir").replace("/flow", ""));
 
-        Main.loadProperties(Main.events, "events.properties");
+        MainApp.loadProperties(MainApp.events, "events.properties");
 
-        Main.events.setProperty("test", "true");
-        Main.saveProperties(Main.events, "events.properties");
-        assertEquals(Main.events.getProperty("test"), "true");
+        MainApp.events.setProperty("test", "true");
+        MainApp.saveProperties(MainApp.events, "events.properties");
+        assertEquals(MainApp.events.getProperty("test"), "true");
 
-        Main.events.setProperty("test", "false");
-        Main.saveProperties(Main.events, "events.properties");
-        assertEquals(Main.events.getProperty("test"), "false");
+        MainApp.events.setProperty("test", "false");
+        MainApp.saveProperties(MainApp.events, "events.properties");
+        assertEquals(MainApp.events.getProperty("test"), "false");
     }
 }

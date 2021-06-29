@@ -3,7 +3,7 @@ package com.olexyn.abricore.flow.modes.observe;
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
-import com.olexyn.abricore.flow.Main;
+import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
@@ -23,10 +23,10 @@ public class ObserveTwMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(Main.config.getProperty("tw.update.interval")));
+                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.update.interval")));
             } catch (InterruptedException ignored) {
 
             }

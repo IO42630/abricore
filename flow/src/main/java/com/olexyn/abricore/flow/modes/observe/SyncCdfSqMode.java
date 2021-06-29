@@ -4,7 +4,7 @@ import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqSession;
-import com.olexyn.abricore.flow.Main;
+import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.model.snapshots.Series;
@@ -31,10 +31,10 @@ public class SyncCdfSqMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(Main.config.getProperty("cdf.update.interval")));
+                Thread.sleep(Long.parseLong(MainApp.config.getProperty("cdf.update.interval")));
             } catch (InterruptedException | IOException ignored) {}
         }
         for (Series cdfSeries : cdfSeriesList) {

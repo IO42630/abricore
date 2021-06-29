@@ -1,15 +1,12 @@
 package com.olexyn.abricore.flow.modes.trade;
 
 import com.olexyn.abricore.datastore.SeriesService;
-import com.olexyn.abricore.flow.Main;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.flow.modes.Mode;
-import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;

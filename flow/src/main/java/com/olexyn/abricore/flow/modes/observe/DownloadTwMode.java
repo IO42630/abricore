@@ -5,7 +5,7 @@ import com.olexyn.abricore.datastore.StoreCsvService;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
-import com.olexyn.abricore.flow.Main;
+import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.util.LogUtil;
@@ -22,7 +22,7 @@ public class DownloadTwMode extends Mode {
 
     private static final Logger LOGGER = LogUtil.get(DownloadTwMode.class);
 
-    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(Main.config.getProperty("tw.download.interval.minutes"));
+    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(MainApp.config.getProperty("tw.download.interval.minutes"));
 
     private TwSession twSession;
     private TwFetch twFetch;
@@ -36,15 +36,15 @@ public class DownloadTwMode extends Mode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
             try {
-                Instant lastTwDownload = Instant.parse(Main.events.getProperty("tw.last.download"));
+                Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                     fetchData();
-                    Main.events.setProperty("tw.last.download", Instant.now().toString());
-                    Main.saveProperties(Main.events, "events.properties");
+                    MainApp.events.setProperty("tw.last.download", Instant.now().toString());
+                    MainApp.saveProperties(MainApp.events, "events.properties");
                 }
-                Thread.sleep(Long.parseLong(Main.config.getProperty("tw.download.check.interval")));
+                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.download.check.interval")));
             } catch (InterruptedException | IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
