@@ -43,7 +43,7 @@ public class TrainMode extends TradeMode {
         Asset asset = mission.getUnderlyingAsset();
         Interval interval = mission.getInterval();
         Series series = SeriesService.of(asset);
-        SqNavigator sqNavigator = new SqNavigator(null);
+        SqNavigator sqNavigator = new SqNavigator();
 
         // TODO
         Double assetPrice = 0d;

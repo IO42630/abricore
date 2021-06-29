@@ -22,7 +22,8 @@ public class TradeSqMode extends TradeMode {
     @Override
     public void start() {
         sqSession = new SqSession();
-        sqNavigator = new SqNavigator(sqSession.doLogin());
+        sqSession.doLogin();
+        sqNavigator = new SqNavigator();
     }
 
     /**

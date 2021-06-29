@@ -104,7 +104,12 @@ public abstract class Session {
 
     protected  abstract Map<String,String> fetchCredentials();
 
-    public abstract WebDriver doLogin();
+    public void doLogin() {
+        if (active) {
+            return;
+        }
+        newTab();
+    }
 
     public static WebElement filterElementListBy(List<WebElement> list, CRITERIA criteria, String text) {
         for (WebElement element : list) {
@@ -179,64 +184,64 @@ public abstract class Session {
 
 
 
-    public static void switchToFrameContainingCharSeq(WebDriver driver, String charSeq) {
-        driver.switchTo().defaultContent();
+    public static void switchToFrameContainingCharSeq(String charSeq) {
+        getDriver().switchTo().defaultContent();
         SleepFactory.sleep(2);
-        final String frameId= findFrameContainingCharSeq(collectAllFrames(driver), charSeq);
+        final String frameId= findFrameContainingCharSeq(collectAllFrames(getDriver()), charSeq);
         SleepFactory.sleep(2);
         switch (frameId) {
             case FRAME_ID_DEFAULT_CONTENT:
-                driver.switchTo().defaultContent();
+                getDriver().switchTo().defaultContent();
                 break;
             case FRAME_ID_NONE_FOUND:
                 break;
             default:
-                driver.switchTo().frame(Integer.parseInt(frameId));
+                getDriver().switchTo().frame(Integer.parseInt(frameId));
         }
     }
 
     /**
      * Return the first occurrence of specified class that has specified label.
      */
-    public static WebElement getWhere(WebDriver driver, String className, CRITERIA criteria, String text) {
-        switchToFrameContainingCharSeq(driver, text);
-        List<WebElement> elements = driver.findElements(By.className(className));
+    public static WebElement getWhere(String className, CRITERIA criteria, String text) {
+        switchToFrameContainingCharSeq(text);
+        List<WebElement> elements = getDriver().findElements(By.className(className));
         return filterElementListBy(elements, criteria, text);
     }
 
-    public static WebElement getWhere(WebDriver driver, String className) {
-        switchToFrameContainingCharSeq(driver, className);
-        List<WebElement> elements = driver.findElements(By.className(className));
-        return filterElementListBy(elements, CRITERIA.NONE, "");
+    public static WebElement getWhere(String className) {
+        switchToFrameContainingCharSeq(className);
+        List<WebElement> elements = getDriver().findElements(By.className(className));
+        return filterElementListBy(elements, CRITERIA.NONE, Constants.EMPTY);
     }
 
-    public static void followContainedLink(WebDriver driver, WebElement element) {
+    public static void followContainedLink(WebElement element) {
         String link = element.getAttribute("href");
-        if (link != null) driver.navigate().to(link);
+        if (link != null) getDriver().navigate().to(link);
     }
 
 
 
-    public static void setRadio(WebDriver driver, By by, boolean checked) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].checked = "+ checked + ";", driver.findElement(by));
+    public static void setRadio(By by, boolean checked) {
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].checked = "+ checked + ";", getDriver().findElement(by));
     }
 
-    public static void setComboByDataValue(WebDriver driver, By comboBy, String dataValue) {
-        WebElement combo = driver.findElement(comboBy);
+    public static void setComboByDataValue(By comboBy, String dataValue) {
+        WebElement combo = getDriver().findElement(comboBy);
         combo.click();
         combo.findElement(By.cssSelector("li[data-value='" + dataValue + "']")).click();
     }
 
-    public static WebElement getByFieldValue(WebDriver driver, String type, String field, String value) {
-        return driver.findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
+    public static WebElement getByFieldValue(String type, String field, String value) {
+        return getDriver().findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
     }
 
     public static WebElement getByFieldValue(WebElement element, String type, String field, String value) {
         return element.findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
     }
 
-    public static WebElement getByText(WebDriver driver, String text) {
-        return driver.findElement (By.xpath ("//*[contains(text(),'" + text + "')]"));
+    public static WebElement getByText(String text) {
+        return getDriver().findElement (By.xpath ("//*[contains(text(),'" + text + "')]"));
     }
 
     public static void sendDeleteKeys(WebElement element, int n) {

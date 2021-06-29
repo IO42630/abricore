@@ -32,8 +32,7 @@ public class TwFetch extends Fetch {
     final Asset assetToScrape;
     boolean cont = true;
 
-    public TwFetch(WebDriver driver) {
-        super(driver);
+    public TwFetch() {
         this.assetToScrape = null;
     }
 
@@ -58,17 +57,17 @@ public class TwFetch extends Fetch {
 
         String url = asset.getTwSymbol().replace(":", "%3A");
 
-        driver.get("https://www.tradingview.com/" + "chart?symbol=" + url);
+        Session.getDriver().get("https://www.tradingview.com/" + "chart?symbol=" + url);
         try{
-            Alert alert = driver.switchTo().alert();
+            Alert alert = Session.getDriver().switchTo().alert();
             alert.accept();
         } catch(NoAlertPresentException e){
 
         }
-        setInterval(driver, interval);
+        setInterval(interval);
 
 
-        WebElement goToDateButton = Session.getByFieldValue(driver, "div", "data-name", "go-to-date");
+        WebElement goToDateButton = Session.getByFieldValue("div", "data-name", "go-to-date");
         goToDateButton.click();
 
         int buffer = 5;
@@ -82,7 +81,7 @@ public class TwFetch extends Fetch {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String startDateStr = startDate.format(dateFormatter);
             String nowDateStr = LocalDate.now().format(dateFormatter);
-            WebElement dateField = Session.getByFieldValue(driver, "input", "value", nowDateStr);
+            WebElement dateField = Session.getByFieldValue("input", "value", nowDateStr);
             Session.sendDeleteKeys(dateField, 10);
             dateField.sendKeys(startDateStr);
             timeSkipDone = true;
@@ -92,19 +91,19 @@ public class TwFetch extends Fetch {
         String startTimeString = startTime.format(timeFormatter);
 
 
-        WebElement timeField = Session.getByFieldValue(driver, "input", "maxlength", "5");
+        WebElement timeField = Session.getByFieldValue("input", "maxlength", "5");
 
 
         timeField.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
         timeField.sendKeys(startTimeString);
         timeField.sendKeys(Keys.ENTER);
 
-        WebElement submitButton = Session.getByFieldValue(driver, "button", "name", "submit");
+        WebElement submitButton = Session.getByFieldValue("button", "name", "submit");
         submitButton.click();
 
         Thread.sleep(5000);
 
-        download(driver);
+        download();
 
 
     }
@@ -114,15 +113,15 @@ public class TwFetch extends Fetch {
 
         Thread.sleep(1000);
 
-        WebElement watchlist = driver.findElement(By.className("widgetbar-widget-watchlist"));
+        WebElement watchlist = Session.getDriver().findElement(By.className("widgetbar-widget-watchlist"));
         if (!watchlist.isDisplayed()) {
-            WebElement watchlistButton = driver.findElement(By.cssSelector("div[data-name='base']"));
+            WebElement watchlistButton = Session.getDriver().findElement(By.cssSelector("div[data-name='base']"));
             watchlistButton.click();
         }
 
         for (Asset asset : assets) {
             String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
-            WebElement symbol = driver.findElement(By.cssSelector(dataSymbolFull));
+            WebElement symbol = Session.getDriver().findElement(By.cssSelector(dataSymbolFull));
             WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
             AssetSnapshot assetSnapshot = new AssetSnapshot(asset);
             assetSnapshot.setInstant(Instant.now());
@@ -133,18 +132,18 @@ public class TwFetch extends Fetch {
         return assetSnapshots;
     }
 
-    private static void setInterval(WebDriver driver, Interval interval) {
-        driver.findElement(By.id("header-toolbar-intervals")).click();
-        Session.getByFieldValue(driver, "div", "data-value", interval.getFileToken().toUpperCase()).click();
+    private static void setInterval(Interval interval) {
+        Session.getDriver().findElement(By.id("header-toolbar-intervals")).click();
+        Session.getByFieldValue("div", "data-value", interval.getFileToken().toUpperCase()).click();
     }
 
-    private static void download(WebDriver driver) {
-        WebElement topLeftArea = Session.getByFieldValue(driver, "div", "class", "layout__area--topleft");
+    private static void download() {
+        WebElement topLeftArea = Session.getByFieldValue("div", "class", "layout__area--topleft");
         Session.getByFieldValue(topLeftArea, "div", "data-role", "button").click();
 
-        Session.getByText(driver, "Export chart data…").click();
+        Session.getByText("Export chart data…").click();
 
-        Session.getByFieldValue(driver, "button", "name", "submit").click();
+        Session.getByFieldValue("button", "name", "submit").click();
     }
 
 }

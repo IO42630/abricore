@@ -13,8 +13,7 @@ public class PaperSession extends Session {
     }
 
     @Override
-    public WebDriver doLogin() {
-        return null;
+    public void doLogin() {
     }
 
 

@@ -39,7 +39,8 @@ public class ObserveTwMode extends ObserveMode {
     @Override
     public void start() {
         twSession = new TwSession();
-        twFetch = new TwFetch(twSession.doLogin());
+        twSession.doLogin();
+        twFetch = new TwFetch();
     }
 
     @Override

@@ -38,7 +38,6 @@ public class DownloadTwMode extends Mode {
         timer.start();
         while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(Main.config.getProperty("run.time"))))) {
             try {
-
                 Instant lastTwDownload = Instant.parse(Main.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                     fetchData();
@@ -56,7 +55,8 @@ public class DownloadTwMode extends Mode {
     @Override
     public void start() {
         twSession = new TwSession();
-        twFetch = new TwFetch(twSession.doLogin());
+        twSession.doLogin();
+        twFetch = new TwFetch();
     }
 
     @Override

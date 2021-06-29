@@ -18,24 +18,21 @@ public class TwSession extends Session {
     private static final String CRED_PATH = "/docs/abricore/tw-credentials.json";
 
     @Override
-    public WebDriver doLogin() {
-        WebDriver driver = getDriver();
-        if (active) {
-            return driver;
-        }
+    public void doLogin() {
+        super.doLogin();
+
         Map<String,String> credentials = fetchCredentials();
-        driver.get("https://www.tradingview.com/#signin");
+        getDriver().get("https://www.tradingview.com/#signin");
 
-        driver.findElement(By.className("tv-signin-dialog__toggle-email")).click();
+        getDriver().findElement(By.className("tv-signin-dialog__toggle-email")).click();
 
-        driver.findElement(By.name("username")).sendKeys(credentials.get("user"));
+        getDriver().findElement(By.name("username")).sendKeys(credentials.get("user"));
         SleepFactory.sleep(1);
-        driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
+        getDriver().findElement(By.name("password")).sendKeys(credentials.get("pwd"));
         SleepFactory.sleep(1);
-        Session.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
+        Session.getWhere("tv-button", CRITERIA.ID, "email-signin__submit-button").click();
 
         active = true;
-        return driver;
     }
 
 
