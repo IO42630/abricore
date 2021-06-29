@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.fingers.DriverUtil;
-import com.olexyn.abricore.fingers.DriverUtil.CRITERIA;
+import com.olexyn.abricore.fingers.Session;
+import com.olexyn.abricore.fingers.Session.CRITERIA;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import org.openqa.selenium.By;
@@ -19,6 +19,7 @@ public class TwSession extends Session {
 
     @Override
     public WebDriver doLogin() {
+        WebDriver driver = getDriver();
         if (active) {
             return driver;
         }
@@ -31,7 +32,7 @@ public class TwSession extends Session {
         SleepFactory.sleep(1);
         driver.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
         SleepFactory.sleep(1);
-        DriverUtil.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
+        Session.getWhere(driver, "tv-button", CRITERIA.ID, "email-signin__submit-button").click();
 
         active = true;
         return driver;

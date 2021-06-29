@@ -2,7 +2,7 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.Interval;
-import com.olexyn.abricore.fingers.DriverUtil;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.Fetch;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
@@ -13,7 +13,11 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -64,7 +68,7 @@ public class TwFetch extends Fetch {
         setInterval(driver, interval);
 
 
-        WebElement goToDateButton = DriverUtil.getByFieldValue(driver, "div", "data-name", "go-to-date");
+        WebElement goToDateButton = Session.getByFieldValue(driver, "div", "data-name", "go-to-date");
         goToDateButton.click();
 
         int buffer = 5;
@@ -78,8 +82,8 @@ public class TwFetch extends Fetch {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String startDateStr = startDate.format(dateFormatter);
             String nowDateStr = LocalDate.now().format(dateFormatter);
-            WebElement dateField = DriverUtil.getByFieldValue(driver, "input", "value", nowDateStr);
-            DriverUtil.sendDeleteKeys(dateField, 10);
+            WebElement dateField = Session.getByFieldValue(driver, "input", "value", nowDateStr);
+            Session.sendDeleteKeys(dateField, 10);
             dateField.sendKeys(startDateStr);
             timeSkipDone = true;
         }
@@ -88,14 +92,14 @@ public class TwFetch extends Fetch {
         String startTimeString = startTime.format(timeFormatter);
 
 
-        WebElement timeField = DriverUtil.getByFieldValue(driver, "input", "maxlength", "5");
+        WebElement timeField = Session.getByFieldValue(driver, "input", "maxlength", "5");
 
 
         timeField.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
         timeField.sendKeys(startTimeString);
         timeField.sendKeys(Keys.ENTER);
 
-        WebElement submitButton = DriverUtil.getByFieldValue(driver, "button", "name", "submit");
+        WebElement submitButton = Session.getByFieldValue(driver, "button", "name", "submit");
         submitButton.click();
 
         Thread.sleep(5000);
@@ -131,16 +135,16 @@ public class TwFetch extends Fetch {
 
     private static void setInterval(WebDriver driver, Interval interval) {
         driver.findElement(By.id("header-toolbar-intervals")).click();
-        DriverUtil.getByFieldValue(driver, "div", "data-value", interval.getFileToken().toUpperCase()).click();
+        Session.getByFieldValue(driver, "div", "data-value", interval.getFileToken().toUpperCase()).click();
     }
 
     private static void download(WebDriver driver) {
-        WebElement topLeftArea = DriverUtil.getByFieldValue(driver, "div", "class", "layout__area--topleft");
-        DriverUtil.getByFieldValue(topLeftArea, "div", "data-role", "button").click();
+        WebElement topLeftArea = Session.getByFieldValue(driver, "div", "class", "layout__area--topleft");
+        Session.getByFieldValue(topLeftArea, "div", "data-role", "button").click();
 
-        DriverUtil.getByText(driver, "Export chart data…").click();
+        Session.getByText(driver, "Export chart data…").click();
 
-        DriverUtil.getByFieldValue(driver, "button", "name", "submit").click();
+        Session.getByFieldValue(driver, "button", "name", "submit").click();
     }
 
 }
