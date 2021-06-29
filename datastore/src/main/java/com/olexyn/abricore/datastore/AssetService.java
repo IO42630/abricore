@@ -94,6 +94,7 @@ public class AssetService {
     }
 
     public static void save() throws IOException {
+        LOGGER.info("START saving SYMBOLS to JSON.");
         JSONObject symbolsJson = new JSONObject();
         JSONArray symbols = new JSONArray();
         for (Asset asset : SYMBOLS) {
@@ -116,6 +117,7 @@ public class AssetService {
         fw.write(DataUtil.prettyJson(symbolsJson));
         fw.flush();
         fw.close();
+        LOGGER.info("FINISH saving SYMBOLS to JSON.");
     }
 
     public static Asset ofName(String name) {
