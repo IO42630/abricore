@@ -1,6 +1,5 @@
 package com.olexyn.abricore.fingers;
 
-import com.olexyn.abricore.fingers.sq.SleepFactory;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.FileUtil;
 import com.olexyn.abricore.util.LogUtil;

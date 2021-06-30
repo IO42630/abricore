@@ -1,4 +1,4 @@
-package com.olexyn.abricore.fingers.sq;
+package com.olexyn.abricore.fingers;
 
 import java.util.Random;
 

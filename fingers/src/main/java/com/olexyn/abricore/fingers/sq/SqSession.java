@@ -1,6 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.Session;
+import com.olexyn.abricore.fingers.SleepFactory;
 import com.olexyn.abricore.fingers.TabPurpose;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

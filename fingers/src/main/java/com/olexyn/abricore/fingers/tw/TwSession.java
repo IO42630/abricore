@@ -2,7 +2,7 @@ package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.TabPurpose;
-import com.olexyn.abricore.fingers.sq.SleepFactory;
+import com.olexyn.abricore.fingers.SleepFactory;
 import org.openqa.selenium.By;
 
 import java.util.HashMap;

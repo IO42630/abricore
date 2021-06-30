@@ -1,7 +1,5 @@
-package com.olexyn.abricore.fingers.sq;
+package com.olexyn.abricore.util;
 
-
-import com.olexyn.abricore.util.Execute;
 
 import java.io.IOException;
 import java.nio.file.Files;
