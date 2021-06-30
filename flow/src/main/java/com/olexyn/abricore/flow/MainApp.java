@@ -6,7 +6,9 @@ import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
+import com.olexyn.abricore.flow.modes.observe.ObserveTwMode;
 import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
+import com.olexyn.abricore.flow.modes.trade.TradeSqMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.UnderlyingAsset;
 import com.olexyn.abricore.model.options.Option;
@@ -34,29 +36,23 @@ public class MainApp {
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
         LOGGER.info("Starting the application.");
-
         loadProperties(config, "config.properties");
         loadProperties(events, "events.properties");
-
-
-
         TmpCsvService.parseTmpCsv();
 
-        List<Asset> assets = AssetService.SYMBOLS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
-        //assets.add(AssetService.ofName("BTCUSD"));
-        //assets.add(AssetService.ofName("XAGUSD"));
-
-        new Thread(new DownloadTwMode(assets)).start();
-
-        Thread.sleep(1000);
-
-        new Thread(new SyncCdfSqMode(AssetService.ofName("XAGUSD"))).start();
-        for (Asset asset : assets) {
-           // new Thread(new SyncCdfSqMode(asset)).start();
+        if (isEnabled("tw.download.enabled")) {
+            List<Asset> assetsToDownload = AssetService.SYMBOLS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
+            new Thread(new DownloadTwMode(assetsToDownload)).start();
         }
-
-        // new Thread(new ObserveTwMode(underlyingAsset)).start();
-        // new Thread(new TradeSqMode(new Mission())).start();
+        if (isEnabled("sq.cdf.update.enabled")) {
+            new Thread(new SyncCdfSqMode(AssetService.ofName("XAGUSD"))).start();
+        }
+        if (isEnabled("tw.observe.enabled")) {
+            new Thread(new ObserveTwMode(null)).start();
+        }
+        if (isEnabled("sq.trade.enabled")) {
+            new Thread(new TradeSqMode(new Mission())).start();
+        }
     }
 
 
@@ -102,6 +98,8 @@ public class MainApp {
         loadProperties(properties, fileName);
     }
 
-
+    public static boolean isEnabled(String prop) {
+        return Boolean.parseBoolean(config.getProperty(prop));
+    }
 
 }

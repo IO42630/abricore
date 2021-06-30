@@ -26,6 +26,7 @@ public class DownloadTwMode extends Mode {
 
     private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(MainApp.config.getProperty("tw.download.interval.minutes"));
     private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.minutes"));
+    private static final long WAIT_TO_LOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.wait.to.load.seconds"));
 
     private TwSession twSession;
     private TwNavigator twFetch;
@@ -73,7 +74,7 @@ public class DownloadTwMode extends Mode {
             List<Interval> intervals = new ArrayList<>();
             intervals.add(Interval.S_1);
             LOGGER.info("STARTED downloading historical data.");
-            twFetch.fetchHistoricalData(assets, intervals, TIMEFRAME_OF_DOWNLOAD);
+            TwNavigator.fetchHistoricalData(assets, intervals, TIMEFRAME_OF_DOWNLOAD, WAIT_TO_LOAD);
             LOGGER.info("FINISHED downloading historical data.");
             Thread.sleep(5000L);
             TmpCsvService.parseTmpCsv();

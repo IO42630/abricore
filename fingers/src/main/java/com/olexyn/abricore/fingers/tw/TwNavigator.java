@@ -3,10 +3,10 @@ package com.olexyn.abricore.fingers.tw;
 import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.Session;
-import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.LogUtil;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -33,22 +33,22 @@ public class TwNavigator extends Navigator {
 
     static boolean timeSkipDone = false;
 
-    public static void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame, long timeToWait) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         for (Asset asset : assets) {
-            fetchHistoricalData(asset, intervals, timeFrame);
+            fetchHistoricalData(asset, intervals, timeFrame, timeToWait);
         }
     }
 
-    public static void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame, long timeToWait) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         for (Interval interval : intervals) {
-            fetchHistoricalData(asset, interval, timeFrame);
+            fetchHistoricalData(asset, interval, timeFrame, timeToWait);
         }
     }
 
 
-    public static void fetchHistoricalData(Asset asset, Interval interval, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(Asset asset, Interval interval, long timeFrame, long timeToWait) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         Thread.sleep(1000);
 
@@ -96,7 +96,7 @@ public class TwNavigator extends Navigator {
         WebElement submitButton = Session.getByFieldValue("button", "name", "submit");
         submitButton.click();
 
-        Thread.sleep(10000);
+        Thread.sleep(timeToWait * Constants.SECONDS);
 
         download();
     }
