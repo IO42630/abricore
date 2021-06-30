@@ -3,9 +3,11 @@ package com.olexyn.abricore.fingers.tw;
 import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.Session;
+import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.LogUtil;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -20,29 +22,25 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.olexyn.abricore.fingers.TabPurpose.DOWNLOAD_TW;
 import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_TW;
 
 public class TwNavigator extends Navigator {
 
-    final Asset assetToScrape;
-    boolean cont = true;
+    private static final Logger LOGGER = LogUtil.get(TwNavigator.class);
 
-    public TwNavigator() {
-        this.assetToScrape = null;
-    }
+    static boolean timeSkipDone = false;
 
-    boolean timeSkipDone = false;
-
-    public void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         for (Asset asset : assets) {
             fetchHistoricalData(asset, intervals, timeFrame);
         }
     }
 
-    public void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         for (Interval interval : intervals) {
             fetchHistoricalData(asset, interval, timeFrame);
@@ -50,7 +48,7 @@ public class TwNavigator extends Navigator {
     }
 
 
-    public void fetchHistoricalData(Asset asset, Interval interval, long timeFrame) throws InterruptedException {
+    public static void fetchHistoricalData(Asset asset, Interval interval, long timeFrame) throws InterruptedException {
         Session.switchToTab(DOWNLOAD_TW);
         Thread.sleep(1000);
 
@@ -60,7 +58,7 @@ public class TwNavigator extends Navigator {
         try{
             Alert alert = Session.DRIVER.switchTo().alert();
             alert.accept();
-        } catch(NoAlertPresentException e){
+        } catch (NoAlertPresentException e) {
 
         }
         setInterval(interval);
@@ -91,7 +89,6 @@ public class TwNavigator extends Navigator {
 
         WebElement timeField = Session.getByFieldValue("input", "maxlength", "5");
 
-
         timeField.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
         timeField.sendKeys(startTimeString);
         timeField.sendKeys(Keys.ENTER);
@@ -102,11 +99,9 @@ public class TwNavigator extends Navigator {
         Thread.sleep(10000);
 
         download();
-
-
     }
 
-    public List<AssetSnapshot> fetchQuotes(List<Asset> assets) throws InterruptedException {
+    public static List<AssetSnapshot> fetchQuotes(List<Asset> assets) throws InterruptedException {
         Session.switchToTab(OBSERVE_TW);
         List<AssetSnapshot> assetSnapshots = new ArrayList<>();
 

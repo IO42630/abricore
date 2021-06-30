@@ -23,7 +23,6 @@ import java.util.Set;
 public class SyncCdfSqMode extends ObserveMode {
 
     private SqSession sqSession;
-    private SqNavigator sqNavigator;
 
     public SyncCdfSqMode(Asset asset) {
         super(asset);
@@ -50,18 +49,17 @@ public class SyncCdfSqMode extends ObserveMode {
     public void start() {
         sqSession = new SqSession();
         sqSession.doLogin();
-        sqNavigator = new SqNavigator();
     }
 
     @Override
     public void stop() {
-        sqSession.doLogout();
+        SqSession.doLogout();
     }
 
     @Override
     public void fetchData() throws InterruptedException, IOException {
         synchronized (Session.class) {
-            Set<Asset> foundCdfs = sqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
+            Set<Asset> foundCdfs = SqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
             foundCdfs.forEach(AssetService::addAsset);
             foundCdfs.forEach(SeriesService::add);
             AssetService.save();

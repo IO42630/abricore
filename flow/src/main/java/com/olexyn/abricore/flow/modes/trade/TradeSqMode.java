@@ -35,7 +35,7 @@ public class TradeSqMode extends TradeMode {
         synchronized (Session.class) {
             List<AssetSnapshot> snapshots = new ArrayList<>();
             for (Asset cdf : mission.getCdfList()) {
-                snapshots.add(sqNavigator.resolveQuote(cdf));
+                snapshots.add(sqNavigator.fetchQuote(cdf));
             }
             SeriesService.putData(snapshots);
         }

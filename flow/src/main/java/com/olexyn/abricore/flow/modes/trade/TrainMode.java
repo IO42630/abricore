@@ -54,8 +54,8 @@ public class TrainMode extends TradeMode {
 
         // TODO for now just quote the cdfs, comparison with tw comes later
         Asset cdf = mission.getCdfList().get(0);
-        while (isMarketOpen(sqNavigator.resolveQuote(cdf))) {
-            AssetSnapshot assetSnapshot = sqNavigator.resolveQuote(cdf);
+        while (isMarketOpen(sqNavigator.fetchQuote(cdf))) {
+            AssetSnapshot assetSnapshot = sqNavigator.fetchQuote(cdf);
             if (isMarketOpen(assetSnapshot)) {
                 series.put(assetSnapshot.getInstant(), assetSnapshot );
                 // Test conditions.

@@ -6,13 +6,13 @@ import java.util.Map;
 
 public class PaperSession extends Session {
 
-    @Override
-    protected Map<String, String> fetchCredentials() {
+
+    protected static Map<String, String> fetchCredentials() {
         return null;
     }
 
-    @Override
-    public void doLogin() {
+
+    public static void doLogin() {
     }
 
 

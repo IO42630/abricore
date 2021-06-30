@@ -10,13 +10,15 @@ import java.util.Map;
 
 public class TwSession extends Session {
 
+    private static boolean active = false;
+
     private static final String PREFIX = "tw_iol_";
     private static final String USER = "user";
     private static final String PWD = "pwd";
     private static final String CRED_PATH = "/docs/abricore/tw-credentials.json";
 
-    @Override
-    public void doLogin() {
+
+    public static void doLogin() {
         if (active) {
             return;
         }
@@ -39,8 +41,8 @@ public class TwSession extends Session {
 
 
 
-    @Override
-    protected Map<String, String> fetchCredentials() {
+
+    protected static Map<String, String> fetchCredentials() {
         Map<String,String> extractedMap = extractCredentialMap(CRED_PATH);
         Map<String,String> credentialMap = new HashMap<>();
 

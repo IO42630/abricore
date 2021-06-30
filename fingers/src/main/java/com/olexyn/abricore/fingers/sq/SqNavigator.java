@@ -1,8 +1,8 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.AssetService;
-import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.Navigator;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.AssetType;
 import com.olexyn.abricore.model.options.BarrierOption;
@@ -14,7 +14,6 @@ import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.time.Instant;
@@ -24,21 +23,26 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static com.olexyn.abricore.fingers.TabPurpose.DOWNLOAD_TW;
+import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_SW;
+import static com.olexyn.abricore.fingers.TabPurpose.SQ_SESSION;
+import static com.olexyn.abricore.fingers.TabPurpose.SYNC_CDF_SQ;
+import static com.olexyn.abricore.fingers.TabPurpose.TRADE_SW;
 import static com.olexyn.abricore.util.Constants.EMPTY;
 
 public class SqNavigator extends Navigator {
 
     private static final Logger LOGGER = LogUtil.get(SqNavigator.class);
 
-    public void goToMainScreen() {
+    private static void goToMainScreen() {
         Session.DRIVER.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
     }
 
-    public void search(String keyword) {
+    private static void search(String keyword) {
         Session.DRIVER.findElement(By.className("defaultInput")).sendKeys(keyword);
     }
 
-    public void getTradeWindow(String isin, Currency currency, Exchange exchange) {
+    private static void getTradeWindow(String isin, Currency currency, Exchange exchange) {
         String url = String.join(
             EMPTY,
             "https://trade.swissquote.ch/sqb_core/DispatchCtrl?commandName=trade&isin=",
@@ -56,8 +60,8 @@ public class SqNavigator extends Navigator {
         }
     }
 
-    public AssetSnapshot resolveQuote(Asset asset) {
-
+    public static AssetSnapshot fetchQuote(Asset asset) {
+        Session.switchToTab(OBSERVE_SW);
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
         List<String> resolve = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
@@ -85,18 +89,15 @@ public class SqNavigator extends Navigator {
         return  assetSnapshot;
     }
 
-    public void refresh() {
-        Session.DRIVER.navigate().refresh();
-    }
-
-    private List<String> resolveTable(WebElement table) {
+    private static List<String> resolveTable(WebElement table) {
         return table.findElements(By.cssSelector("td")).stream()
             .map(WebElement::getText)
             .map(String::trim)
             .collect(Collectors.toList());
     }
 
-    public Set<Asset> getCdf(Asset asset, OptionType optionType, ANum strike, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+    public static Set<Asset> getCdf(Asset asset, OptionType optionType, ANum strike, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+        Session.switchToTab(SYNC_CDF_SQ);
         Set<Asset> result = new HashSet<>();
         if (asset.getSqIsin() == null || asset.getSqIsin().isEmpty()) {
             LOGGER.warning("Requested Asset has no ISIN. Returning empty Set");

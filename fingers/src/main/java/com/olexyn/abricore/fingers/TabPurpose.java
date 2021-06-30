@@ -6,4 +6,6 @@ public enum TabPurpose {
     DOWNLOAD_TW,
     SYNC_CDF_SQ,
     OBSERVE_TW,
+    OBSERVE_SW,
+    TRADE_SW,
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class SqSession extends Session {
 
-
+    private static boolean active = false;
 
     private static final String PREFIX = "swiss_iol_";
     private static final String USER = "user";
@@ -25,8 +25,8 @@ public class SqSession extends Session {
 
 
 
-    @Override
-    public void doLogin() {
+
+    public static void doLogin() {
         if (active) {
             return;
         }
@@ -55,8 +55,8 @@ public class SqSession extends Session {
 
 
 
-    @Override
-    protected Map<String,String> fetchCredentials() {
+
+    protected static Map<String,String> fetchCredentials() {
         Map<String,String> extractedMap = extractCredentialMap(CRED_PATH);
         Map<String,String> credentialMap = new HashMap<>();
 

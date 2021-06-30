@@ -37,8 +37,6 @@ public abstract class Session {
 
     private static final String CHROME_DRIVER = "chromedriver_92";
 
-    protected boolean active = false;
-
     public final static Map<String, Tab> TABS = new HashMap<>();
 
     public final static WebDriver DRIVER = init();
@@ -121,7 +119,7 @@ public abstract class Session {
     /**
      * Get credentails from JSON at Path
      */
-    protected Map<String,String> extractCredentialMap(String cred_path) {
+    protected static Map<String,String> extractCredentialMap(String cred_path) {
         Map<String,String> extractedMap = new HashMap<>();
 
         String path = System.getProperty("user.home") + cred_path;
@@ -137,10 +135,6 @@ public abstract class Session {
         }
         return extractedMap;
     }
-
-    protected  abstract Map<String,String> fetchCredentials();
-
-    public abstract void doLogin();
 
     public static WebElement filterElementListBy(List<WebElement> list, CRITERIA criteria, String text) {
         for (WebElement element : list) {
