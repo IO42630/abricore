@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PaperNavigator implements Navigator {
+public class PaperNavigator extends Navigator {
 
     private final List<Series> seriesList = new ArrayList<>();
     private final Map<Series, Instant> counters = new HashMap<>();
@@ -24,7 +24,6 @@ public class PaperNavigator implements Navigator {
      * If a novel Series is requested,
      * fetch it from store, and return the first AssetSnapshot.
      */
-    @Override
     public AssetSnapshot resolveQuote(Asset asset) {
         for (Series series : seriesList) {
            if (series.getAsset().equals(asset)

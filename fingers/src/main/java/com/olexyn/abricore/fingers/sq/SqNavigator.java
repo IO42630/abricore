@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.olexyn.abricore.util.Constants.EMPTY;
 
-public class SqNavigator implements Navigator {
+public class SqNavigator extends Navigator {
 
     private static final Logger LOGGER = LogUtil.get(SqNavigator.class);
 
@@ -56,8 +56,6 @@ public class SqNavigator implements Navigator {
         }
     }
 
-
-    @Override
     public AssetSnapshot resolveQuote(Asset asset) {
 
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());

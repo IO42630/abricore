@@ -4,7 +4,7 @@ import com.olexyn.abricore.datastore.Interval;
 import com.olexyn.abricore.datastore.StoreCsvService;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.fingers.Session;
-import com.olexyn.abricore.fingers.tw.TwFetch;
+import com.olexyn.abricore.fingers.tw.TwNavigator;
 import com.olexyn.abricore.fingers.tw.TwSession;
 import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.modes.Mode;
@@ -28,7 +28,7 @@ public class DownloadTwMode extends Mode {
     private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.minutes"));
 
     private TwSession twSession;
-    private TwFetch twFetch;
+    private TwNavigator twFetch;
 
     private final List<Asset> assets = new ArrayList<>();
 
@@ -59,7 +59,7 @@ public class DownloadTwMode extends Mode {
     public void start() {
         twSession = new TwSession();
         twSession.doLogin();
-        twFetch = new TwFetch();
+        twFetch = new TwNavigator();
     }
 
     @Override

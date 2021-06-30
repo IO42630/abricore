@@ -1,7 +1,7 @@
 package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.datastore.Interval;
-import com.olexyn.abricore.fingers.Fetch;
+import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
@@ -24,12 +24,12 @@ import java.util.List;
 import static com.olexyn.abricore.fingers.TabPurpose.DOWNLOAD_TW;
 import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_TW;
 
-public class TwFetch extends Fetch {
+public class TwNavigator extends Navigator {
 
     final Asset assetToScrape;
     boolean cont = true;
 
-    public TwFetch() {
+    public TwNavigator() {
         this.assetToScrape = null;
     }
 

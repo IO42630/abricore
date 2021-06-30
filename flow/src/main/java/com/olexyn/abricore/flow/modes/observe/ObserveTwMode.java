@@ -2,7 +2,7 @@ package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Session;
-import com.olexyn.abricore.fingers.tw.TwFetch;
+import com.olexyn.abricore.fingers.tw.TwNavigator;
 import com.olexyn.abricore.fingers.tw.TwSession;
 import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.model.Asset;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ObserveTwMode extends ObserveMode {
 
     private TwSession twSession;
-    private TwFetch twFetch;
+    private TwNavigator twFetch;
 
     public ObserveTwMode(Asset asset) {
         super(asset);
@@ -41,7 +41,7 @@ public class ObserveTwMode extends ObserveMode {
     public void start() {
         twSession = new TwSession();
         twSession.doLogin();
-        twFetch = new TwFetch();
+        twFetch = new TwNavigator();
     }
 
     @Override
