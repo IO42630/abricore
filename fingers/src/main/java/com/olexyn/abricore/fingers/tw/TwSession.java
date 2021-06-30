@@ -1,11 +1,9 @@
 package com.olexyn.abricore.fingers.tw;
 
 import com.olexyn.abricore.fingers.Session;
-import com.olexyn.abricore.fingers.Session.CRITERIA;
-import com.olexyn.abricore.fingers.Session;
+import com.olexyn.abricore.fingers.TabPurpose;
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +23,7 @@ public class TwSession extends Session {
 
         Map<String,String> credentials = fetchCredentials();
         synchronized (Session.class) {
-            newTab();
+            newTab(TabPurpose.TW_SESSION);
             DRIVER.get("https://www.tradingview.com/#signin");
 
             DRIVER.findElement(By.className("tv-signin-dialog__toggle-email")).click();
@@ -46,7 +44,7 @@ public class TwSession extends Session {
         Map<String,String> extractedMap = extractCredentialMap(CRED_PATH);
         Map<String,String> credentialMap = new HashMap<>();
 
-        credentialMap.put(USER, extractedMap.get(PREFIX+USER));
+        credentialMap.put(USER, extractedMap.get(PREFIX + USER));
         credentialMap.put(PWD, extractedMap.get(PREFIX + PWD));
         return credentialMap;
     }

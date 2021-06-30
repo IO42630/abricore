@@ -5,6 +5,7 @@ public class Tab {
     private final String handle;
     private String name;
     private String url;
+    private TabPurpose purpose;
 
     public Tab(String handle) {
         this.handle = handle;
@@ -31,4 +32,11 @@ public class Tab {
         this.url = url;
     }
 
+    public TabPurpose getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(TabPurpose purpose) {
+        this.purpose = purpose;
+    }
 }

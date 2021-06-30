@@ -20,7 +20,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import static com.olexyn.abricore.fingers.TabPurpose.SQ_SESSION;
+import static com.olexyn.abricore.fingers.TabPurpose.TW_SESSION;
 
 public abstract class Session {
 
@@ -43,20 +46,32 @@ public abstract class Session {
 
 
 
-    public static void registerCurrentTab() {
+    public static void registerCurrentTab(TabPurpose purpose) {
         Tab tab = new Tab(DRIVER.getWindowHandle());
         tab.setName(DRIVER.getTitle());
         tab.setUrl(DRIVER.getCurrentUrl());
+        tab.setPurpose(purpose);
         TABS.put(tab.getHandle(), tab);
     }
 
-    public static String registerBlankTab() {
+    public static Tab getCurrentTab() {
+        return TABS.get(DRIVER.getWindowHandle());
+    }
+
+    public static List<Tab> getTabByPurpose(TabPurpose purpose) {
+        return TABS.values().stream()
+            .filter( x -> x.getPurpose() == purpose)
+            .collect(Collectors.toList());
+    }
+
+    public static String registerBlankTab(TabPurpose purpose) {
         Set<String> openTabHandles = DRIVER.getWindowHandles();
         for (String openTabHandle : openTabHandles) {
                 if (!TABS.containsKey(openTabHandle)) {
                     Tab blankTab = new Tab(openTabHandle);
                     blankTab.setName("about:blank");
                     blankTab.setUrl("about:blank");
+                    blankTab.setPurpose(purpose);
                     TABS.put(openTabHandle, blankTab);
                     return openTabHandle;
                 }
@@ -65,6 +80,15 @@ public abstract class Session {
         return null;
     }
 
+    public static String registerExistingTab(TabPurpose purpose) {
+        String handle = DRIVER.getWindowHandle();
+        Tab tab = new Tab(handle);
+        tab.setName(DRIVER.getTitle());
+        tab.setUrl(DRIVER.getCurrentUrl());
+        tab.setPurpose(purpose);
+        TABS.put(handle, tab);
+        return handle;
+    }
 
 
     private static WebDriver init() {
@@ -86,20 +110,12 @@ public abstract class Session {
         cap.setCapability(ChromeOptions.CAPABILITY, options);
 
         WebDriver driver = new ChromeDriver(service, cap);
-
-        Tab tab = new Tab(driver.getWindowHandle());
-        tab.setName(driver.getTitle());
-        tab.setUrl(driver.getCurrentUrl());
-        TABS.put(tab.getHandle(), tab);
-
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
         return driver;
     }
 
     public static void doLogout() {
-        if(DRIVER !=null)
-            DRIVER.quit();
+        DRIVER.quit();
     }
 
 
@@ -268,36 +284,52 @@ public abstract class Session {
 
 
 
-    public static void goToTab(String url) {
+    public static void switchToTab(String handle) {
         for (Entry<String,Tab> entry : TABS.entrySet()) {
-            String tabUrl = entry.getKey();
-            if (tabUrl.equals(url)) {
-                DRIVER.switchTo().window(tabUrl);
+            String tabHandle = entry.getKey();
+            if (tabHandle.equals(handle)) {
+                DRIVER.switchTo().window(tabHandle);
             }
         }
     }
 
+    public static void switchToTab(Tab tab) {
+        DRIVER.switchTo().window(tab.getHandle());
+    }
+
     /**
      * Opens a new tab, and "moves" the WebDriver to the new tab.
+     * If the current tab is empty, it is registered - this happens usually only with the initial tab of the session.
      */
-    public static void newTab() {
-
+    public static void newTab(TabPurpose purpose) {
         String currentUrl = DRIVER.getCurrentUrl();
         if (currentUrl.isEmpty()
             || currentUrl.equals("data:,")
             || currentUrl.equals("about:blank")) {
-            return;
+            registerExistingTab(purpose);
+        } else {
+            execute("window.open(arguments[0])");
+            switchToTab(registerBlankTab(purpose));
         }
-
-        execute("window.open(arguments[0])");
-        goToTab(registerBlankTab());
     }
-
-
 
     public static void execute(String script) {
         System.out.println(script);
         ((JavascriptExecutor) Session.DRIVER).executeScript(script);
+    }
+
+    public static void switchToTab(TabPurpose purpose) {
+        List<Tab> existingTabs = Session.getTabByPurpose(purpose);
+        if (!existingTabs.isEmpty()) {
+            Session.switchToTab(existingTabs.get(0));
+        } else {
+            Tab currentTab = Session.getCurrentTab();
+            if (currentTab.getPurpose() == TW_SESSION || currentTab.getPurpose() == SQ_SESSION) {
+                currentTab.setPurpose(purpose);
+            } else {
+                Session.newTab(purpose);
+            }
+        }
     }
 
 }

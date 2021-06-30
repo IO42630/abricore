@@ -1,9 +1,8 @@
 package com.olexyn.abricore.fingers.tw;
 
-import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.Interval;
-import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.Fetch;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
@@ -11,13 +10,8 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,6 +20,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.olexyn.abricore.fingers.TabPurpose.DOWNLOAD_TW;
+import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_TW;
 
 public class TwFetch extends Fetch {
 
@@ -39,12 +36,14 @@ public class TwFetch extends Fetch {
     boolean timeSkipDone = false;
 
     public void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame) throws InterruptedException {
+        Session.switchToTab(DOWNLOAD_TW);
         for (Asset asset : assets) {
             fetchHistoricalData(asset, intervals, timeFrame);
         }
     }
 
     public void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame) throws InterruptedException {
+        Session.switchToTab(DOWNLOAD_TW);
         for (Interval interval : intervals) {
             fetchHistoricalData(asset, interval, timeFrame);
         }
@@ -52,7 +51,7 @@ public class TwFetch extends Fetch {
 
 
     public void fetchHistoricalData(Asset asset, Interval interval, long timeFrame) throws InterruptedException {
-
+        Session.switchToTab(DOWNLOAD_TW);
         Thread.sleep(1000);
 
         String url = asset.getTwSymbol().replace(":", "%3A");
@@ -108,6 +107,7 @@ public class TwFetch extends Fetch {
     }
 
     public List<AssetSnapshot> fetchQuotes(List<Asset> assets) throws InterruptedException {
+        Session.switchToTab(OBSERVE_TW);
         List<AssetSnapshot> assetSnapshots = new ArrayList<>();
 
         Thread.sleep(1000);

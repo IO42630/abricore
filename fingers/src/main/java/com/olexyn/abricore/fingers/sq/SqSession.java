@@ -1,8 +1,8 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.fingers.Session;
+import com.olexyn.abricore.fingers.TabPurpose;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class SqSession extends Session {
         }
         Map<String,String> credentials = fetchCredentials();
         synchronized (Session.class){
-            newTab();
+            newTab(TabPurpose.SQ_SESSION);
             DRIVER.get("https://www.swissquote.ch/url/login_bank?l=de");
 
             DRIVER.findElement(By.name("username")).sendKeys(credentials.get("user"));
