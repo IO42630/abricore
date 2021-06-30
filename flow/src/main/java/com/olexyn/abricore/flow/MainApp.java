@@ -6,6 +6,7 @@ import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
+import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.UnderlyingAsset;
 import com.olexyn.abricore.model.options.Option;
@@ -47,7 +48,9 @@ public class MainApp {
 
         new Thread(new DownloadTwMode(assets)).start();
 
+        Thread.sleep(1000);
 
+        new Thread(new SyncCdfSqMode(AssetService.ofName("XAGUSD"))).start();
         for (Asset asset : assets) {
            // new Thread(new SyncCdfSqMode(asset)).start();
         }

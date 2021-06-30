@@ -31,11 +31,11 @@ public class SqNavigator implements Navigator {
     private static final Logger LOGGER = LogUtil.get(SqNavigator.class);
 
     public void goToMainScreen() {
-        Session.getDriver().get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
+        Session.DRIVER.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
     }
 
     public void search(String keyword) {
-        Session.getDriver().findElement(By.className("defaultInput")).sendKeys(keyword);
+        Session.DRIVER.findElement(By.className("defaultInput")).sendKeys(keyword);
     }
 
     public void getTradeWindow(String isin, Currency currency, Exchange exchange) {
@@ -49,10 +49,10 @@ public class SqNavigator implements Navigator {
             exchange.getCode(),
             "&partnerSource=fullquote"
         );
-        if (Session.getDriver().getCurrentUrl().equals(url)) {
+        if (Session.DRIVER.getCurrentUrl().equals(url)) {
             refresh();
         } else {
-            Session.getDriver().get(url);
+            Session.DRIVER.get(url);
         }
     }
 
@@ -62,7 +62,7 @@ public class SqNavigator implements Navigator {
 
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
-        List<String> resolve = resolveTable(Session.getDriver().findElement(By.className("tableContent")));
+        List<String> resolve = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
 
         AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)));
         // assetSnapshot.setMultiplier(ANum.valueOf(resolve.get(7)));
@@ -88,7 +88,7 @@ public class SqNavigator implements Navigator {
     }
 
     public void refresh() {
-        Session.getDriver().navigate().refresh();
+        Session.DRIVER.navigate().refresh();
     }
 
     private List<String> resolveTable(WebElement table) {
@@ -108,7 +108,7 @@ public class SqNavigator implements Navigator {
         // 120 barrier options
         // 110 options
         String up = optionType == OptionType.CALL ? "up" : "down";
-        Session.getDriver().get("https://premium.swissquote.ch/sqi_web_search/market/equity/swissderivatives/" +
+        Session.DRIVER.get("https://premium.swissquote.ch/sqi_web_search/market/equity/swissderivatives/" +
             "SwissDerivativeSearch.action?&searchFilter.bean.trend=" +
             up +
             "&searchFilter.bean.underlyingIsin=" +
@@ -130,21 +130,21 @@ public class SqNavigator implements Navigator {
 
         // filter by strike
         if (optionType == OptionType.CALL) {
-            Session.getDriver().findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.minus(distance).toString(3));
-            Session.getDriver().findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.num().toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.minus(distance).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.num().toString(3));
         } else {
-            Session.getDriver().findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.num().plus(new ANum(1)).toString(3));
-            Session.getDriver().findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.plus(distance).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.num().plus(new ANum(1)).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.plus(distance).toString(3));
         }
 
         // filter by ratio
-        Session.getDriver().findElement(By.name("searchFilter.bean.minRatio")).sendKeys(minRatio.toString());
-        Session.getDriver().findElement(By.name("searchFilter.bean.maxRatio")).sendKeys(maxRatio.toString());
+        Session.DRIVER.findElement(By.name("searchFilter.bean.minRatio")).sendKeys(minRatio.toString());
+        Session.DRIVER.findElement(By.name("searchFilter.bean.maxRatio")).sendKeys(maxRatio.toString());
 
 
         // get result rows
         Thread.sleep(1000L);
-        List<String> cellTexts = Session.getDriver().findElement(By.id("results"))
+        List<String> cellTexts = Session.DRIVER.findElement(By.id("results"))
             .findElements(By.cssSelector("td"))
             .stream().map(WebElement::getText)
             .collect(Collectors.toList());

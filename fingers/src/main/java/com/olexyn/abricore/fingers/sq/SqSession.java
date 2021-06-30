@@ -26,26 +26,29 @@ public class SqSession extends Session {
 
     @Override
     public void doLogin() {
-        super.doLogin();
-
+        if (active) {
+            return;
+        }
         Map<String,String> credentials = fetchCredentials();
-        getDriver().get("https://www.swissquote.ch/url/login_bank?l=de");
+        synchronized (Session.class){
+            newTab();
+            DRIVER.get("https://www.swissquote.ch/url/login_bank?l=de");
 
-        getDriver().findElement(By.name("username")).sendKeys(credentials.get("user"));
-        SleepFactory.sleep(1);
-        getDriver().findElement(By.name("password")).sendKeys(credentials.get("pwd"));
-        SleepFactory.sleep(1);
-        getDriver().findElement(By.id("loginText")).click();
-        SleepFactory.sleep(1);
+            DRIVER.findElement(By.name("username")).sendKeys(credentials.get("user"));
+            SleepFactory.sleep(1);
+            DRIVER.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
+            SleepFactory.sleep(1);
+            DRIVER.findElement(By.id("loginText")).click();
+            SleepFactory.sleep(1);
 
-        WebElement keyHolder = Session.getWhere("L3CodeDialog__challengeCode");
-        String key = keyHolder.getText();
-        SleepFactory.sleep(2);
-        getDriver().findElement(By.className("L3CodeDialog__l3Code")).sendKeys(credentials.get(key));
-        SleepFactory.sleep(2);
-        getDriver().findElement(By.className("Button--primary")).click();
-        SleepFactory.sleep(2);
-
+            WebElement keyHolder = Session.getWhere("L3CodeDialog__challengeCode");
+            String key = keyHolder.getText();
+            SleepFactory.sleep(2);
+            DRIVER.findElement(By.className("L3CodeDialog__l3Code")).sendKeys(credentials.get(key));
+            SleepFactory.sleep(2);
+            DRIVER.findElement(By.className("Button--primary")).click();
+            SleepFactory.sleep(2);
+        }
         active = true;
      }
 

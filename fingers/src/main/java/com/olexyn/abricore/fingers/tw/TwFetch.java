@@ -38,28 +38,28 @@ public class TwFetch extends Fetch {
 
     boolean timeSkipDone = false;
 
-    public void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long intervalBetweenDownloads) throws InterruptedException {
+    public void fetchHistoricalData(List<Asset> assets, List<Interval> intervals, long timeFrame) throws InterruptedException {
         for (Asset asset : assets) {
-            fetchHistoricalData(asset, intervals, intervalBetweenDownloads);
+            fetchHistoricalData(asset, intervals, timeFrame);
         }
     }
 
-    public void fetchHistoricalData(Asset asset, List<Interval> intervals, long intervalBetweenDownloads) throws InterruptedException {
+    public void fetchHistoricalData(Asset asset, List<Interval> intervals, long timeFrame) throws InterruptedException {
         for (Interval interval : intervals) {
-            fetchHistoricalData(asset, interval, intervalBetweenDownloads);
+            fetchHistoricalData(asset, interval, timeFrame);
         }
     }
 
 
-    public void fetchHistoricalData(Asset asset, Interval interval, long intervalBetweenDownloads) throws InterruptedException {
+    public void fetchHistoricalData(Asset asset, Interval interval, long timeFrame) throws InterruptedException {
 
         Thread.sleep(1000);
 
         String url = asset.getTwSymbol().replace(":", "%3A");
 
-        Session.getDriver().get("https://www.tradingview.com/" + "chart?symbol=" + url);
+        Session.DRIVER.get("https://www.tradingview.com/" + "chart?symbol=" + url);
         try{
-            Alert alert = Session.getDriver().switchTo().alert();
+            Alert alert = Session.DRIVER.switchTo().alert();
             alert.accept();
         } catch(NoAlertPresentException e){
 
@@ -70,8 +70,7 @@ public class TwFetch extends Fetch {
         WebElement goToDateButton = Session.getByFieldValue("div", "data-name", "go-to-date");
         goToDateButton.click();
 
-        int buffer = 5;
-        LocalDateTime startDateTime = LocalDateTime.now().minus(Duration.ofMinutes(intervalBetweenDownloads + buffer));
+        LocalDateTime startDateTime = LocalDateTime.now().minus(Duration.ofMinutes(timeFrame));
 
         LocalDate startDate = startDateTime.toLocalDate();
         LocalTime startTime = startDateTime.toLocalTime();
@@ -101,7 +100,7 @@ public class TwFetch extends Fetch {
         WebElement submitButton = Session.getByFieldValue("button", "name", "submit");
         submitButton.click();
 
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
         download();
 
@@ -113,15 +112,15 @@ public class TwFetch extends Fetch {
 
         Thread.sleep(1000);
 
-        WebElement watchlist = Session.getDriver().findElement(By.className("widgetbar-widget-watchlist"));
+        WebElement watchlist = Session.DRIVER.findElement(By.className("widgetbar-widget-watchlist"));
         if (!watchlist.isDisplayed()) {
-            WebElement watchlistButton = Session.getDriver().findElement(By.cssSelector("div[data-name='base']"));
+            WebElement watchlistButton = Session.DRIVER.findElement(By.cssSelector("div[data-name='base']"));
             watchlistButton.click();
         }
 
         for (Asset asset : assets) {
             String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
-            WebElement symbol = Session.getDriver().findElement(By.cssSelector(dataSymbolFull));
+            WebElement symbol = Session.DRIVER.findElement(By.cssSelector(dataSymbolFull));
             WebElement last = symbol.findElement(By.className("last-EJ_LFrif"));
             AssetSnapshot assetSnapshot = new AssetSnapshot(asset);
             assetSnapshot.setInstant(Instant.now());
@@ -133,7 +132,7 @@ public class TwFetch extends Fetch {
     }
 
     private static void setInterval(Interval interval) {
-        Session.getDriver().findElement(By.id("header-toolbar-intervals")).click();
+        Session.DRIVER.findElement(By.id("header-toolbar-intervals")).click();
         Session.getByFieldValue("div", "data-value", interval.getFileToken().toUpperCase()).click();
     }
 

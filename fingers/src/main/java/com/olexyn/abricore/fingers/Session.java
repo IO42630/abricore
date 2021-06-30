@@ -3,6 +3,7 @@ package com.olexyn.abricore.fingers;
 import com.olexyn.abricore.fingers.sq.SleepFactory;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.FileUtil;
+import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.Parameters;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,30 +25,49 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public abstract class Session {
+
+    private static final Logger LOGGER = LogUtil.get(Session.class);
 
     private static final String CHROME_DRIVER = "chromedriver_92";
 
     protected boolean active = false;
 
-    private static WebDriver driver = null;
+    public final static Map<String, Tab> TABS = new HashMap<>();
+
+    public final static WebDriver DRIVER = init();
 
 
 
-    public static WebDriver getDriver() {
-        if (driver == null) {
-            init();
+    public static void registerCurrentTab() {
+        Tab tab = new Tab(DRIVER.getWindowHandle());
+        tab.setName(DRIVER.getTitle());
+        tab.setUrl(DRIVER.getCurrentUrl());
+        TABS.put(tab.getHandle(), tab);
+    }
+
+    public static String registerBlankTab() {
+        Set<String> openTabHandles = DRIVER.getWindowHandles();
+        for (String openTabHandle : openTabHandles) {
+                if (!TABS.containsKey(openTabHandle)) {
+                    Tab blankTab = new Tab(openTabHandle);
+                    blankTab.setName("about:blank");
+                    blankTab.setUrl("about:blank");
+                    TABS.put(openTabHandle, blankTab);
+                    return openTabHandle;
+                }
         }
-        return driver;
+        LOGGER.warning("Not unregistered tab found.");
+        return null;
     }
 
-    public static List<String> getTabs() {
-        return new ArrayList<>(getDriver().getWindowHandles());
-    }
 
-    protected static void init() {
+
+    private static WebDriver init() {
 
         String pathStr = System.getProperty("user.dir") + "/fingers/src/main/resources/" + CHROME_DRIVER;
         ChromeDriverService service = new ChromeDriverService.Builder()
@@ -65,22 +85,23 @@ public abstract class Session {
         cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         cap.setCapability(ChromeOptions.CAPABILITY, options);
 
-        driver = new ChromeDriver(service, cap);
+        WebDriver driver = new ChromeDriver(service, cap);
+
+        Tab tab = new Tab(driver.getWindowHandle());
+        tab.setName(driver.getTitle());
+        tab.setUrl(driver.getCurrentUrl());
+        TABS.put(tab.getHandle(), tab);
 
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        return driver;
     }
 
-    public void doLogout() {
-        if (active) {
-            cleanup(driver);
-            active = false;
-        }
+    public static void doLogout() {
+        if(DRIVER !=null)
+            DRIVER.quit();
     }
 
-    protected void cleanup(WebDriver driver){
-        if(driver !=null)
-            driver.quit();
-    }
 
     /**
      * Get credentails from JSON at Path
@@ -104,12 +125,7 @@ public abstract class Session {
 
     protected  abstract Map<String,String> fetchCredentials();
 
-    public void doLogin() {
-        if (active) {
-            return;
-        }
-        newTab();
-    }
+    public abstract void doLogin();
 
     public static WebElement filterElementListBy(List<WebElement> list, CRITERIA criteria, String text) {
         for (WebElement element : list) {
@@ -185,18 +201,18 @@ public abstract class Session {
 
 
     public static void switchToFrameContainingCharSeq(String charSeq) {
-        getDriver().switchTo().defaultContent();
+        DRIVER.switchTo().defaultContent();
         SleepFactory.sleep(2);
-        final String frameId= findFrameContainingCharSeq(collectAllFrames(getDriver()), charSeq);
+        final String frameId= findFrameContainingCharSeq(collectAllFrames(DRIVER), charSeq);
         SleepFactory.sleep(2);
         switch (frameId) {
             case FRAME_ID_DEFAULT_CONTENT:
-                getDriver().switchTo().defaultContent();
+                DRIVER.switchTo().defaultContent();
                 break;
             case FRAME_ID_NONE_FOUND:
                 break;
             default:
-                getDriver().switchTo().frame(Integer.parseInt(frameId));
+                DRIVER.switchTo().frame(Integer.parseInt(frameId));
         }
     }
 
@@ -205,35 +221,35 @@ public abstract class Session {
      */
     public static WebElement getWhere(String className, CRITERIA criteria, String text) {
         switchToFrameContainingCharSeq(text);
-        List<WebElement> elements = getDriver().findElements(By.className(className));
+        List<WebElement> elements = DRIVER.findElements(By.className(className));
         return filterElementListBy(elements, criteria, text);
     }
 
     public static WebElement getWhere(String className) {
         switchToFrameContainingCharSeq(className);
-        List<WebElement> elements = getDriver().findElements(By.className(className));
+        List<WebElement> elements = DRIVER.findElements(By.className(className));
         return filterElementListBy(elements, CRITERIA.NONE, Constants.EMPTY);
     }
 
     public static void followContainedLink(WebElement element) {
         String link = element.getAttribute("href");
-        if (link != null) getDriver().navigate().to(link);
+        if (link != null) DRIVER.navigate().to(link);
     }
 
 
 
     public static void setRadio(By by, boolean checked) {
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].checked = "+ checked + ";", getDriver().findElement(by));
+        ((JavascriptExecutor) DRIVER).executeScript("arguments[0].checked = "+ checked + ";", DRIVER.findElement(by));
     }
 
     public static void setComboByDataValue(By comboBy, String dataValue) {
-        WebElement combo = getDriver().findElement(comboBy);
+        WebElement combo = DRIVER.findElement(comboBy);
         combo.click();
         combo.findElement(By.cssSelector("li[data-value='" + dataValue + "']")).click();
     }
 
     public static WebElement getByFieldValue(String type, String field, String value) {
-        return getDriver().findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
+        return DRIVER.findElement(By.cssSelector(type + "["+ field + "='" + value + "']"));
     }
 
     public static WebElement getByFieldValue(WebElement element, String type, String field, String value) {
@@ -241,7 +257,7 @@ public abstract class Session {
     }
 
     public static WebElement getByText(String text) {
-        return getDriver().findElement (By.xpath ("//*[contains(text(),'" + text + "')]"));
+        return DRIVER.findElement (By.xpath ("//*[contains(text(),'" + text + "')]"));
     }
 
     public static void sendDeleteKeys(WebElement element, int n) {
@@ -253,30 +269,35 @@ public abstract class Session {
 
 
     public static void goToTab(String url) {
-        for (String tab : getTabs()) {
-            if (tab.equals(url)) {
-                getDriver().switchTo().window(tab);
+        for (Entry<String,Tab> entry : TABS.entrySet()) {
+            String tabUrl = entry.getKey();
+            if (tabUrl.equals(url)) {
+                DRIVER.switchTo().window(tabUrl);
             }
         }
     }
 
+    /**
+     * Opens a new tab, and "moves" the WebDriver to the new tab.
+     */
     public static void newTab() {
-        newTab(Constants.EMPTY);
-    }
 
-    public static void newTab(String url) {
-        String currentUrl = Session.getDriver().getCurrentUrl();
-
+        String currentUrl = DRIVER.getCurrentUrl();
         if (currentUrl.isEmpty()
             || currentUrl.equals("data:,")
             || currentUrl.equals("about:blank")) {
             return;
         }
-        execute("window.open(arguments[0]),url");
+
+        execute("window.open(arguments[0])");
+        goToTab(registerBlankTab());
     }
 
+
+
     public static void execute(String script) {
-        ((JavascriptExecutor) Session.getDriver()).executeScript(script);
+        System.out.println(script);
+        ((JavascriptExecutor) Session.DRIVER).executeScript(script);
     }
 
 }

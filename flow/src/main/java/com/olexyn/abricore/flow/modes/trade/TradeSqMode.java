@@ -1,6 +1,7 @@
 package com.olexyn.abricore.flow.modes.trade;
 
 import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.flow.mission.Mission;
@@ -31,16 +32,18 @@ public class TradeSqMode extends TradeMode {
      */
     @Override
     public void fetchData() {
-        List<AssetSnapshot> snapshots = new ArrayList<>();
-        for (Asset cdf : mission.getCdfList()) {
-            snapshots.add(sqNavigator.resolveQuote(cdf));
+        synchronized (Session.class) {
+            List<AssetSnapshot> snapshots = new ArrayList<>();
+            for (Asset cdf : mission.getCdfList()) {
+                snapshots.add(sqNavigator.resolveQuote(cdf));
+            }
+            SeriesService.putData(snapshots);
         }
-        SeriesService.putData(snapshots);
     }
 
     @Override
     public void stop() {
-        sqSession.doLogout();
+        Session.doLogout();
     }
 
 }

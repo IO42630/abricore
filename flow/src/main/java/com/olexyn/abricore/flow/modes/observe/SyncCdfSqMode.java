@@ -2,6 +2,7 @@ package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.flow.MainApp;
@@ -9,6 +10,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.Constants;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -31,10 +33,11 @@ public class SyncCdfSqMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("cdf.update.interval")));
+                // Thread.yield();
+                Thread.sleep(Long.parseLong(MainApp.config.getProperty("cdf.update.interval.seconds")) * Constants.SECONDS);
             } catch (InterruptedException | IOException ignored) {}
         }
         for (Series cdfSeries : cdfSeriesList) {
@@ -57,10 +60,12 @@ public class SyncCdfSqMode extends ObserveMode {
 
     @Override
     public void fetchData() throws InterruptedException, IOException {
-        Set<Asset> foundCdfs = sqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
-        foundCdfs.forEach(AssetService::addAsset);
-        foundCdfs.forEach(SeriesService::add);
-        AssetService.save();
-        int br = 0;
+        synchronized (Session.class) {
+            Set<Asset> foundCdfs = sqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
+            foundCdfs.forEach(AssetService::addAsset);
+            foundCdfs.forEach(SeriesService::add);
+            AssetService.save();
+            int br = 0;
+        }
     }
 }

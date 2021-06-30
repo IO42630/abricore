@@ -13,4 +13,6 @@ public interface Constants {
 
     String CSV = ".csv";
     String JSON = ".json";
+
+    long SECONDS = 1000;
 }

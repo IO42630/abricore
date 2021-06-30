@@ -19,19 +19,23 @@ public class TwSession extends Session {
 
     @Override
     public void doLogin() {
-        super.doLogin();
+        if (active) {
+            return;
+        }
 
         Map<String,String> credentials = fetchCredentials();
-        getDriver().get("https://www.tradingview.com/#signin");
+        synchronized (Session.class) {
+            newTab();
+            DRIVER.get("https://www.tradingview.com/#signin");
 
-        getDriver().findElement(By.className("tv-signin-dialog__toggle-email")).click();
+            DRIVER.findElement(By.className("tv-signin-dialog__toggle-email")).click();
 
-        getDriver().findElement(By.name("username")).sendKeys(credentials.get("user"));
-        SleepFactory.sleep(1);
-        getDriver().findElement(By.name("password")).sendKeys(credentials.get("pwd"));
-        SleepFactory.sleep(1);
-        Session.getWhere("tv-button", CRITERIA.ID, "email-signin__submit-button").click();
-
+            DRIVER.findElement(By.name("username")).sendKeys(credentials.get("user"));
+            SleepFactory.sleep(1);
+            DRIVER.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
+            SleepFactory.sleep(1);
+            Session.getWhere("tv-button", CRITERIA.ID, "email-signin__submit-button").click();
+        }
         active = true;
     }
 

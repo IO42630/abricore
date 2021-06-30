@@ -1,6 +1,7 @@
 package com.olexyn.abricore.flow.modes.observe;
 
 import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.tw.TwFetch;
 import com.olexyn.abricore.fingers.tw.TwSession;
 import com.olexyn.abricore.flow.MainApp;
@@ -23,10 +24,10 @@ public class ObserveTwMode extends ObserveMode {
     public void run() {
         start();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time"))))) {
+        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.update.interval")));
+                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.update.interval.milli")));
             } catch (InterruptedException ignored) {
 
             }
@@ -50,8 +51,10 @@ public class ObserveTwMode extends ObserveMode {
 
     @Override
     public void fetchData() throws InterruptedException {
-        List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
-        SeriesService.putData(snapshots);
+        synchronized (Session.class) {
+            List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
+            SeriesService.putData(snapshots);
+        }
     }
 
 }
