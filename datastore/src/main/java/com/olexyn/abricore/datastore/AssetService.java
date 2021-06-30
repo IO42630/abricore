@@ -97,12 +97,11 @@ public class AssetService {
         for (int i =0 ; i < options.length(); i++) {
             JSONObject symbol = options.getJSONObject(i);
             String name = symbol.getString(NAME);
-            Asset asset;
+            Option option;
             AssetType assetType = AssetType.valueOf(symbol.getString(TYPE));
             switch (assetType) {
                 case BARRIER_OPTION:
-                    asset = new BarrierOption(name);
-                    Option option = (Option) asset;
+                    option = new BarrierOption(name);
                     option.setOptionType(OptionType.valueOf(symbol.getString(OPTION_TYPE)));
                     option.setUnderlying(AssetService.ofName(symbol.getString(UNDERLYING)));
                     option.setStrike(ANum.of(symbol.getString(STRIKE)));
@@ -111,9 +110,9 @@ public class AssetService {
                     LOGGER.severe("ERROR: unknown asset type.");
                     throw new StoreException();
             }
-            asset.setAssetType(assetType);
-            asset.setSqIsin(symbol.getString(SQ_ISIN));
-            ASSETS.add(asset);
+            option.setAssetType(assetType);
+            option.setSqIsin(symbol.getString(SQ_ISIN));
+            ASSETS.add(option);
         }
     }
 
