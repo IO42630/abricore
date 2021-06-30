@@ -40,13 +40,27 @@ image::img/train-mode.png[]
 {empty} +
 {empty} +
 
+=== Overview
+
+We have three key types of classes: `Session`, `Mode`, `Navigator`. +
+`Mode` are located in the `flow` package. `Sessions` and Navigator are located in the `fingers` package. +
+`Mode` is a high-level `Runnable`, which directs the flow of the task to be done. +
+Meanwhile, `Session` and `Navigator` perform the actual task by calling `WebDriver`. +
+For performance reasons there is only one `Webdriver` instance. +
+Therefore Session and Navigator can be utility classes, thus  `static` methods. +
+
+image::img/session-vs-mode-vs-fetch.png[]
+
+{empty} +
+{empty} +
+
 === Module Dependencies
 
 image::img/module-dep.png[]
 
 {empty} +
 
-== ANumulations
+== ANum Calculations
 * We consider two types of calculations.
 
 {empty} +
