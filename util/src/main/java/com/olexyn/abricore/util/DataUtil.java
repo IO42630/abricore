@@ -13,6 +13,7 @@ public class DataUtil {
 
     public enum JsonKeys {
         SYMBOLS,
+        OPTIONS,
         NAME,
         TYPE,
         TW_SYMBOL,

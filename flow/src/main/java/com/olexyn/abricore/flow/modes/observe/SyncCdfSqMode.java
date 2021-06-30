@@ -7,11 +7,13 @@ import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.OptionType;
-import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.LogUtil;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * CDFs must be in range of the current price of the underlying Asset.
@@ -19,34 +21,43 @@ import java.util.Set;
  */
 public class SyncCdfSqMode extends ObserveMode {
 
+    private static final Logger LOGGER = LogUtil.get(SyncCdfSqMode.class);
+
     public SyncCdfSqMode(Asset asset) {
         super(asset);
     }
+
+    private Set<Asset> foundCdfs = new HashSet<>();
 
     @Override
     public void run() {
         SqSession.doLogin();
         timer.start();
-        while (!timer.hasPassedSeconds("run.time.seconds")) {
+        while (timer.hasNotPassedSeconds("run.time.seconds")) {
             try {
                 fetchData();
                 timer.sleepSeconds("cdf.update.interval.seconds");
-            } catch (InterruptedException | IOException ignored) {}
+            } catch (InterruptedException e) {
+                LOGGER.warning(e.getMessage());
+            }
         }
-        for (Series cdfSeries : cdfSeriesList) {
-            SeriesService.save(cdfSeries);
+        try {
+            AssetService.save();
+            for (Asset cdf : foundCdfs) {
+                SeriesService.save(SeriesService.of(cdf));
+            }
+        } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
         }
         SqSession.doLogout();
     }
 
     @Override
-    public void fetchData() throws InterruptedException, IOException {
+    public void fetchData() throws InterruptedException {
         synchronized (Session.class) {
-            Set<Asset> foundCdfs = SqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
+            foundCdfs = SqNavigator.getCdf(underlyingSeries.getAsset(), OptionType.CALL, new ANum(23), new ANum(1), 1d, 1d);
             foundCdfs.forEach(AssetService::addAsset);
             foundCdfs.forEach(SeriesService::add);
-            AssetService.save();
-            int br = 0;
         }
     }
 }

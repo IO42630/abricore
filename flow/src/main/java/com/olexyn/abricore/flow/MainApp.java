@@ -39,10 +39,11 @@ public class MainApp {
         LOGGER.info("Starting the application.");
         loadProperties(config, "config.properties");
         loadProperties(events, "events.properties");
+        AssetService.loadAssets();
         TmpCsvService.parseTmpCsv();
 
         if (isEnabled("tw.download.enabled")) {
-            List<Asset> assetsToDownload = AssetService.SYMBOLS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
+            List<Asset> assetsToDownload = AssetService.ASSETS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
             new Thread(new DownloadTwMode(assetsToDownload)).start();
         }
         if (isEnabled("sq.cdf.update.enabled")) {

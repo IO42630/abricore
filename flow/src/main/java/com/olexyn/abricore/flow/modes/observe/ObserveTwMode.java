@@ -19,7 +19,7 @@ public class ObserveTwMode extends ObserveMode {
     public void run() {
         TwSession.doLogin();
         timer.start();
-        while (!timer.hasPassedSeconds("run.time.seconds")) {
+        while (timer.hasNotPassedSeconds("run.time.seconds")) {
             try {
                 fetchData();
                 timer.sleepMilli("tw.update.interval.milli");

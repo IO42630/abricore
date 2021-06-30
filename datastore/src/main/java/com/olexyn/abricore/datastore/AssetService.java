@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ public class AssetService {
 
     private static final Logger LOGGER = LogUtil.get(AssetService.class);
 
-    private static final String SYM = JsonKeys.SYMBOLS.name();
+    private static final String SYMBOLS = JsonKeys.SYMBOLS.name();
+    private static final String OPTIONS = JsonKeys.OPTIONS.name();
     private static final String NAME = JsonKeys.NAME.name();
     private static final String TYPE = JsonKeys.TYPE.name();
     private static final String OPTION_TYPE = JsonKeys.OPTION_TYPE.name();
@@ -41,99 +43,153 @@ public class AssetService {
     private static final String TW_SYMBOL = JsonKeys.TW_SYMBOL.name();
     private static final String SQ_ISIN = JsonKeys.SQ_ISIN.name();
 
-    public final static Set<Asset> SYMBOLS = new HashSet<>();
+    public final static Set<Asset> ASSETS = new HashSet<>();
 
-    static {
-
-        String contents = new FileUtil().fileToString(new File(Parameters.SYMBOLS_PATH));
-
+    public static void loadAssets() {
+        LOGGER.info("START loading ASSETS from JSON.");
         try {
-            JSONArray symbols = new JSONObject(contents).getJSONArray(SYM);
-
-            for (int i =0 ; i < symbols.length(); i++) {
-                JSONObject symbol = symbols.getJSONObject(i);
-                String name = symbol.getString(NAME);
-                Asset asset;
-                AssetType assetType = AssetType.valueOf(symbol.getString(TYPE));
-                switch (assetType) {
-                    case COMMODITY:
-                        asset = new Commodity(name);
-                        break;
-                    case STOCK:
-                        asset = new Stock(name);
-                        break;
-                    case BARRIER_OPTION:
-                        asset = new BarrierOption(name);
-                        Option option = (Option) asset;
-                        option.setOptionType(OptionType.valueOf(symbol.getString(OPTION_TYPE)));
-                        option.setUnderlying(AssetService.ofName(symbol.getString(UNDERLYING)));
-                        option.setStrike(ANum.of(symbol.getString(STRIKE)));
-                        break;
-                    case ETF:
-                        asset = new Etf(name);
-                        break;
-                    case CRYPTO:
-                        asset = new Crypto(name);
-                        break;
-                    default:
-                        LOGGER.severe("ERROR: unknown asset type.");
-                        throw new StoreException();
-                }
-                asset.setAssetType(assetType);
-                asset.setTwSymbol(symbol.getString(TW_SYMBOL));
-                asset.setSqIsin(symbol.getString(SQ_ISIN));
-                SYMBOLS.add(asset);
-            }
+            loadSymbols();
+            loadOptions();
         } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
+        }
+        LOGGER.info("FINISH loading ASSETS from JSON.");
+    }
+
+
+    private static void loadSymbols() {
+        String contents = new FileUtil().fileToString(new File(Parameters.SYMBOLS_PATH));
+        JSONArray symbols = new JSONObject(contents).getJSONArray(SYMBOLS);
+
+        for (int i =0 ; i < symbols.length(); i++) {
+            JSONObject symbol = symbols.getJSONObject(i);
+            String name = symbol.getString(NAME);
+            Asset asset;
+            AssetType assetType = AssetType.valueOf(symbol.getString(TYPE));
+            switch (assetType) {
+                case COMMODITY:
+                    asset = new Commodity(name);
+                    break;
+                case STOCK:
+                    asset = new Stock(name);
+                    break;
+                case ETF:
+                    asset = new Etf(name);
+                    break;
+                case CRYPTO:
+                    asset = new Crypto(name);
+                    break;
+                default:
+                    LOGGER.severe("ERROR: unknown asset type.");
+                    throw new StoreException();
+            }
+            asset.setAssetType(assetType);
+            asset.setTwSymbol(symbol.getString(TW_SYMBOL));
+            asset.setSqIsin(symbol.getString(SQ_ISIN));
+            ASSETS.add(asset);
+        }
+    }
+
+    private static void loadOptions() {
+        String contents = new FileUtil().fileToString(new File(Parameters.OPTIONS_PATH));
+        JSONArray options = new JSONObject(contents).getJSONArray(OPTIONS);
+
+        for (int i =0 ; i < options.length(); i++) {
+            JSONObject symbol = options.getJSONObject(i);
+            String name = symbol.getString(NAME);
+            Asset asset;
+            AssetType assetType = AssetType.valueOf(symbol.getString(TYPE));
+            switch (assetType) {
+                case BARRIER_OPTION:
+                    asset = new BarrierOption(name);
+                    Option option = (Option) asset;
+                    option.setOptionType(OptionType.valueOf(symbol.getString(OPTION_TYPE)));
+                    option.setUnderlying(AssetService.ofName(symbol.getString(UNDERLYING)));
+                    option.setStrike(ANum.of(symbol.getString(STRIKE)));
+                    break;
+                default:
+                    LOGGER.severe("ERROR: unknown asset type.");
+                    throw new StoreException();
+            }
+            asset.setAssetType(assetType);
+            asset.setSqIsin(symbol.getString(SQ_ISIN));
+            ASSETS.add(asset);
         }
     }
 
     public static Set<String> getNames() {
-        return SYMBOLS.stream().map(Asset::getName).collect(Collectors.toSet());
+        return ASSETS.stream().map(Asset::getName).collect(Collectors.toSet());
     }
 
     public static void save() throws IOException {
-        LOGGER.info("START saving SYMBOLS to JSON.");
+        LOGGER.info("START saving ASSETS to JSON.");
+        saveSymbols();
+        saveOptions();
+        LOGGER.info("FINISH saving ASSETS to JSON.");
+    }
+
+    private static void saveSymbols() throws IOException {
         JSONObject symbolsJson = new JSONObject();
         JSONArray symbols = new JSONArray();
-        for (Asset asset : SYMBOLS) {
+        List<Asset> symbolsList = ASSETS.stream()
+            .filter(x -> !(x instanceof Option))
+            .collect(Collectors.toList());
+        for (Asset asset : symbolsList) {
             JSONObject assetJson = new JSONObject();
             assetJson.put(NAME, asset.getName());
             assetJson.put(TW_SYMBOL, asset.getTwSymbol());
             assetJson.put(TYPE, asset.getAssetType().name());
             assetJson.put(SQ_ISIN, asset.getSqIsin());
-            if (asset instanceof Option) {
-                Option option = (Option) asset;
-                assetJson.put(STRIKE, option.getStrike());
-                assetJson.put(OPTION_TYPE, option.getOptionType());
-                assetJson.put(UNDERLYING, option.getUnderlying().getName());
-            }
             symbols.put(assetJson);
         }
-        symbolsJson.put(SYM, symbols);
-        FileWriter fw = new FileWriter(Parameters.SYMBOLS_TEST_PATH);
+        symbolsJson.put(SYMBOLS, symbols);
+        FileWriter fw = new FileWriter(Parameters.SYMBOLS_PATH);
 
         fw.write(DataUtil.prettyJson(symbolsJson));
         fw.flush();
         fw.close();
-        LOGGER.info("FINISH saving SYMBOLS to JSON.");
+    }
+
+    private static void saveOptions() throws IOException {
+        JSONObject optionsJson = new JSONObject();
+        JSONArray options = new JSONArray();
+        List<Option> optionsList = ASSETS.stream()
+            .filter(x -> x instanceof Option)
+            .map(x -> (Option) x)
+            .collect(Collectors.toList());
+        for (Option option : optionsList) {
+            JSONObject assetJson = new JSONObject();
+            assetJson.put(NAME, option.getName());
+            assetJson.put(TW_SYMBOL, option.getTwSymbol());
+            assetJson.put(TYPE, option.getAssetType().name());
+            assetJson.put(SQ_ISIN, option.getSqIsin());
+            assetJson.put(STRIKE, option.getStrike());
+            assetJson.put(OPTION_TYPE, option.getOptionType());
+            assetJson.put(UNDERLYING, option.getUnderlying().getName());
+            options.put(assetJson);
+        }
+        optionsJson.put(OPTIONS, options);
+
+        FileWriter fw = new FileWriter(Parameters.OPTIONS_PATH);
+        fw.write(DataUtil.prettyJson(optionsJson));
+        fw.flush();
+        fw.close();
     }
 
     public static Asset ofName(String name) {
-        return SYMBOLS.stream().filter(x -> x.getName().equals(name)).findAny().orElseThrow();
+        return ASSETS.stream().filter(x -> x.getName().equals(name)).findAny().orElseThrow();
     }
 
     public static Asset ofIsin(String isin) {
-        return SYMBOLS.stream().filter(x -> x.getSqIsin().equals(isin)).findAny().orElseThrow();
+        return ASSETS.stream().filter(x -> x.getSqIsin().equals(isin)).findAny().orElseThrow();
     }
 
     public static Asset ofTwSymbol(String twSymbol) {
-        return SYMBOLS.stream().filter(x -> x.getTwSymbol().equals(twSymbol)).findAny().orElseThrow();
+        return ASSETS.stream().filter(x -> x.getTwSymbol().equals(twSymbol)).findAny().orElseThrow();
     }
 
     public static void addAsset(Asset asset) {
-        SYMBOLS.add(asset);
+        ASSETS.add(asset);
     }
 
 }

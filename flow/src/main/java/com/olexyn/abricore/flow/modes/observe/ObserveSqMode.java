@@ -5,7 +5,6 @@ import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SqSession;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
-import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.BarrierOption;
@@ -32,7 +31,7 @@ public class ObserveSqMode extends Mode {
     public void run() {
         SqSession.doLogin();
         timer.start();
-        while (!timer.hasPassedSeconds("run.time.seconds")) {
+        while (timer.hasNotPassedSeconds("run.time.seconds")) {
             try {
                 fetchData();
                 timer.sleepMilli("sq.update.interval.milli");
@@ -50,7 +49,7 @@ public class ObserveSqMode extends Mode {
     @Override
     public void fetchData() {
         synchronized (AssetService.class) {
-            cdfList = AssetService.SYMBOLS.stream().filter(x -> x instanceof BarrierOption)
+            cdfList = AssetService.ASSETS.stream().filter(x -> x instanceof BarrierOption)
                 .map(x -> (BarrierOption) x)
                 .filter(x -> x.getUnderlying() == underlyingAsset)
                 .collect(Collectors.toList());

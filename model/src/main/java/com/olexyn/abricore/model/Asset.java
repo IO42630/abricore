@@ -5,6 +5,8 @@ package com.olexyn.abricore.model;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 
+import java.util.Objects;
+
 
 public abstract class Asset {
 
@@ -78,5 +80,21 @@ public abstract class Asset {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (o == null || getClass() != o.getClass()) { return false; }
+        Asset asset = (Asset) o;
+        return assetType == asset.assetType &&
+            name.equals(asset.name) &&
+            Objects.equals(twSymbol, asset.twSymbol) &&
+            Objects.equals(sqIsin, asset.sqIsin) &&
+            currency == asset.currency &&
+            exchange == asset.exchange;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(assetType, name, twSymbol, sqIsin, currency, exchange);
+    }
 }

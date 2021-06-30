@@ -37,7 +37,7 @@ public class TradeSqMode extends Mode {
     public void run() {
         SqSession.doLogin();
         SeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
-        while (!timer.hasPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+        while (timer.hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
             try {
                 Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(1)).isBefore(Instant.now())) {

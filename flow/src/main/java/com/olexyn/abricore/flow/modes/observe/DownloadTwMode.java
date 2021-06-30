@@ -36,7 +36,7 @@ public class DownloadTwMode extends Mode {
     public void run() {
         TwSession.doLogin();
         timer.start();
-        while (!timer.hasPassedSeconds("run.time.seconds")) {
+        while (timer.hasNotPassedSeconds("run.time.seconds")) {
             try {
                 Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {

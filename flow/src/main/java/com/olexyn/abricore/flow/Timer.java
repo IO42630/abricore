@@ -14,12 +14,12 @@ public class Timer {
         startTime = Instant.now();
     }
 
-    public boolean hasPassedSeconds(TemporalAmount duration) {
-        return startTime.plus(duration).isBefore(Instant.now());
+    public boolean hasNotPassedSeconds(TemporalAmount duration) {
+        return startTime.plus(duration).isAfter(Instant.now());
     }
 
-    public boolean hasPassedSeconds(String prop) {
-        return hasPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty(prop))));
+    public boolean hasNotPassedSeconds(String prop) {
+        return hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty(prop))));
     }
 
     public void sleepMilli(String prop) throws InterruptedException {
