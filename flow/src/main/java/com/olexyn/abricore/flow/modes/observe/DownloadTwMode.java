@@ -9,7 +9,6 @@ import com.olexyn.abricore.fingers.tw.TwSession;
 import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.LogUtil;
 
 import java.io.IOException;
@@ -28,9 +27,6 @@ public class DownloadTwMode extends Mode {
     private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.minutes"));
     private static final long WAIT_TO_LOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.wait.to.load.seconds"));
 
-    private TwSession twSession;
-    private TwNavigator twFetch;
-
     private final List<Asset> assets = new ArrayList<>();
 
     public DownloadTwMode(List<Asset> assets) {
@@ -38,9 +34,9 @@ public class DownloadTwMode extends Mode {
     }
 
     public void run() {
-        start();
+        TwSession.doLogin();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+        while (!timer.hasPassedSeconds("run.time.seconds")) {
             try {
                 Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
@@ -48,24 +44,12 @@ public class DownloadTwMode extends Mode {
                     MainApp.events.setProperty("tw.last.download", Instant.now().toString());
                     MainApp.saveProperties(MainApp.events, "events.properties");
                 }
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.download.check.interval.seconds")) * Constants.SECONDS);
+                timer.sleepSeconds("tw.download.check.interval.seconds");
             } catch (InterruptedException | IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        stop();
-    }
-
-    @Override
-    public void start() {
-        twSession = new TwSession();
-        twSession.doLogin();
-        twFetch = new TwNavigator();
-    }
-
-    @Override
-    public void stop() {
-        twSession.doLogout();
+        Session.doLogout();
     }
 
     @Override

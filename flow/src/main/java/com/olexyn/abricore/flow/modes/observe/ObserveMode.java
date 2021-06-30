@@ -10,8 +10,7 @@ public abstract class ObserveMode extends Mode {
         underlyingSeries = SeriesService.of(asset);
     }
 
-    public void addCdf(Asset asset) {
-        super.addCdf(asset);
-    }
+
+
 
 }

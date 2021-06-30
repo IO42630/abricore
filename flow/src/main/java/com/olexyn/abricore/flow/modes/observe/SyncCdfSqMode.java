@@ -5,15 +5,12 @@ import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
 import com.olexyn.abricore.fingers.sq.SqSession;
-import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
-import com.olexyn.abricore.util.Constants;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Set;
 
 /**
@@ -22,37 +19,23 @@ import java.util.Set;
  */
 public class SyncCdfSqMode extends ObserveMode {
 
-    private SqSession sqSession;
-
     public SyncCdfSqMode(Asset asset) {
         super(asset);
     }
 
     @Override
     public void run() {
-        start();
+        SqSession.doLogin();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+        while (!timer.hasPassedSeconds("run.time.seconds")) {
             try {
                 fetchData();
-                // Thread.yield();
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("cdf.update.interval.seconds")) * Constants.SECONDS);
+                timer.sleepSeconds("cdf.update.interval.seconds");
             } catch (InterruptedException | IOException ignored) {}
         }
         for (Series cdfSeries : cdfSeriesList) {
             SeriesService.save(cdfSeries);
         }
-        stop();
-    }
-
-    @Override
-    public void start() {
-        sqSession = new SqSession();
-        sqSession.doLogin();
-    }
-
-    @Override
-    public void stop() {
         SqSession.doLogout();
     }
 

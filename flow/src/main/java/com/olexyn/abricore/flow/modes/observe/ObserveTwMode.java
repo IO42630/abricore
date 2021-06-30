@@ -4,55 +4,38 @@ import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.tw.TwNavigator;
 import com.olexyn.abricore.fingers.tw.TwSession;
-import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 
-import java.time.Duration;
 import java.util.List;
 
 public class ObserveTwMode extends ObserveMode {
-
-    private TwSession twSession;
-    private TwNavigator twFetch;
 
     public ObserveTwMode(Asset asset) {
         super(asset);
     }
 
     public void run() {
-        start();
+        TwSession.doLogin();
         timer.start();
-        while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+        while (!timer.hasPassedSeconds("run.time.seconds")) {
             try {
                 fetchData();
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.update.interval.milli")));
+                timer.sleepMilli("tw.update.interval.milli");
             } catch (InterruptedException ignored) {
 
             }
         }
         Series series = getCdfSeriesList().get(0);
         SeriesService.save(series);
-        stop();
-    }
-
-    @Override
-    public void start() {
-        twSession = new TwSession();
-        twSession.doLogin();
-        twFetch = new TwNavigator();
-    }
-
-    @Override
-    public void stop() {
-        twSession.doLogout();
+        TwSession.doLogout();
     }
 
     @Override
     public void fetchData() throws InterruptedException {
         synchronized (Session.class) {
-            List<AssetSnapshot> snapshots = twFetch.fetchQuotes(getAssets());
+            List<AssetSnapshot> snapshots = TwNavigator.fetchQuotes(getAssets());
             SeriesService.putData(snapshots);
         }
     }

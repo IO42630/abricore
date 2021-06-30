@@ -15,4 +15,6 @@ public interface Constants {
     String JSON = ".json";
 
     long SECONDS = 1000;
+    long MINUTES = 60;
+    long HOURS = 60;
 }

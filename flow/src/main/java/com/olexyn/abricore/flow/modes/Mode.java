@@ -5,25 +5,24 @@ import com.olexyn.abricore.flow.Timer;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.Observer;
 import com.olexyn.abricore.model.snapshots.Series;
+import com.olexyn.abricore.util.LogUtil;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class Mode implements Runnable, Observer {
 
-     protected Timer timer = new Timer();
+     private static final Logger LOGGER = LogUtil.get(Mode.class);
 
-     /**
-      * Initialize utilities for Login and Navigation. Depends on target Webservice.
-      */
-     public abstract void start();
+     protected Timer timer = new Timer();
 
      public void sleep(long interval){
           timer.start();
-          while (!timer.hasPassed(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+          while (!timer.hasPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
                try {
                     Thread.sleep(interval);
                } catch (InterruptedException ignored) {
@@ -31,8 +30,6 @@ public abstract class Mode implements Runnable, Observer {
                }
           }
      }
-
-     public abstract void stop();
 
      protected Series underlyingSeries;
 

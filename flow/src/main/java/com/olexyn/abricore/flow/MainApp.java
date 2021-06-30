@@ -8,6 +8,7 @@ import com.olexyn.abricore.flow.mission.StrategyManager;
 import com.olexyn.abricore.flow.modes.observe.DownloadTwMode;
 import com.olexyn.abricore.flow.modes.observe.ObserveTwMode;
 import com.olexyn.abricore.flow.modes.observe.SyncCdfSqMode;
+import com.olexyn.abricore.flow.modes.observe.ObserveSqMode;
 import com.olexyn.abricore.flow.modes.trade.TradeSqMode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.UnderlyingAsset;
@@ -49,6 +50,9 @@ public class MainApp {
         }
         if (isEnabled("tw.observe.enabled")) {
             new Thread(new ObserveTwMode(null)).start();
+        }
+        if (isEnabled("sq.observe.enabled")) {
+            new Thread(new ObserveSqMode(AssetService.ofName("XAGUSD"))).start();
         }
         if (isEnabled("sq.trade.enabled")) {
             new Thread(new TradeSqMode(new Mission())).start();

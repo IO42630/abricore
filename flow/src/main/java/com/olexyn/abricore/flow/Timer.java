@@ -1,5 +1,8 @@
 package com.olexyn.abricore.flow;
 
+import com.olexyn.abricore.util.Constants;
+
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 
@@ -11,8 +14,28 @@ public class Timer {
         startTime = Instant.now();
     }
 
-    public boolean hasPassed(TemporalAmount duration) {
+    public boolean hasPassedSeconds(TemporalAmount duration) {
         return startTime.plus(duration).isBefore(Instant.now());
+    }
+
+    public boolean hasPassedSeconds(String prop) {
+        return hasPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty(prop))));
+    }
+
+    public void sleepMilli(String prop) throws InterruptedException {
+        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)));
+    }
+
+    public void sleepSeconds(String prop) throws InterruptedException {
+        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS);
+    }
+
+    public void sleepMinutes(String prop) throws InterruptedException {
+        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES);
+    }
+
+    public void sleepHours(String prop) throws InterruptedException {
+        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES * Constants.HOURS);
     }
 
 }
