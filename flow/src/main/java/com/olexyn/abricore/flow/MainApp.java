@@ -51,7 +51,7 @@ public class MainApp {
             new Thread(new DownloadTwMode(assetsToDownload)).start();
         }
         if (isEnabled("sq.cdf.update.enabled")) {
-            new Thread(new SyncCdfSqMode(AssetService.ofName("XAGUSD"))).start();
+            new Thread(new SyncCdfSqMode(setupSession())).start();
         }
         if (isEnabled("tw.observe.enabled")) {
             List<Asset> assetsToObserve = new ArrayList<>();
@@ -61,7 +61,7 @@ public class MainApp {
             new Thread(new ObserveTwMode(assetsToObserve)).start();
         }
         if (isEnabled("sq.observe.enabled")) {
-            new Thread(new ObserveSqMode(AssetService.ofName("XAGUSD"))).start();
+            new Thread(new ObserveSqMode(setupSession())).start();
         }
         if (isEnabled("sq.trade.enabled")) {
             new Thread(new TradeSqMode(new Mission())).start();
@@ -86,8 +86,12 @@ public class MainApp {
 
 
 
+
+
         Mission mission = new Mission();
         mission.setUnderlyingAsset(AssetService.ofName("XAGUSD"));
+
+
         mission.getCdfList().addAll(List.of((Option) AssetService.ofName("XAG C 25"), (Option) AssetService.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));

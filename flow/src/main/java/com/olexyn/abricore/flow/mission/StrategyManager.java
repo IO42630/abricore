@@ -1,5 +1,8 @@
 package com.olexyn.abricore.flow.mission;
 
+import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.Parameters;
 
@@ -8,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 /**
  * Utility to: <br>
@@ -23,6 +27,17 @@ public class StrategyManager {
         strategy.stopConditions.add(x -> x.getLast().getPrice().getTraded().lesser(new ANum(10000)));
         strategy.sizingInCondition = x -> x.div(new ANum(5));
         strategy.sizingOutCondition = x -> x.div(new ANum(5));
+
+
+
+        strategy.minRatio = 1d;
+        strategy.maxRatio = 1d;
+
+        strategy.distanceGenerator = asset -> {
+            ANum lastUnderlyingPrice = SeriesService.getLastTraded(asset);
+            return lastUnderlyingPrice.times(Objects.requireNonNull(ANum.of("0.1")));
+        };
+
         return strategy;
     }
 

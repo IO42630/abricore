@@ -3,28 +3,28 @@ package com.olexyn.abricore.flow.modes.observe;
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Session;
-import com.olexyn.abricore.fingers.sq.SqSession;
+import com.olexyn.abricore.fingers.SessionException;
 import com.olexyn.abricore.fingers.sq.SqNavigator;
+import com.olexyn.abricore.fingers.sq.SqSession;
+import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.modes.Mode;
-import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.BarrierOption;
+import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.LogUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class ObserveSqMode extends Mode {
 
     private static final Logger LOGGER = LogUtil.get(ObserveSqMode.class);
 
-    private final Asset underlyingAsset;
-    private List<Asset> cdfList = new ArrayList<>();
+    private final Mission mission;
+    private Option tradableCdf = null;
 
-    public ObserveSqMode(Asset underlyingAsset) {
-        this.underlyingAsset = underlyingAsset;
+    public ObserveSqMode(Mission mission) {
+        this.mission = mission;
     }
 
     @Override
@@ -37,10 +37,8 @@ public class ObserveSqMode extends Mode {
                 timer.sleepMilli("sq.update.interval.milli");
             } catch (InterruptedException ignored) {}
         }
-        for (Asset cdf : cdfList) {
-            synchronized (SeriesService.class) {
-                SeriesService.save(SeriesService.of(cdf));
-            }
+        synchronized (SeriesService.class) {
+            SeriesService.save(SeriesService.of(tradableCdf));
         }
         Session.doLogout();
     }
@@ -50,21 +48,34 @@ public class ObserveSqMode extends Mode {
      */
     @Override
     public void fetchData() {
-        synchronized (AssetService.class) {
-            cdfList = AssetService.ASSETS.stream().filter(x -> x instanceof BarrierOption)
-                .map(x -> (BarrierOption) x)
-                .filter(x -> x.getUnderlying() == underlyingAsset)
-                .collect(Collectors.toList());
-        }
-        List<AssetSnapshot> snapshots = new ArrayList<>();
-        synchronized (Session.class) {
-            for (Asset cdf : cdfList) {
-                snapshots.add(SqNavigator.fetchQuote(cdf));
+        if (tradableCdf == null
+            || !mission.getStrategy().isOptionSelectable(tradableCdf)
+        ) {
+            try {
+                tradableCdf = determineTradableCdf();
+            } catch (SessionException e) {
+                LOGGER.warning("Can not determine Option to observe. Perhaps SyncCdfSqMode is not running.");
+                return;
             }
         }
-        synchronized (SeriesService.class) {
-            SeriesService.putData(snapshots);
+
+        AssetSnapshot snapshot;
+        synchronized (Session.class) {
+            snapshot = SqNavigator.fetchQuote(tradableCdf);
         }
+        synchronized (SeriesService.class) {
+            SeriesService.of(mission.getUnderlyingAsset()).put(snapshot);
+        }
+    }
+
+    private Option determineTradableCdf() {
+        return AssetService.ASSETS.stream()
+                .filter(x -> x instanceof BarrierOption)
+                .map(x -> (BarrierOption) x)
+                .filter(x -> x.getUnderlying() == mission.getUnderlyingAsset())
+                .filter(x -> mission.getStrategy().isOptionSelectable(x))
+                .min(Comparator.comparing(Option::getStrike))
+                .orElseThrow(SessionException::new);
     }
 
 }

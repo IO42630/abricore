@@ -87,6 +87,10 @@ public class Series {
         return limitedSeries;
     }
 
+    public AssetSnapshot put(AssetSnapshot snapshot) {
+        return put(snapshot.getInstant(), snapshot);
+    }
+
     public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
         for (Observer observer : observers) {

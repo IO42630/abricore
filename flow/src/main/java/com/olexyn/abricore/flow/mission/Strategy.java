@@ -1,5 +1,11 @@
 package com.olexyn.abricore.flow.mission;
 
+import com.olexyn.abricore.datastore.SeriesService;
+import com.olexyn.abricore.model.Asset;
+import com.olexyn.abricore.model.options.Option;
+import com.olexyn.abricore.model.options.OptionType;
+import com.olexyn.abricore.util.ANum;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +25,9 @@ public class Strategy implements Serializable {
 
     private String name;
 
+    public double minRatio;
+    public double maxRatio;
+
     public Strategy(String name) {
         this.name = name;
     }
@@ -33,6 +42,20 @@ public class Strategy implements Serializable {
 
     public SizingCondition sizingInCondition = null;
     public SizingCondition sizingOutCondition = null;
+    public DistanceGenerator distanceGenerator = null;
 
+
+    public boolean isOptionSelectable(Option option) {
+        Asset underlying = option.getUnderlying();
+        ANum lastUnderlyingPrice = SeriesService.getLastTraded(underlying);
+        ANum difference;
+        ANum distance = distanceGenerator.generate(underlying);
+        if (option.getOptionType() == OptionType.CALL) {
+            difference = lastUnderlyingPrice.minus(option.getStrike());
+        } else {
+            difference = option.getStrike().minus(lastUnderlyingPrice);
+        }
+        return difference.greater(distance);
+    }
 
 }

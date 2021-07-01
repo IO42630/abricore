@@ -1,6 +1,7 @@
 package com.olexyn.abricore.fingers.sq;
 
 import com.olexyn.abricore.datastore.AssetService;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.model.Asset;
@@ -96,9 +97,16 @@ public class SqNavigator extends Navigator {
             .collect(Collectors.toList());
     }
 
-    public static Set<Asset> getCdf(Asset asset, OptionType optionType, ANum strike, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+    public static Set<Option> getCdf(Asset asset, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+        Set<Option> result = new HashSet<>();
+        result.addAll(getCdf(asset, OptionType.CALL, distance, minRatio, maxRatio));
+        result.addAll(getCdf(asset, OptionType.PUT, distance, minRatio, maxRatio));
+        return result;
+    }
+
+    public static Set<Option> getCdf(Asset asset, OptionType optionType, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
         Session.switchToTab(SYNC_CDF_SQ);
-        Set<Asset> result = new HashSet<>();
+        Set<Option> result = new HashSet<>();
         if (asset.getSqIsin() == null || asset.getSqIsin().isEmpty()) {
             LOGGER.warning("Requested Asset has no ISIN. Returning empty Set");
             return result;
@@ -127,13 +135,14 @@ public class SqNavigator extends Navigator {
         Session.setComboByDataValue(By.id("searchFilter.bean.issuerIdFilter"), "ubs");
 
 
-        // filter by strike
+        // filter distance to lastTraded
+        ANum lastTraded = SeriesService.getLastTraded(asset);
         if (optionType == OptionType.CALL) {
-            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.minus(distance).toString(3));
-            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.num().toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.minus(distance).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.num().toString(3));
         } else {
-            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(strike.num().plus(new ANum(1)).toString(3));
-            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(strike.plus(distance).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.num().plus(new ANum(1)).toString(3));
+            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.plus(distance).toString(3));
         }
 
         // filter by ratio

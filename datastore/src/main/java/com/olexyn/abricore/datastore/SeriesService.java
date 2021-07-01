@@ -3,6 +3,7 @@ package com.olexyn.abricore.datastore;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
+import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.LogUtil;
 
 import java.util.HashSet;
@@ -55,6 +56,14 @@ public class SeriesService {
 
     public static void save(Series series) {
         StoreCsvService.update(series);
+    }
+
+    public static ANum getLastTraded(Asset asset) {
+        ANum lastTraded;
+        synchronized (SeriesService.class) {
+            lastTraded = SeriesService.of(asset).getLast().getPrice().getTraded();
+        }
+        return lastTraded;
     }
 
 }

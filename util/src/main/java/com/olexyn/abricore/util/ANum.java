@@ -2,6 +2,7 @@ package com.olexyn.abricore.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 import static com.olexyn.abricore.util.Constants.DOT;
@@ -18,7 +19,7 @@ import static com.olexyn.abricore.util.Constants.ZERO_STR;
  * MAX ANum :
  * 9 223 372 036 854 775 807 . 999 999 999
  */
-public class ANum {
+public class ANum implements Comparable<ANum> {
 
     private static final Logger LOGGER = LogUtil.get(ANum.class);
 
@@ -217,4 +218,16 @@ public class ANum {
         return num == aNum.num && dec == aNum.dec;
     }
 
+
+
+    @Override
+    public int compareTo(ANum other) {
+        if (this.greater(other)) {
+            return 1;
+        }
+        if (other.greater(this)) {
+            return  -1;
+        }
+        return 0;
+    }
 }
