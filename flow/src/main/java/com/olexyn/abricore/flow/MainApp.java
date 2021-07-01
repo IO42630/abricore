@@ -2,6 +2,7 @@ package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.Interval;
+import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.StrategyManager;
@@ -20,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -41,6 +43,8 @@ public class MainApp {
         loadProperties(events, "events.properties");
         AssetService.loadAssets();
         TmpCsvService.parseTmpCsv();
+        SeriesService.loadSeries(AssetService.ASSETS);
+
 
         if (isEnabled("tw.download.enabled")) {
             List<Asset> assetsToDownload = AssetService.ASSETS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
@@ -50,7 +54,11 @@ public class MainApp {
             new Thread(new SyncCdfSqMode(AssetService.ofName("XAGUSD"))).start();
         }
         if (isEnabled("tw.observe.enabled")) {
-            new Thread(new ObserveTwMode(null)).start();
+            List<Asset> assetsToObserve = new ArrayList<>();
+            assetsToObserve.add(AssetService.ofName("BTCUSD"));
+            assetsToObserve.add(AssetService.ofName("XAGUSD"));
+            assetsToObserve.add(AssetService.ofName("AMD"));
+            new Thread(new ObserveTwMode(assetsToObserve)).start();
         }
         if (isEnabled("sq.observe.enabled")) {
             new Thread(new ObserveSqMode(AssetService.ofName("XAGUSD"))).start();

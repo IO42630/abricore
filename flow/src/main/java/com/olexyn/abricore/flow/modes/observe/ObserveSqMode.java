@@ -38,7 +38,9 @@ public class ObserveSqMode extends Mode {
             } catch (InterruptedException ignored) {}
         }
         for (Asset cdf : cdfList) {
-            SeriesService.save(SeriesService.of(cdf));
+            synchronized (SeriesService.class) {
+                SeriesService.save(SeriesService.of(cdf));
+            }
         }
         Session.doLogout();
     }

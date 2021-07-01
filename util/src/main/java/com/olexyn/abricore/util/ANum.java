@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import static com.olexyn.abricore.util.Constants.DOT;
 import static com.olexyn.abricore.util.Constants.DOT_REGEX;
+import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.Constants.NULL;
 import static com.olexyn.abricore.util.Constants.ZERO_STR;
 
@@ -43,6 +44,7 @@ public class ANum {
         try {
             if (string == null
                 || string.equals(NULL)
+                || string.equals(EMPTY)
                 || string.equals("NaN")
                 || string.contains("e")
             ) {

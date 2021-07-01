@@ -4,6 +4,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.Parameters;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -18,6 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import static com.olexyn.abricore.util.Constants.COMMA;
 import static com.olexyn.abricore.util.Constants.CSV;
@@ -27,6 +29,8 @@ import static com.olexyn.abricore.util.Constants.NULL;
 
 
 public class StoreCsvService {
+
+    private static final Logger LOGGER = LogUtil.get(StoreCsvService.class);
 
     /**
      * Read a Series from Store. <br>
@@ -96,6 +100,8 @@ public class StoreCsvService {
      * Update CSV by adding AssesSnapshots from Series .
      */
     public static void update(Series newEntries) {
+        LOGGER.info("START updating Series: " + newEntries.getAsset().getName() + ".");
+
         Asset asset = newEntries.getAsset();
 
         Series storedMap = readFromStoreCsv(asset);
@@ -107,9 +113,9 @@ public class StoreCsvService {
             } else {
                 storedMap.put(newEntry.getKey(), newEntry.getValue());
             }
-
         }
         writeToStore(storedMap);
+        LOGGER.info("FINISH updating Series: " + newEntries.getAsset().getName() + ".");
     }
 
     private static AssetSnapshot mapDataFromStoreCsvLine(String[] headerArray, String[] lineArray, Asset asset) {
