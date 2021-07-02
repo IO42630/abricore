@@ -11,6 +11,7 @@ import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.model.snapshots.AssetSnapshot;
 import com.olexyn.abricore.util.ANum;
+import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
@@ -18,8 +19,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -44,15 +49,21 @@ public class SqNavigator extends Navigator {
     }
 
     private static void getTradeWindow(String isin, Currency currency, Exchange exchange) {
+
+        String partnerParam = "?partnerSource=fullquote";
+        String exchangeParam = "&stockExchange=" + exchange.getCode();
+        String currencyParam = "&currency=" + currency.toString();
+        String isinParam = "&isin=" + isin;
+        String marketParam = "&tradingMarketId=SWISS_OTC";
+
         String url = String.join(
             EMPTY,
-            "https://trade.swissquote.ch/sqb_core/DispatchCtrl?commandName=trade&isin=",
-            isin,
-            "&currency=",
-            currency.toString(),
-            "&stockExchange=",
-            exchange.getCode(),
-            "&partnerSource=fullquote"
+            "https://trade.swissquote.ch/sqtr_trade/trading/placeOrder.action",
+            partnerParam,
+            exchangeParam,
+            currencyParam,
+            isinParam,
+            marketParam
         );
         if (Session.DRIVER.getCurrentUrl().equals(url)) {
             refresh();
@@ -71,16 +82,15 @@ public class SqNavigator extends Navigator {
             Session.execute("javascript:disclaimerModule.accept()");
         }
 
-        List<String> resolve = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
+        Map<String, String> tableData = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
 
-        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)));
+        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(tableData.get(22)));
         // assetSnapshot.setMultiplier(ANum.valueOf(resolve.get(7)));
         assetSnapshot.setInstant(Instant.now());
         // assetSnapshot.setBidVol(DataUtil.parseANum(resolve.get(12)));
-        assetSnapshot.getPrice().setBid(ANum.of(resolve.get(13)));
+        assetSnapshot.getPrice().setBid(ANum.of(tableData.get(13)));
 
-
-        assetSnapshot.getPrice().setAsk(ANum.of(resolve.get(14)));
+        assetSnapshot.getPrice().setAsk(ANum.of(tableData.get(14)));
         // assetSnapshot.setAskVol(DataUtil.parseANum(resolve.get(15)));
         // TODO account for cases
 
@@ -96,11 +106,52 @@ public class SqNavigator extends Navigator {
         return  assetSnapshot;
     }
 
-    private static List<String> resolveTable(WebElement table) {
-        return table.findElements(By.cssSelector("td")).stream()
-            .map(WebElement::getText)
-            .map(String::trim)
-            .collect(Collectors.toList());
+    private static Map<String, String> resolveTable(WebElement table) {
+
+        Map<Integer, List<String>> tableMap = new HashMap<>();
+        int rowCount = 0;
+
+        List<WebElement> rowElements = table.findElements(By.cssSelector("tr"));
+        for (WebElement rowElement : rowElements) {
+            List<String> cells = rowElement.findElements(By.cssSelector("td")).stream()
+                .map(WebElement::getText)
+                .map(String::trim)
+                .collect(Collectors.toList());
+            tableMap.put(rowCount++, cells);
+        }
+
+        Map<String, String> tableContents = new HashMap<>();
+        int rowSize = tableMap.get(0).size();
+
+        String[] tmpKey = new String[rowSize];
+        String[] tmpVal = new String[rowSize];
+
+        for (Entry<Integer, List<String>> rowEntry : tableMap.entrySet()) {
+
+            List<String> rowCells = rowEntry.getValue();
+
+
+
+            for (int i =0 ; i < rowSize; i++) {
+                    String value = rowCells.get(i);
+                    if (rowEntry.getKey() % 2 == 0) {
+                        tmpKey[i] = value;
+                    }
+                    if (rowEntry.getKey() % 2 == 1) {
+                        tmpVal[i] = value;
+                    }
+            }
+
+            for (int i =0 ; i < rowSize; i++) {
+                if (tmpKey[i] != null && tmpVal[i] != null) {
+                    tableContents.put(tmpKey[i], tmpVal[i]);
+                    tmpKey[i] = null;
+                    tmpVal[i] = null;
+                }
+            }
+        }
+
+        return tableContents;
     }
 
     public static Set<Option> getCdf(Asset asset, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
@@ -169,9 +220,15 @@ public class SqNavigator extends Navigator {
             int mod = cellTexts.indexOf(cellText) % 11;
             switch (mod) {
                 case 0:
-                    String isin = "CH" + cellText.split("  ")[1];
+                    String valorNr = cellText.replace("Trade  ", EMPTY);
+                    String detailUrl = Session.getByText(valorNr).getAttribute("href");
+                    String urlPayload = detailUrl.substring(detailUrl.indexOf("?s=") + 3);
+                    String[] payload = urlPayload.split(Constants.UL);
+                    String isin = payload[0];
                     tempAsset = new BarrierOption(isin);
                     tempAsset.setSqIsin(isin);
+                    tempAsset.setExchange(Exchange.ofCode(payload[1]));
+                    tempAsset.setCurrency(Currency.valueOf(payload[2]));
                     tempAsset.setAssetType(AssetType.BARRIER_OPTION);
                     break;
                 case 5:
@@ -179,8 +236,6 @@ public class SqNavigator extends Navigator {
                     tempAsset.setStrike(ANum.of(cellText));
                     tempAsset.setOptionType(optionType);
                     tempAsset.setUnderlying(asset);
-                    tempAsset.setCurrency(Currency.CHF); // TODO parmetrize.
-                    tempAsset.setExchange(Exchange.SDOTS); // TODO parametrize.
                     result.add(tempAsset);
                     break;
                 default:

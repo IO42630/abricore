@@ -10,6 +10,7 @@ public interface Constants {
     String NEWLINE = "\n";
     String NULL = "null";
     String ZERO_STR = "0";
+    String UL = "_";
 
     String CSV = ".csv";
     String JSON = ".json";
