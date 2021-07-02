@@ -47,7 +47,7 @@ public class ObserveSqMode extends Mode {
      * Fetch CDF data from SQ.
      */
     @Override
-    public void fetchData() {
+    public void fetchData() throws InterruptedException {
         if (tradableCdf == null
             || !mission.getStrategy().isOptionSelectable(tradableCdf)
         ) {
@@ -55,6 +55,7 @@ public class ObserveSqMode extends Mode {
                 tradableCdf = determineTradableCdf();
             } catch (SessionException e) {
                 LOGGER.warning("Can not determine Option to observe. Perhaps SyncCdfSqMode is not running.");
+                Thread.sleep(1000L);
                 return;
             }
         }
@@ -69,13 +70,17 @@ public class ObserveSqMode extends Mode {
     }
 
     private Option determineTradableCdf() {
-        return AssetService.ASSETS.stream()
+        Option result;
+        synchronized (AssetService.class) {
+            result = AssetService.ASSETS.stream()
                 .filter(x -> x instanceof BarrierOption)
                 .map(x -> (BarrierOption) x)
                 .filter(x -> x.getUnderlying() == mission.getUnderlyingAsset())
                 .filter(x -> mission.getStrategy().isOptionSelectable(x))
                 .min(Comparator.comparing(Option::getStrike))
                 .orElseThrow(SessionException::new);
+        }
+        return result;
     }
 
 }
