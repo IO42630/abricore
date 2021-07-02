@@ -65,6 +65,12 @@ public class SqNavigator extends Navigator {
         Session.switchToTab(OBSERVE_SW);
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
+
+        if (Session.DRIVER.getCurrentUrl().contains("sqtr_disclaimer")) {
+            Session.DRIVER.findElement(By.id("disclaimerAcceptCheckbox")).click();
+            Session.execute("javascript:disclaimerModule.accept()");
+        }
+
         List<String> resolve = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
 
         AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(resolve.get(22)));
@@ -163,7 +169,9 @@ public class SqNavigator extends Navigator {
             int mod = cellTexts.indexOf(cellText) % 11;
             switch (mod) {
                 case 0:
-                    tempAsset = new BarrierOption( cellText.split("  ")[1]);
+                    String isin = "CH" + cellText.split("  ")[1];
+                    tempAsset = new BarrierOption(isin);
+                    tempAsset.setSqIsin(isin);
                     tempAsset.setAssetType(AssetType.BARRIER_OPTION);
                     break;
                 case 5:
