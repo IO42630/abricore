@@ -1,6 +1,5 @@
 package com.olexyn.abricore.fingers.sq;
 
-import com.olexyn.abricore.datastore.AssetService;
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.Navigator;
 import com.olexyn.abricore.fingers.Session;
@@ -18,8 +17,6 @@ import com.olexyn.abricore.util.enums.Exchange;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,11 +26,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.olexyn.abricore.fingers.TabPurpose.DOWNLOAD_TW;
 import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_SW;
-import static com.olexyn.abricore.fingers.TabPurpose.SQ_SESSION;
 import static com.olexyn.abricore.fingers.TabPurpose.SYNC_CDF_SQ;
-import static com.olexyn.abricore.fingers.TabPurpose.TRADE_SW;
 import static com.olexyn.abricore.util.Constants.EMPTY;
 
 public class SqNavigator extends Navigator {
@@ -76,34 +70,13 @@ public class SqNavigator extends Navigator {
         Session.switchToTab(OBSERVE_SW);
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
-
         if (Session.DRIVER.getCurrentUrl().contains("sqtr_disclaimer")) {
             Session.DRIVER.findElement(By.id("disclaimerAcceptCheckbox")).click();
             Session.execute("javascript:disclaimerModule.accept()");
         }
 
         Map<String, String> tableData = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
-
-        AssetSnapshot assetSnapshot = new AssetSnapshot(AssetService.ofName(tableData.get(22)));
-        // assetSnapshot.setMultiplier(ANum.valueOf(resolve.get(7)));
-        assetSnapshot.setInstant(Instant.now());
-        // assetSnapshot.setBidVol(DataUtil.parseANum(resolve.get(12)));
-        assetSnapshot.getPrice().setBid(ANum.of(tableData.get(13)));
-
-        assetSnapshot.getPrice().setAsk(ANum.of(tableData.get(14)));
-        // assetSnapshot.setAskVol(DataUtil.parseANum(resolve.get(15)));
-        // TODO account for cases
-
-
-        assetSnapshot.getAsset().setCurrency(Currency.CHF);
-
-        if (asset instanceof Option) {
-            Option option = (Option) asset;
-            option.setStrike(ANum.of("0.0"));
-            option.setExpiry(Instant.now());
-        }
-
-        return  assetSnapshot;
+        return SqQuoteSnapshot.of(tableData, asset).toAssetSnapShot();
     }
 
     private static Map<String, String> resolveTable(WebElement table) {
