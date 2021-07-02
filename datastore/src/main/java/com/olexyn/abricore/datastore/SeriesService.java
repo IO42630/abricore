@@ -28,18 +28,13 @@ public class SeriesService {
 
     /**
      * Try to read from Cache. Otherwise read from Disk.
+     * If no CSV is found add new Series.
      */
-    public static Series of(Asset asset) {
+    public synchronized static Series of(Asset asset) {
         if (getSeries(asset).isEmpty()) {
             SERIES.add(StoreCsvService.readFromStoreCsv(asset));
         }
         return getSeries(asset).get();
-    }
-
-    public static void add(Asset asset) {
-        if (getSeries(asset).isEmpty()) {
-            SERIES.add(new Series(asset));
-        }
     }
 
     private static Optional<Series> getSeries(Asset asset) {
