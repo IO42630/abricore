@@ -128,7 +128,7 @@ public class SqQuoteSnapshot {
                 output.setBidPrice(ANum.of(val));
             }
             if (key.startsWith("Strike")) {
-                output.setStrike(ANum.of(val));
+                output.setStrike(ANum.of(val.substring(val.indexOf(Constants.SPACE))));
             }
             if(key.startsWith("Briefkurs-Volumen")) {
                 output.setAskVol(ANum.of(val));
