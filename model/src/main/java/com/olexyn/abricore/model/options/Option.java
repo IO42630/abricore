@@ -67,4 +67,16 @@ public abstract class Option extends Asset {
     public void setOptionType(OptionType optionType) {
         this.optionType = optionType;
     }
+
+    @Override
+    public String toString() {
+        String typeString = optionType == OptionType.CALL ? "C" : "P";
+        return String.join(
+            " ",
+            underlying.getName(),
+            typeString,
+            strike.toString(2),
+            getSqIsin()
+        );
+    }
 }

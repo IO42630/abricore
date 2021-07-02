@@ -97,4 +97,10 @@ public abstract class Asset {
     public int hashCode() {
         return Objects.hash(assetType, name, twSymbol, sqIsin, currency, exchange);
     }
+
+    @Override
+    public String toString() {
+        return name + " (" + assetType.name() + ")";
+    }
+
 }
