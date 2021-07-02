@@ -14,6 +14,8 @@ import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.FileUtil;
 import com.olexyn.abricore.util.LogUtil;
 import com.olexyn.abricore.util.Parameters;
+import com.olexyn.abricore.util.enums.Currency;
+import com.olexyn.abricore.util.enums.Exchange;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,8 @@ public class AssetService {
     private static final String STRIKE = JsonKeys.STRIKE.name();
     private static final String TW_SYMBOL = JsonKeys.TW_SYMBOL.name();
     private static final String SQ_ISIN = JsonKeys.SQ_ISIN.name();
+    private static final String CURRENCY = JsonKeys.CURRENCY.name();
+    private static final String EXCHANGE = JsonKeys.EXCHANGE.name();
 
     public final static Set<Asset> ASSETS = new HashSet<>();
 
@@ -95,23 +99,25 @@ public class AssetService {
         JSONArray options = new JSONObject(contents).getJSONArray(OPTIONS);
 
         for (int i =0 ; i < options.length(); i++) {
-            JSONObject symbol = options.getJSONObject(i);
-            String name = symbol.getString(NAME);
+            JSONObject optionJson = options.getJSONObject(i);
+            String name = optionJson.getString(NAME);
             Option option;
-            AssetType assetType = AssetType.valueOf(symbol.getString(TYPE));
+            AssetType assetType = AssetType.valueOf(optionJson.getString(TYPE));
             switch (assetType) {
                 case BARRIER_OPTION:
                     option = new BarrierOption(name);
-                    option.setOptionType(OptionType.valueOf(symbol.getString(OPTION_TYPE)));
-                    option.setUnderlying(AssetService.ofName(symbol.getString(UNDERLYING)));
-                    option.setStrike(ANum.of(symbol.getString(STRIKE)));
                     break;
                 default:
                     LOGGER.severe("ERROR: unknown asset type.");
                     throw new StoreException();
             }
             option.setAssetType(assetType);
-            option.setSqIsin(symbol.getString(SQ_ISIN));
+            option.setSqIsin(optionJson.getString(SQ_ISIN));
+            option.setStrike(ANum.of(optionJson.getString(STRIKE)));
+            option.setOptionType(OptionType.valueOf(optionJson.getString(OPTION_TYPE)));
+            option.setUnderlying(AssetService.ofName(optionJson.getString(UNDERLYING)));
+            option.setCurrency(Currency.valueOf(optionJson.getString(CURRENCY)));
+            option.setExchange(Exchange.valueOf(optionJson.getString(EXCHANGE)));
             ASSETS.add(option);
         }
     }
@@ -165,6 +171,8 @@ public class AssetService {
             assetJson.put(STRIKE, option.getStrike());
             assetJson.put(OPTION_TYPE, option.getOptionType());
             assetJson.put(UNDERLYING, option.getUnderlying().getName());
+            assetJson.put(CURRENCY, option.getCurrency());
+            assetJson.put(EXCHANGE, option.getExchange().name());
             options.put(assetJson);
         }
         optionsJson.put(OPTIONS, options);
@@ -187,7 +195,7 @@ public class AssetService {
         return ASSETS.stream().filter(x -> x.getTwSymbol().equals(twSymbol)).findAny().orElseThrow();
     }
 
-    public static void addAsset(Asset asset) {
+    public synchronized static void addAsset(Asset asset) {
         ASSETS.add(asset);
     }
 

@@ -21,6 +21,8 @@ public class DataUtil {
         STRIKE,
         OPTION_TYPE,
         UNDERLYING,
+        CURRENCY,
+        EXCHANGE
     }
 
     private static final DateTimeFormatter SQ_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");

@@ -171,6 +171,8 @@ public class SqNavigator extends Navigator {
                     tempAsset.setStrike(ANum.of(cellText));
                     tempAsset.setOptionType(optionType);
                     tempAsset.setUnderlying(asset);
+                    tempAsset.setCurrency(Currency.CHF); // TODO parmetrize.
+                    tempAsset.setExchange(Exchange.SDOTS); // TODO parametrize.
                     result.add(tempAsset);
                     break;
                 default:
