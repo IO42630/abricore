@@ -111,7 +111,7 @@ public abstract class Session {
         return driver;
     }
 
-    public static void doLogout() {
+    public synchronized static void doLogout() {
         DRIVER.quit();
     }
 

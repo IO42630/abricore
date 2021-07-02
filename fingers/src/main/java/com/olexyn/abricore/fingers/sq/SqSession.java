@@ -27,11 +27,12 @@ public class SqSession extends Session {
 
 
     public static void doLogin() {
-        if (active) {
-            return;
-        }
-        Map<String,String> credentials = fetchCredentials();
-        synchronized (Session.class){
+        synchronized (Session.class) {
+            if (active) {
+                return;
+            }
+            Map<String,String> credentials = fetchCredentials();
+
             newTab(TabPurpose.SQ_SESSION);
             DRIVER.get("https://www.swissquote.ch/url/login_bank?l=de");
 
@@ -49,8 +50,9 @@ public class SqSession extends Session {
             SleepFactory.sleep(2);
             DRIVER.findElement(By.className("Button--primary")).click();
             SleepFactory.sleep(2);
+
+            active = true;
         }
-        active = true;
      }
 
 

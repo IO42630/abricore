@@ -19,12 +19,12 @@ public class TwSession extends Session {
 
 
     public static void doLogin() {
-        if (active) {
-            return;
-        }
-
-        Map<String,String> credentials = fetchCredentials();
         synchronized (Session.class) {
+            if (active) {
+                return;
+            }
+            Map<String,String> credentials = fetchCredentials();
+
             newTab(TabPurpose.TW_SESSION);
             DRIVER.get("https://www.tradingview.com/#signin");
 
@@ -35,8 +35,9 @@ public class TwSession extends Session {
             DRIVER.findElement(By.name("password")).sendKeys(credentials.get("pwd"));
             SleepFactory.sleep(1);
             Session.getWhere("tv-button", CRITERIA.ID, "email-signin__submit-button").click();
+
+            active = true;
         }
-        active = true;
     }
 
 
