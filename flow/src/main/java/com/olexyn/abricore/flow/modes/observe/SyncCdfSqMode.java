@@ -58,15 +58,13 @@ public class SyncCdfSqMode extends Mode {
     @Override
     public void fetchData() throws InterruptedException {
         Asset underlying = mission.getUnderlyingAsset();
-        synchronized (Session.class) {
-            foundCdfs = SqNavigator.getCdf(
-                underlying,
-                mission.getStrategy().getMaxOptionDistance().generate(underlying),
-                mission.getStrategy().minRatio,
-                mission.getStrategy().maxRatio
-            );
-            foundCdfs.forEach(AssetService::addAsset);
-            foundCdfs.forEach(SeriesService::of);
-        }
+        foundCdfs = SqNavigator.fetchOptions(
+            underlying,
+            mission.getStrategy().getMaxOptionDistance().generate(underlying),
+            mission.getStrategy().minRatio,
+            mission.getStrategy().maxRatio
+        );
+        foundCdfs.forEach(AssetService::addAsset);
+        foundCdfs.forEach(SeriesService::of);
     }
 }

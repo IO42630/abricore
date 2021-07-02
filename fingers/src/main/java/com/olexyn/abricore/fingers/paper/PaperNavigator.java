@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PaperNavigator extends Navigator {
+public class PaperNavigator implements Navigator {
 
     private final List<Series> seriesList = new ArrayList<>();
     private final Map<Series, Instant> counters = new HashMap<>();

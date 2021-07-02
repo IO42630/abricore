@@ -54,18 +54,16 @@ public class DownloadTwMode extends Mode {
 
     @Override
     public void fetchData() throws InterruptedException, IOException {
-        synchronized (Session.class) {
-            List<Interval> intervals = new ArrayList<>();
-            intervals.add(Interval.S_1);
-            LOGGER.info("STARTED downloading historical data.");
-            TwNavigator.fetchHistoricalData(assets, intervals, TIMEFRAME_OF_DOWNLOAD, WAIT_TO_LOAD);
-            LOGGER.info("FINISHED downloading historical data.");
-            Thread.sleep(5000L);
-            TmpCsvService.parseTmpCsv();
-            for (Asset asset : assets) {
-                // TODO make sure it merges with runtime data.
-                StoreCsvService.readFromStoreCsv(asset);
-            }
+        List<Interval> intervals = new ArrayList<>();
+        intervals.add(Interval.S_1);
+        LOGGER.info("STARTED downloading historical data.");
+        TwNavigator.fetchHistoricalData(assets, intervals, TIMEFRAME_OF_DOWNLOAD, WAIT_TO_LOAD);
+        LOGGER.info("FINISHED downloading historical data.");
+        Thread.sleep(5000L);
+        TmpCsvService.parseTmpCsv();
+        for (Asset asset : assets) {
+            // TODO make sure it merges with runtime data.
+            StoreCsvService.readFromStoreCsv(asset);
         }
     }
 

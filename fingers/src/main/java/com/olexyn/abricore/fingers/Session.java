@@ -39,7 +39,7 @@ public abstract class Session {
 
     public final static Map<String, Tab> TABS = new HashMap<>();
 
-    public final static WebDriver DRIVER = init();
+    protected final static WebDriver DRIVER = init();
 
 
 
@@ -323,6 +323,10 @@ public abstract class Session {
                 Session.newTab(purpose);
             }
         }
+    }
+
+    public static void refresh() {
+        Session.DRIVER.navigate().refresh();
     }
 
 }

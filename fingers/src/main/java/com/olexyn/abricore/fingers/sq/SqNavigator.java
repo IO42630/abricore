@@ -30,16 +30,16 @@ import static com.olexyn.abricore.fingers.TabPurpose.OBSERVE_SW;
 import static com.olexyn.abricore.fingers.TabPurpose.SYNC_CDF_SQ;
 import static com.olexyn.abricore.util.Constants.EMPTY;
 
-public class SqNavigator extends Navigator {
+public class SqNavigator extends SqSession implements Navigator {
 
     private static final Logger LOGGER = LogUtil.get(SqNavigator.class);
 
     private static void goToMainScreen() {
-        Session.DRIVER.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
+        DRIVER.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
     }
 
     private static void search(String keyword) {
-        Session.DRIVER.findElement(By.className("defaultInput")).sendKeys(keyword);
+        DRIVER.findElement(By.className("defaultInput")).sendKeys(keyword);
     }
 
     private static void getTradeWindow(String isin, Currency currency, Exchange exchange) {
@@ -59,23 +59,23 @@ public class SqNavigator extends Navigator {
             isinParam,
             marketParam
         );
-        if (Session.DRIVER.getCurrentUrl().equals(url)) {
+        if (DRIVER.getCurrentUrl().equals(url)) {
             refresh();
         } else {
-            Session.DRIVER.get(url);
+            DRIVER.get(url);
         }
     }
 
     public static AssetSnapshot fetchQuote(Asset asset) {
-        Session.switchToTab(OBSERVE_SW);
+        switchToTab(OBSERVE_SW);
         getTradeWindow(asset.getSqIsin(), asset.getCurrency(), asset.getExchange());
 
-        if (Session.DRIVER.getCurrentUrl().contains("sqtr_disclaimer")) {
-            Session.DRIVER.findElement(By.id("disclaimerAcceptCheckbox")).click();
-            Session.execute("javascript:disclaimerModule.accept()");
+        if (DRIVER.getCurrentUrl().contains("sqtr_disclaimer")) {
+            DRIVER.findElement(By.id("disclaimerAcceptCheckbox")).click();
+            execute("javascript:disclaimerModule.accept()");
         }
 
-        Map<String, String> tableData = resolveTable(Session.DRIVER.findElement(By.className("tableContent")));
+        Map<String, String> tableData = resolveTable(DRIVER.findElement(By.className("tableContent")));
         return SqQuoteSnapshot.of(tableData, asset).toAssetSnapShot();
     }
 
@@ -127,95 +127,97 @@ public class SqNavigator extends Navigator {
         return tableContents;
     }
 
-    public static Set<Option> getCdf(Asset asset, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+    public static Set<Option> fetchOptions(Asset asset, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
         Set<Option> result = new HashSet<>();
-        result.addAll(getCdf(asset, OptionType.CALL, distance, minRatio, maxRatio));
-        result.addAll(getCdf(asset, OptionType.PUT, distance, minRatio, maxRatio));
+        result.addAll(fetchOptions(asset, OptionType.CALL, distance, minRatio, maxRatio));
+        result.addAll(fetchOptions(asset, OptionType.PUT, distance, minRatio, maxRatio));
         return result;
     }
 
-    public static Set<Option> getCdf(Asset asset, OptionType optionType, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
-        Session.switchToTab(SYNC_CDF_SQ);
-        Set<Option> result = new HashSet<>();
-        if (asset.getSqIsin() == null || asset.getSqIsin().isEmpty()) {
-            LOGGER.warning("Requested Asset has no ISIN. Returning empty Set");
+    public static Set<Option> fetchOptions(Asset asset, OptionType optionType, ANum distance, Double minRatio, Double maxRatio) throws InterruptedException {
+        synchronized (Session.class) {
+            switchToTab(SYNC_CDF_SQ);
+            Set<Option> result = new HashSet<>();
+            if (asset.getSqIsin() == null || asset.getSqIsin().isEmpty()) {
+                LOGGER.warning("Requested Asset has no ISIN. Returning empty Set");
+                return result;
+            }
+
+            // 120 barrier options
+            // 110 options
+            String up = optionType == OptionType.CALL ? "up" : "down";
+            DRIVER.get("https://premium.swissquote.ch/sqi_web_search/market/equity/swissderivatives/" +
+                "SwissDerivativeSearch.action?&searchFilter.bean.trend=" +
+                up +
+                "&searchFilter.bean.underlyingIsin=" +
+                asset.getSqIsin() +
+                "&searchFilter.bean.productClass=120\n");
+
+            // mono underlying
+            setRadio(By.id("searchFilter.bean.monoUnderlying1"), true);
+
+            // sdots
+            setRadio(By.id("searchFilter.bean.exchangeId2"), true);
+
+            // set CHF
+            setComboByDataValue(By.id("searchFilter.bean.currencyFilter"), Currency.CHF.name());
+
+            // set UBS
+            setComboByDataValue(By.id("searchFilter.bean.issuerIdFilter"), "ubs");
+
+
+            // filter distance to lastTraded
+            ANum lastTraded = SeriesService.getLastTraded(asset);
+            if (optionType == OptionType.CALL) {
+                DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.minus(distance).toString(3));
+                DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.num().toString(3));
+            } else {
+                DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.num().plus(new ANum(1)).toString(3));
+                DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.plus(distance).toString(3));
+            }
+
+            // filter by ratio
+            DRIVER.findElement(By.name("searchFilter.bean.minRatio")).sendKeys(minRatio.toString());
+            DRIVER.findElement(By.name("searchFilter.bean.maxRatio")).sendKeys(maxRatio.toString());
+
+
+            // get result rows
+            Thread.sleep(1000L);
+            List<String> cellTexts = DRIVER.findElement(By.id("results"))
+                .findElements(By.cssSelector("td"))
+                .stream().map(WebElement::getText)
+                .collect(Collectors.toList());
+
+
+            BarrierOption tempAsset = null;
+            for (String cellText : cellTexts) {
+                int mod = cellTexts.indexOf(cellText) % 11;
+                switch (mod) {
+                    case 0:
+                        String valorNr = cellText.replace("Trade  ", EMPTY);
+                        String detailUrl = getByText(valorNr).getAttribute("href");
+                        String urlPayload = detailUrl.substring(detailUrl.indexOf("?s=") + 3);
+                        String[] payload = urlPayload.split(Constants.UL);
+                        String isin = payload[0];
+                        tempAsset = new BarrierOption(isin);
+                        tempAsset.setSqIsin(isin);
+                        tempAsset.setExchange(Exchange.ofCode(payload[1]));
+                        tempAsset.setCurrency(Currency.valueOf(payload[2]));
+                        tempAsset.setAssetType(AssetType.BARRIER_OPTION);
+                        break;
+                    case 5:
+                        assert tempAsset != null;
+                        tempAsset.setStrike(ANum.of(cellText));
+                        tempAsset.setOptionType(optionType);
+                        tempAsset.setUnderlying(asset);
+                        result.add(tempAsset);
+                        break;
+                    default:
+                        break;
+                }
+            }
             return result;
         }
-
-        // 120 barrier options
-        // 110 options
-        String up = optionType == OptionType.CALL ? "up" : "down";
-        Session.DRIVER.get("https://premium.swissquote.ch/sqi_web_search/market/equity/swissderivatives/" +
-            "SwissDerivativeSearch.action?&searchFilter.bean.trend=" +
-            up +
-            "&searchFilter.bean.underlyingIsin=" +
-            asset.getSqIsin() +
-            "&searchFilter.bean.productClass=120\n");
-
-        // mono underlying
-        Session.setRadio(By.id("searchFilter.bean.monoUnderlying1"), true);
-
-        // sdots
-        Session.setRadio(By.id("searchFilter.bean.exchangeId2"), true);
-
-        // set CHF
-        Session.setComboByDataValue(By.id("searchFilter.bean.currencyFilter"), Currency.CHF.name());
-
-        // set UBS
-        Session.setComboByDataValue(By.id("searchFilter.bean.issuerIdFilter"), "ubs");
-
-
-        // filter distance to lastTraded
-        ANum lastTraded = SeriesService.getLastTraded(asset);
-        if (optionType == OptionType.CALL) {
-            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.minus(distance).toString(3));
-            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.num().toString(3));
-        } else {
-            Session.DRIVER.findElement(By.name("searchFilter.bean.minStrike")).sendKeys(lastTraded.num().plus(new ANum(1)).toString(3));
-            Session.DRIVER.findElement(By.name("searchFilter.bean.maxStrike")).sendKeys(lastTraded.plus(distance).toString(3));
-        }
-
-        // filter by ratio
-        Session.DRIVER.findElement(By.name("searchFilter.bean.minRatio")).sendKeys(minRatio.toString());
-        Session.DRIVER.findElement(By.name("searchFilter.bean.maxRatio")).sendKeys(maxRatio.toString());
-
-
-        // get result rows
-        Thread.sleep(1000L);
-        List<String> cellTexts = Session.DRIVER.findElement(By.id("results"))
-            .findElements(By.cssSelector("td"))
-            .stream().map(WebElement::getText)
-            .collect(Collectors.toList());
-
-
-        BarrierOption tempAsset = null;
-        for (String cellText : cellTexts) {
-            int mod = cellTexts.indexOf(cellText) % 11;
-            switch (mod) {
-                case 0:
-                    String valorNr = cellText.replace("Trade  ", EMPTY);
-                    String detailUrl = Session.getByText(valorNr).getAttribute("href");
-                    String urlPayload = detailUrl.substring(detailUrl.indexOf("?s=") + 3);
-                    String[] payload = urlPayload.split(Constants.UL);
-                    String isin = payload[0];
-                    tempAsset = new BarrierOption(isin);
-                    tempAsset.setSqIsin(isin);
-                    tempAsset.setExchange(Exchange.ofCode(payload[1]));
-                    tempAsset.setCurrency(Currency.valueOf(payload[2]));
-                    tempAsset.setAssetType(AssetType.BARRIER_OPTION);
-                    break;
-                case 5:
-                    assert tempAsset != null;
-                    tempAsset.setStrike(ANum.of(cellText));
-                    tempAsset.setOptionType(optionType);
-                    tempAsset.setUnderlying(asset);
-                    result.add(tempAsset);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return result;
     }
 
 }
