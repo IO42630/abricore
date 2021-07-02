@@ -45,7 +45,7 @@ public class SeriesService {
 
     public static void putData(List<AssetSnapshot> snapshots) {
         for (AssetSnapshot snapshot : snapshots) {
-            of(snapshot.getAsset()).put(snapshot.getInstant(), snapshot);
+            of(snapshot.getAsset()).put(snapshot);
         }
     }
 

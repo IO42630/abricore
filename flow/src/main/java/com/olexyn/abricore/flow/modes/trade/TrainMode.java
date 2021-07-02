@@ -46,7 +46,7 @@ public class TrainMode extends TradeSqMode {
         while (isMarketOpen(sqNavigator.fetchQuote(cdf))) {
             AssetSnapshot assetSnapshot = sqNavigator.fetchQuote(cdf);
             if (isMarketOpen(assetSnapshot)) {
-                series.put(assetSnapshot.getInstant(), assetSnapshot );
+                series.put(assetSnapshot );
                 // Test conditions.
 
             }

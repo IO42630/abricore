@@ -78,25 +78,21 @@ public class Series {
         Series limitedSeries = new Series(getAsset());
         Instant first = getFirstAfter(from);
         Instant last = getFirstBefore(to);
-        limitedSeries.put(first, treeMap.get(first));
+        limitedSeries.put(treeMap.get(first));
         while(higherKey(first) != last && higherKey(first) != null) {
             first = higherKey(first);
-            limitedSeries.put(first, treeMap.get(first));
+            limitedSeries.put(treeMap.get(first));
         }
-        limitedSeries.put(last, treeMap.get(last));
+        limitedSeries.put(treeMap.get(last));
         return limitedSeries;
     }
 
     public AssetSnapshot put(AssetSnapshot snapshot) {
-        return put(snapshot.getInstant(), snapshot);
-    }
-
-    public AssetSnapshot put(Instant instant, AssetSnapshot snapshot) {
         snapshot.setSeries(this);
         for (Observer observer : observers) {
             observer.onSeriesUpdate();
         }
-        return treeMap.put(instant, snapshot);
+        return treeMap.put(snapshot.getInstant(), snapshot);
     }
 
     public Set<Entry<Instant, AssetSnapshot>> entrySet() {

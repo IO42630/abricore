@@ -67,7 +67,7 @@ public class Max {
             }
 
             if (isExtreme) {
-                extremes.put(candidateSnapshotEntry.getKey(), candidateSnapshotEntry.getValue());
+                extremes.put(candidateSnapshotEntry.getValue());
             }
 
             try {

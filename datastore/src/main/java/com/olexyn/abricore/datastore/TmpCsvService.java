@@ -82,7 +82,7 @@ public class TmpCsvService {
             }
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot snapshot = mapDataFromTmpCsvLine(headerArray, lineInArray, asset, interval);
-                out.put(snapshot.getInstant(), snapshot);
+                out.put(snapshot);
             }
         } catch (CsvValidationException | IOException e) {
             out.clear();

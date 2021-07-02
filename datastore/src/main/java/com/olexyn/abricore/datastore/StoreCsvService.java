@@ -57,7 +57,7 @@ public class StoreCsvService {
 
             while ((lineInArray = reader.readNext()) != null) {
                 AssetSnapshot assetSnapshot = mapDataFromStoreCsvLine(headerArray, lineInArray, asset);
-                out.put(assetSnapshot.getInstant(), assetSnapshot);
+                out.put(assetSnapshot);
             }
         } catch (CsvValidationException | IOException e) {
             out.clear();
@@ -111,7 +111,7 @@ public class StoreCsvService {
                 // directly updates the existing SnapShot
                 storedMap.get(newEntry.getKey()).mergeFrom(newEntry.getValue());
             } else {
-                storedMap.put(newEntry.getKey(), newEntry.getValue());
+                storedMap.put(newEntry.getValue());
             }
         }
         writeToStore(storedMap);
