@@ -7,6 +7,10 @@ import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.enums.Currency;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -124,11 +128,10 @@ public class SqQuoteSnapshot {
                 output.setBidVol(ANum.of(val));
             }
             if(key.startsWith("Geldkurs ")) {
-                output.setInstant(Instant.parse(key.replace("Geldkurs ", Constants.EMPTY)));
                 output.setBidPrice(ANum.of(val));
             }
             if (key.startsWith("Strike")) {
-                output.setStrike(ANum.of(val.substring(val.indexOf(Constants.SPACE))));
+                output.setStrike(ANum.of(val.substring(0, val.indexOf(Constants.SPACE))));
             }
             if(key.startsWith("Briefkurs-Volumen")) {
                 output.setAskVol(ANum.of(val));
@@ -146,6 +149,17 @@ public class SqQuoteSnapshot {
                 output.setExpiry(Instant.parse(val));
             }
         }
+        LocalDate date = dataMap.keySet().stream()
+            .filter(x -> x.startsWith("Basiswert Preis "))
+            .map(x -> x.replace("Basiswert Preis ", Constants.EMPTY))
+            .map(x -> LocalDate.parse(x, DateTimeFormatter.ofPattern("dd-mm-jjjj")))
+            .findFirst().orElseThrow();
+        LocalTime time = dataMap.keySet().stream()
+            .filter(x -> x.startsWith("Geldkurs "))
+            .map(x -> x.replace("Geldkurs ", Constants.EMPTY))
+            .map(LocalTime::parse)
+            .findFirst().orElseThrow();
+        output.setInstant(Instant.from(LocalDateTime.of(date, time)));
         return output;
     }
 
@@ -153,7 +167,6 @@ public class SqQuoteSnapshot {
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         snapshot.getPrice().setBid(getBidPrice());
         snapshot.getPrice().setAsk(getAskPrice());
-        snapshot.setInstant(getInstant());
         return snapshot;
     }
 
