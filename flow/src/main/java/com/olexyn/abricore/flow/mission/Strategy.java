@@ -42,14 +42,15 @@ public class Strategy implements Serializable {
 
     public SizingCondition sizingInCondition = null;
     public SizingCondition sizingOutCondition = null;
-    public DistanceGenerator distanceGenerator = null;
+    private DistanceGenerator minOptionDistance = null;
+    private DistanceGenerator maxOptionDistance = null;
 
 
     public boolean isOptionSelectable(Option option) {
         Asset underlying = option.getUnderlying();
         ANum lastUnderlyingPrice = SeriesService.getLastTraded(underlying);
         ANum difference;
-        ANum distance = distanceGenerator.generate(underlying);
+        ANum distance = minOptionDistance.generate(underlying);
         if (option.getOptionType() == OptionType.CALL) {
             difference = lastUnderlyingPrice.minus(option.getStrike());
         } else {
@@ -58,4 +59,27 @@ public class Strategy implements Serializable {
         return difference.greater(distance);
     }
 
+    /**
+     * Minimal distance between price of underlying and strike of option.
+     * If the distance is small, the risk the option getting knocked-out increases.
+     */
+    public DistanceGenerator getMinOptionDistance() {
+        return minOptionDistance;
+    }
+
+    public void setMinOptionDistance(DistanceGenerator minOptionDistance) {
+        this.minOptionDistance = minOptionDistance;
+    }
+
+    /**
+     * Maximal distance between price of underlying and strike of option.
+     * This limits the number of options considered for trading.
+     */
+    public DistanceGenerator getMaxOptionDistance() {
+        return maxOptionDistance;
+    }
+
+    public void setMaxOptionDistance(DistanceGenerator maxOptionDistance) {
+        this.maxOptionDistance = maxOptionDistance;
+    }
 }

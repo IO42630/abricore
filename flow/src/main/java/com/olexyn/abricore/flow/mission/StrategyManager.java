@@ -1,8 +1,6 @@
 package com.olexyn.abricore.flow.mission;
 
 import com.olexyn.abricore.datastore.SeriesService;
-import com.olexyn.abricore.model.Asset;
-import com.olexyn.abricore.model.options.OptionType;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.Parameters;
 
@@ -33,10 +31,20 @@ public class StrategyManager {
         strategy.minRatio = 1d;
         strategy.maxRatio = 1d;
 
-        strategy.distanceGenerator = asset -> {
-            ANum lastUnderlyingPrice = SeriesService.getLastTraded(asset);
-            return lastUnderlyingPrice.times(Objects.requireNonNull(ANum.of("0.1")));
-        };
+        strategy.setMinOptionDistance(
+            asset -> {
+                ANum lastUnderlyingPrice = SeriesService.getLastTraded(asset);
+                return lastUnderlyingPrice.times(Objects.requireNonNull(ANum.of("0.1")));
+            }
+        );
+        strategy.setMaxOptionDistance(
+            asset -> {
+                ANum lastUnderlyingPrice = SeriesService.getLastTraded(asset);
+                return lastUnderlyingPrice.times(Objects.requireNonNull(ANum.of("0.2")));
+            }
+        );
+
+
 
         return strategy;
     }

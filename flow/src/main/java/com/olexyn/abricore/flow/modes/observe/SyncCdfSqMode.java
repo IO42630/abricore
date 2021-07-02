@@ -9,8 +9,6 @@ import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.options.Option;
-import com.olexyn.abricore.model.options.OptionType;
-import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.LogUtil;
 
 import java.io.IOException;
@@ -63,7 +61,7 @@ public class SyncCdfSqMode extends Mode {
         synchronized (Session.class) {
             foundCdfs = SqNavigator.getCdf(
                 underlying,
-                mission.getStrategy().distanceGenerator.generate(underlying),
+                mission.getStrategy().getMaxOptionDistance().generate(underlying),
                 mission.getStrategy().minRatio,
                 mission.getStrategy().maxRatio
             );
