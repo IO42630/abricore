@@ -2,7 +2,6 @@ package com.olexyn.abricore.flow.modes.trade;
 
 import com.olexyn.abricore.datastore.SeriesService;
 import com.olexyn.abricore.fingers.sq.SqSession;
-import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.mission.Mission;
 import com.olexyn.abricore.flow.mission.Transaction;
 import com.olexyn.abricore.flow.modes.Mode;
@@ -10,6 +9,7 @@ import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.LogUtil;
+import com.olexyn.abricore.util.Param;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -37,16 +37,16 @@ public class TradeSqMode extends Mode {
     public void run() {
         SqSession.doLogin();
         SeriesService.of(mission.getUnderlyingAsset()).observers.add(this);
-        while (timer.hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+        while (timer.hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(Param.config.getProperty("run.time.seconds"))))) {
             try {
-                Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
+                Instant lastTwDownload = Instant.parse(Param.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(1)).isBefore(Instant.now())) {
 
 
-                    MainApp.events.setProperty("tw.last.download", Instant.now().toString());
-                    MainApp.saveProperties(MainApp.events, "events.properties");
+                    Param.events.setProperty("tw.last.download", Instant.now().toString());
+                    Param.saveProperties(Param.events, "events.properties");
                 }
-                Thread.sleep(Long.parseLong(MainApp.config.getProperty("tw.download.check.interval.seconds")) * Constants.SECONDS);
+                Thread.sleep(Long.parseLong(Param.config.getProperty("tw.download.check.interval.seconds")) * Constants.SECONDS);
             } catch (InterruptedException | IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }

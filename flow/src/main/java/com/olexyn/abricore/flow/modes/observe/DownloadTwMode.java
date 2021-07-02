@@ -6,10 +6,10 @@ import com.olexyn.abricore.datastore.TmpCsvService;
 import com.olexyn.abricore.fingers.Session;
 import com.olexyn.abricore.fingers.tw.TwNavigator;
 import com.olexyn.abricore.fingers.tw.TwSession;
-import com.olexyn.abricore.flow.MainApp;
 import com.olexyn.abricore.flow.modes.Mode;
 import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.util.LogUtil;
+import com.olexyn.abricore.util.Param;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -23,9 +23,9 @@ public class DownloadTwMode extends Mode {
 
     private static final Logger LOGGER = LogUtil.get(DownloadTwMode.class);
 
-    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(MainApp.config.getProperty("tw.download.interval.minutes"));
-    private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.minutes"));
-    private static final long WAIT_TO_LOAD = Long.parseLong(MainApp.config.getProperty("tw.download.timeframe.wait.to.load.seconds"));
+    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(Param.config.getProperty("tw.download.interval.minutes"));
+    private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(Param.config.getProperty("tw.download.timeframe.minutes"));
+    private static final long WAIT_TO_LOAD = Long.parseLong(Param.config.getProperty("tw.download.timeframe.wait.to.load.seconds"));
 
     private final List<Asset> assets = new ArrayList<>();
 
@@ -38,11 +38,11 @@ public class DownloadTwMode extends Mode {
         timer.start();
         while (timer.hasNotPassedSeconds("run.time.seconds")) {
             try {
-                Instant lastTwDownload = Instant.parse(MainApp.events.getProperty("tw.last.download"));
+                Instant lastTwDownload = Instant.parse(Param.events.getProperty("tw.last.download"));
                 if (lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                     fetchData();
-                    MainApp.events.setProperty("tw.last.download", Instant.now().toString());
-                    MainApp.saveProperties(MainApp.events, "events.properties");
+                    Param.events.setProperty("tw.last.download", Instant.now().toString());
+                    Param.saveProperties(Param.events, "events.properties");
                 }
                 timer.sleepSeconds("tw.download.check.interval.seconds");
             } catch (InterruptedException | IOException e) {

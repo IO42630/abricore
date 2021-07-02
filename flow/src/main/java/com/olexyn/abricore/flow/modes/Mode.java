@@ -6,6 +6,7 @@ import com.olexyn.abricore.model.Asset;
 import com.olexyn.abricore.model.snapshots.Observer;
 import com.olexyn.abricore.model.snapshots.Series;
 import com.olexyn.abricore.util.LogUtil;
+import com.olexyn.abricore.util.Param;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -22,7 +23,7 @@ public abstract class Mode implements Runnable, Observer {
 
      public void sleep(long interval){
           timer.start();
-          while (timer.hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty("run.time.seconds"))))) {
+          while (timer.hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(Param.config.getProperty("run.time.seconds"))))) {
                try {
                     Thread.sleep(interval);
                } catch (InterruptedException ignored) {

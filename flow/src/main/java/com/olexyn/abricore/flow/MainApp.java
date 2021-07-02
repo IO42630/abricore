@@ -16,6 +16,7 @@ import com.olexyn.abricore.model.UnderlyingAsset;
 import com.olexyn.abricore.model.options.Option;
 import com.olexyn.abricore.util.ANum;
 import com.olexyn.abricore.util.LogUtil;
+import com.olexyn.abricore.util.Param;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,39 +32,35 @@ public class MainApp {
 
     private static final Logger LOGGER = LogUtil.get(MainApp.class);
 
-    public static final Properties config = new Properties();
-    public static final Properties events = new Properties();
-
     /**
      */
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
         LOGGER.info("Starting the application.");
-        loadProperties(config, "config.properties");
-        loadProperties(events, "events.properties");
+        Param.init();
         AssetService.loadAssets();
         TmpCsvService.parseTmpCsv();
         SeriesService.loadSeries(AssetService.ASSETS);
 
 
-        if (isEnabled("tw.download.enabled")) {
+        if (Param.isEnabled("tw.download.enabled")) {
             List<Asset> assetsToDownload = AssetService.ASSETS.stream().filter(x -> x instanceof UnderlyingAsset).collect(Collectors.toList());
             new Thread(new DownloadTwMode(assetsToDownload)).start();
         }
-        if (isEnabled("sq.cdf.update.enabled")) {
+        if (Param.isEnabled("sq.cdf.update.enabled")) {
             new Thread(new SyncCdfSqMode(setupSession())).start();
         }
-        if (isEnabled("tw.observe.enabled")) {
+        if (Param.isEnabled("tw.observe.enabled")) {
             List<Asset> assetsToObserve = new ArrayList<>();
             assetsToObserve.add(AssetService.ofName("BTCUSD"));
             assetsToObserve.add(AssetService.ofName("XAGUSD"));
             assetsToObserve.add(AssetService.ofName("AMD"));
             new Thread(new ObserveTwMode(assetsToObserve)).start();
         }
-        if (isEnabled("sq.observe.enabled")) {
+        if (Param.isEnabled("sq.observe.enabled")) {
             new Thread(new ObserveSqMode(setupSession())).start();
         }
-        if (isEnabled("sq.trade.enabled")) {
+        if (Param.isEnabled("sq.trade.enabled")) {
             new Thread(new TradeSqMode(new Mission())).start();
         }
     }
@@ -96,26 +93,6 @@ public class MainApp {
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(new ANum(1000000,0));
         return mission;
-    }
-
-    public static void loadProperties(Properties properties, String fileName) throws IOException {
-        String dir = System.getProperty("user.dir") + "/flow/src/main/resources/" + fileName;
-        FileInputStream fis = new FileInputStream(dir);
-        properties.load(fis);
-        fis.close();
-    }
-
-    public static void saveProperties(Properties properties, String fileName) throws IOException {
-        String dir = System.getProperty("user.dir") + "/flow/src/main/resources/" + fileName;
-        FileOutputStream fos = new FileOutputStream(dir);
-        properties.store(fos, "");
-        fos.flush();
-        fos.close();
-        loadProperties(properties, fileName);
-    }
-
-    public static boolean isEnabled(String prop) {
-        return Boolean.parseBoolean(config.getProperty(prop));
     }
 
 }

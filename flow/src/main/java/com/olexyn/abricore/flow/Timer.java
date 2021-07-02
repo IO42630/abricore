@@ -1,6 +1,7 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.util.Constants;
+import com.olexyn.abricore.util.Param;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,23 +20,23 @@ public class Timer {
     }
 
     public boolean hasNotPassedSeconds(String prop) {
-        return hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(MainApp.config.getProperty(prop))));
+        return hasNotPassedSeconds(Duration.ofSeconds(Long.parseLong(Param.config.getProperty(prop))));
     }
 
     public void sleepMilli(String prop) throws InterruptedException {
-        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)));
+        Thread.sleep(Long.parseLong(Param.config.getProperty(prop)));
     }
 
     public void sleepSeconds(String prop) throws InterruptedException {
-        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS);
+        Thread.sleep(Long.parseLong(Param.config.getProperty(prop)) * Constants.SECONDS);
     }
 
     public void sleepMinutes(String prop) throws InterruptedException {
-        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES);
+        Thread.sleep(Long.parseLong(Param.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES);
     }
 
     public void sleepHours(String prop) throws InterruptedException {
-        Thread.sleep(Long.parseLong(MainApp.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES * Constants.HOURS);
+        Thread.sleep(Long.parseLong(Param.config.getProperty(prop)) * Constants.SECONDS * Constants.MINUTES * Constants.HOURS);
     }
 
 }
