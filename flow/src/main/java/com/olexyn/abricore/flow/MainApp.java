@@ -92,7 +92,6 @@ public class MainApp {
         mission.setUnderlyingAsset(AssetService.ofName("XAGUSD"));
 
 
-        mission.getCdfList().addAll(List.of((Option) AssetService.ofName("XAG C 25"), (Option) AssetService.ofName("XAG C 26")));
         mission.setInterval(Interval.H_1);
         mission.setStrategy(StrategyManager.setupStrategy("Test-Strategy"));
         mission.setAllocatedCapital(new ANum(1000000,0));

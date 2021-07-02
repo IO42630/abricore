@@ -26,9 +26,7 @@ public class TrainMode extends TradeSqMode {
     private Mission mission;
 
     public void foo() {
-        if (mission.getCdfList().size() == 0) {
-            return;
-        }
+
 
 
         Asset asset = mission.getUnderlyingAsset();
@@ -44,7 +42,7 @@ public class TrainMode extends TradeSqMode {
 
 
         // TODO for now just quote the cdfs, comparison with tw comes later
-        Asset cdf = mission.getCdfList().get(0);
+        Asset cdf = null;
         while (isMarketOpen(sqNavigator.fetchQuote(cdf))) {
             AssetSnapshot assetSnapshot = sqNavigator.fetchQuote(cdf);
             if (isMarketOpen(assetSnapshot)) {

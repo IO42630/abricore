@@ -31,8 +31,6 @@ public abstract class Mode implements Runnable, Observer {
           }
      }
 
-     protected Series underlyingSeries;
-
      protected final List<Series> cdfSeriesList = new ArrayList<>();
 
 
@@ -48,19 +46,10 @@ public abstract class Mode implements Runnable, Observer {
           return cdfSeriesList.stream().map(Series::getAsset).collect(Collectors.toList());
      }
 
-     /**
-      * Protected in Mode, Public in ObserveMode.
-      */
-     protected void addCdf(Asset asset) {
-          cdfSeriesList.add(new Series(asset));
-     }
-
      public abstract void fetchData() throws InterruptedException, IOException;
 
      public void onSeriesUpdate() {
 
      }
-
-
 
 }

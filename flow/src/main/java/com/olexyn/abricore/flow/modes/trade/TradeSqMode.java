@@ -25,12 +25,12 @@ public class TradeSqMode extends Mode {
     private static final Logger LOGGER = LogUtil.get(TradeSqMode.class);
 
     protected Mission mission;
+    private Series underlyingSeries;
     protected Map<String, ANum> indicators = new HashMap<>();
 
     public TradeSqMode(Mission mission) {
         this.mission = mission;
         underlyingSeries = SeriesService.of(mission.getUnderlyingAsset());
-        mission.getCdfList().forEach(this::addCdf);
     }
 
     @Override

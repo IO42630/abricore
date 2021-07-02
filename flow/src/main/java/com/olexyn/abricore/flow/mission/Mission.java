@@ -20,7 +20,6 @@ import java.util.List;
 public class Mission implements Serializable {
 
     private Asset underlyingAsset;
-    private List<Option> derivatives = new ArrayList<>();
     private Interval interval;
     private ANum allocatedCapital;
     private Strategy strategy;
@@ -43,10 +42,6 @@ public class Mission implements Serializable {
 
     public void setUnderlyingAsset(Asset underlyingAsset) {
         this.underlyingAsset = underlyingAsset;
-    }
-
-    public List<Option> getCdfList() {
-        return derivatives;
     }
 
     public Interval getInterval() {
