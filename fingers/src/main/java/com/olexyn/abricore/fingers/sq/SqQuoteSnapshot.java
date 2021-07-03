@@ -8,8 +8,9 @@ import com.olexyn.abricore.util.enums.Currency;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -151,15 +152,16 @@ public class SqQuoteSnapshot {
         }
         LocalDate date = dataMap.keySet().stream()
             .filter(x -> x.startsWith("Basiswert Preis "))
-            .map(x -> x.replace("Basiswert Preis ", Constants.EMPTY))
-            .map(x -> LocalDate.parse(x, DateTimeFormatter.ofPattern("dd-mm-jjjj")))
+            .map(x -> x.replace("Basiswert Preis ", Constants.EMPTY).trim())
+            .map(x -> LocalDate.parse(x, DateTimeFormatter.ofPattern("dd-MM-yyyy")))
             .findFirst().orElseThrow();
         LocalTime time = dataMap.keySet().stream()
             .filter(x -> x.startsWith("Geldkurs "))
-            .map(x -> x.replace("Geldkurs ", Constants.EMPTY))
+            .map(x -> x.replace("Geldkurs ", Constants.EMPTY).trim())
             .map(LocalTime::parse)
             .findFirst().orElseThrow();
-        output.setInstant(Instant.from(LocalDateTime.of(date, time)));
+        output.setInstant(Instant.from(ZonedDateTime.of(date, time, ZoneId.of("Europe/Zurich"))));
+
         return output;
     }
 
@@ -167,6 +169,7 @@ public class SqQuoteSnapshot {
         AssetSnapshot snapshot = new AssetSnapshot(asset);
         snapshot.getPrice().setBid(getBidPrice());
         snapshot.getPrice().setAsk(getAskPrice());
+        snapshot.setInstant(getInstant());
         return snapshot;
     }
 

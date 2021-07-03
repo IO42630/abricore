@@ -65,7 +65,7 @@ public class ObserveSqMode extends Mode {
             snapshot = SqNavigator.fetchQuote(tradableCdf);
         }
         synchronized (SeriesService.class) {
-            SeriesService.of(mission.getUnderlyingAsset()).put(snapshot);
+            SeriesService.of(snapshot.getAsset()).put(snapshot);
         }
     }
 
