@@ -13,6 +13,7 @@ import com.olexyn.abricore.flow.strategy.Evolution;
 import com.olexyn.abricore.flow.strategy.templates.StrategyTemplates;
 import com.olexyn.abricore.flow.tasks.GapReportTask;
 import com.olexyn.abricore.flow.tasks.VectorMergeTask;
+import com.olexyn.abricore.flow.tasks.VectorSaveTask;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
@@ -20,13 +21,15 @@ import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.TradeService;
-import com.olexyn.abricore.util.Property;
+import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.enums.CmdOptions;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,8 +81,8 @@ public class MainApp {
         ctx.getBean(SeriesService.class).save();
         ctx.getBean(TradeService.class).save();
         ctx.getBean(PositionService.class).save();
+        ctx.getBean(VectorService.class).save();
 
-        Property.saveProperties(Property.getEvents(), "events.properties");
         ctx.close();
         LogU.infoEnd("((SHUTDOWN))");
         System.exit(0);
@@ -174,6 +177,7 @@ public class MainApp {
         switch (type) {
             case GAP_REPORT -> ctx.getBean(GapReportTask.class).run();
             case VECTOR_MERGE -> ctx.getBean(VectorMergeTask.class).run();
+            case VECTOR_SAVE -> ctx.getBean(VectorSaveTask.class).run();
             default -> LogU.infoPlain("Invalid JOB was ignored.");
         }
     }

@@ -3,9 +3,10 @@ package com.olexyn.abricore.flow.strategy;
 import com.olexyn.abricore.flow.strategy.templates.StrategyTemplates;
 import com.olexyn.abricore.flow.tasks.VectorMergeTask;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
-import com.olexyn.abricore.store.dao.VectorDao;
+import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.CtxAware;
-import com.olexyn.abricore.util.Property;
+import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class Evolution extends CtxAware implements Runnable {
         strategy.setFitness(0);
         strategyUtil.populateSeriesFromDb(strategy);
 
-        var vectors = new ArrayList<>(bean(VectorDao.class).findDtos());
+        var vectors = new ArrayList<>(bean(VectorService.class).getVectors());
 
         // top by : rating * duratino * count
         vectors.sort((v1, v2) -> Long.compare(
@@ -93,7 +94,6 @@ public class Evolution extends CtxAware implements Runnable {
         int veteranCount = 0;
         while (veteranCount < POPULATION_SIZE / 20 && nextGen.size() < POPULATION_SIZE) {
             var veteran = oldGen.get(veteranCount++);
-            veteran.setFitness(0);
             nextGen.add(veteran);
         }
 
@@ -175,10 +175,12 @@ public class Evolution extends CtxAware implements Runnable {
                 .map(StrategyDto::getVector)
                 .filter(v -> v.getRating() > 0)
                 .collect(Collectors.toSet());
-            bean(VectorDao.class).saveDtos(newVectors);
+            bean(VectorService.class).addAll(newVectors);
             bean(VectorMergeTask.class).run();
 
         }
+        LogU.warnEnd("DONE");
+        bean(VectorService.class).save();
     }
 
 }

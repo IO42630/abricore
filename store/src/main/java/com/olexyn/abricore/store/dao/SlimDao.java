@@ -95,4 +95,8 @@ public abstract class SlimDao<E extends AbstractEntity, D extends Dto> {
         getRepo().deleteAll(deletes);
     }
 
+    public void deleteAll() {
+        getRepo().deleteAll();
+    }
+
 }

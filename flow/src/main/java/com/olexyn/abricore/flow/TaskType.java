@@ -10,6 +10,7 @@ public enum TaskType {
     VECTOR_MERGE("vector-merge"),
     VECTOR_NULL("vector-null"),
     VECTOR_DEFRAG("vector-defrag"),
+    VECTOR_SAVE("vector-save"),
     UNKNOWN("unknown");
 
     private final String command;

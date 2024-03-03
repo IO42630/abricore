@@ -2,15 +2,15 @@ package com.olexyn.abricore.flow.tasks;
 
 import com.olexyn.abricore.model.runtime.strategy.vector.BoundParam;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
-import com.olexyn.abricore.store.dao.VectorDao;
+import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.CtxAware;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.abricore.util.num.NumSerialize;
+import com.olexyn.propconf.PropConf;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,12 +44,15 @@ public class VectorMergeTask extends CtxAware implements Task {
     @Override
     public void run() {
 
-        var vectors = new ArrayList<>(bean(VectorDao.class).findDtos());
+        var vectors = new ArrayList<>(bean(VectorService.class).getVectors());
         merge(vectors);
 
     }
 
-
+    void merge(List<VectorDto> vectors) {
+        var trimmed = deletedmerge(vectors);
+        LogU.infoPlain("Vectors: %s -(trimmed to)-> %s",vectors.size(), trimmed.size());
+    }
 
 
     List<VectorDto> deletedmerge(List<VectorDto> vectors) {
@@ -67,13 +70,7 @@ public class VectorMergeTask extends CtxAware implements Task {
 
 
 
-    void merge(List<VectorDto> vectors) {
-        bean(VectorDao.class).delete(vectors);
-        LogU.infoPlain(" " + vectors.size());
-        var trimmed = deletedmerge(vectors);
-        LogU.infoPlain(" -> " + trimmed.size());
-        bean(VectorDao.class).saveDtos(new HashSet<>(vectors));
-    }
+
 
 
     boolean shouldMerge(VectorDto a, VectorDto b) {
