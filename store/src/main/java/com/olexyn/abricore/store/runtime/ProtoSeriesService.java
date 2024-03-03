@@ -132,12 +132,6 @@ public abstract class ProtoSeriesService implements ISeriesService {
         }
     }
 
-    public synchronized void initCache() {
-        assetService.getAssets().forEach(
-            assetDto -> of(assetDto, Instant.now().minus(Duration.ofDays(2000)), Instant.now())
-        );
-    }
-
     public synchronized void patch() {
         assetService.getAssets().stream()
             .map(assetDto -> of(assetDto, Instant.now().minus(Duration.ofDays(2000)), Instant.now()))

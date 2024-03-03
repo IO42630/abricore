@@ -17,7 +17,7 @@
         <dependency>
             <groupId>com.olexyn.abricore</groupId>
             <artifactId>model</artifactId>
-            <version>0.1</version>
+            <version>${xx.project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>3.1.2</version>
+            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>com.esotericsoftware</groupId>
