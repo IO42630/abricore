@@ -88,6 +88,7 @@ public class SymbolEntity implements Serializable, AbstractEntity {
 
 
 
+    @Override
     public Long getId() {
         return id;
     }
