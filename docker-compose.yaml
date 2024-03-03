@@ -1,0 +1,20 @@
+version: '3'
+services:
+
+    #  See .env for vars.
+    abricore-db:
+        container_name: abricore-db
+        image: mariadb:10.11.2-jammy
+        command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+        volumes:
+            - /home/user/home/db/abricore:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_DATABASE=ABRICORE
+        ports:
+            - "24001:3306"
+
+networks:
+    abricore:

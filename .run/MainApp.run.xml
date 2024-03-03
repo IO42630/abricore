@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MainApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="graalvm-19" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <module name="main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.olexyn.abricore.MainApp" />
+    <option name="VM_PARAMETERS" value="-Xms8G -Xmx320G -XX:MaxInlineLevel=32 -XX:MaxInlineSize=512" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.olexyn.abricore.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

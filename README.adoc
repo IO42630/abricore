@@ -1,0 +1,164 @@
+= Abricore
+:toc:
+:toclevels: 4
+:stylesheet: ../shared/adoc-styles.css
+
+{empty} +
+
+== Introduction
+
+=== About
+
+A `JPA` / `POJO` / `Selenium` investing bot.
+It has `Services` which hold runtime data.
+And `Jobs` which move data between resources, such as:
+`DB` / `WEB` / `CSV`.
+
+== Other `README`
+
+|===
+| File | Description
+| link:doc/Data.adoc[Data.adoc] |
+| link:doc/Hierarchy.adoc[Hierarchy.adoc] | structural / UML class view.
+| link:doc/Jobs.adoc[Jobs.adoc] | List of `Job`, their flow and dependencies.
+| link:doc/LockFlows.adoc[LockFlows.adoc] | ?
+| link:doc/Strategy.adoc[Strategy.adoc] | ?
+| link:doc/UUID.adoc[UUID.adoc] | usage of UUID in _abricore_.
+|===
+
+== Queries
+* See also `MainApp` for query listeners.
+
+[cols="1,2"]
+|===
+| `start <job name>` | see link:doc/Jobs.adoc[Jobs.adoc] for job names.
+| `e` | Exit (soft ~ persist data).
+| `is <resource>` | Request status of some resource.
+| `is temp` | Status of the `quotes.dir.tmp` directory.
+| `...` | TODO.
+|===
+
+== Overview
+
+==== Generic Template
+
+If we were to add a new `Service` we would need to implement the blue Template Objects. +
+If adding a `Job` implement the red Template Object instead.
+
+image::img/generic-job-template.png[]
+
+{empty} +
+
+====  Modules
+
+Here is an overview of the modules and the types they exchange.
+
+image::img/module-dep.png[]
+
+[cols="2,4"]
+|===
+| `flow` | Application flow & logic. +
+Issues start / stop commands to `Job`. +
+Issues fetch / interrupt commands to `Navigator`. +
+Issues update / stop commands to `Series`.
+| `navi` | Adapter towards Web & Selenium.
+| `store.runtime` | Runtime data holder.
+| `store.json/csv/repo` | Adapter towards CSV & H2 & JSON.
+| `model.runtime` | Runtime types.
+| `model.data` | Storage entities.
+| `util` | Common types & helpers.
+|===
+
+{empty} +
+
+== Logic Flow
+
+The image below shows the flow between `Stores` and `Services`:
+
+image::img/data-flow-between-jobs.png[]
+
+== Lock Flow
+
+image::img/lock-flow.svg[]
+
+{empty} +
+
+{empty} +
+
+== Particularities
+
+=== `Dao` vs `SlimDao`
+==== Problem
+* `SymbolDao` can *not* init its `AssetDto` fully, as this would require dep to `AssetService`.
+- this would cause a circular dep.
+- to show this `SymbolDao` is a `SlimDao`.
+- instead, we place the custom init logic for `AssetDto` in the constructor of `AssetService`.
+- this is _ok_ as long as `SymbolDao` is called from `AssetService` only.
+* The remaining dao, e.g. `SnapShotDao`, init their dtos fully and thus are "full"-`Dao`.
+
+
+
+{empty} +
+
+
+{empty} +
+
+== Runtime Lifecycle
+
+==== OptionDto
+
+The OptionDto Lifecycle has two stages.
+
+1. *Discovery:*
+According to our strategy we fetch a list of viable options.
+However, this data set is missing some crucial entries.
+We mark these options as `FOUND`.
+2. *Details:*
+For each `FOUND` option, we fetch the missing fields.
+We then mark the options as `KNOWN`.
+3. *Death:*
+Options may expire or be knocked out.
+When we fail to fetch a quote for an option, we mark the options as `DEAD`.
+
+[%header]
+|===
+| | fetchOptions() | fetchAssetDetails() | fetchOrDead()
+| underlying 3+| ✔️
+| strike 3+| ✔️
+| expiry |   2+| ✔️
+| ratio |   2+| ✔️
+| optionType 3+| ✔️
+| status | `FOUND` | `KNOWN` | `DEAD`
+| assetType |   2+| ✔️
+| name 3+| ✔️
+| twSymbol |   | |
+| sqIsin 3+| ✔️
+| currency 3+| ✔️
+| exchange 3+| ✔️
+|===
+
+{empty} +
+
+==== SnapShot
+
+image::img/snap-lifecycle.png[]
+
+* In a way Dto mimics Entity.
+* `SnapshotEntity` has Unique Index on Instant/Asset.
+* Therefore, SnapShotDto is hashed by Instant/Asset.
+** We insist of working with Set<SnapShotDto>.
+** This implies data loss (by pushing over an existing hash).
+** Thus encouraging the usage of SnapShotDto.merge(SnapShotDto).
+* The runtime data holder is a TreeMap<Instant, SnapShotDto>.
+** It is filled via put(Set<SnapShotDto>).
+** To do so, we:
+*** Check if "newly pushed" SnapShotDto exists.
+*** If yes we merge "newly pushed" into existing SnapShot.
+*** If no we simply put.
+
+=== Trade States
+
+image::img/trade-states.svg[]
+
+{empty} +
+

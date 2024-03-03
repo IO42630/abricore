@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.olexyn.abricore.flow.jobs.Job</OriginalElement>
+  <nodes>
+    <node x="9.231030230127885" y="113.95088819226748">com.olexyn.abricore.flow.jobs.tw.DownloadTwJob</node>
+    <node x="-187.36301365701945" y="254.95088819226748">com.olexyn.abricore.flow.jobs.sq.ObservePositionsSqJob</node>
+    <node x="-777.8543625914314" y="-122.01201671891329">com.olexyn.abricore.model.runtime.LockAware</node>
+    <node x="-580.5709308400766" y="-270.67032392894464">com.olexyn.abricore.util.CtxAware</node>
+    <node x="-489.5321316614418" y="254.95088819226748">com.olexyn.abricore.flow.jobs.paper.PaperObserveTwJob</node>
+    <node x="-772.8543625914314" y="-47.60292580982235">com.olexyn.abricore.model.runtime.AObserver</node>
+    <node x="-1088.9916405433646" y="160.95088819226748">com.olexyn.abricore.flow.jobs.fetch.util.FetchAware</node>
+    <node x="-525.5709308400766" y="-122.01201671891329">com.olexyn.abricore.flow.jobs.SJob</node>
+    <node x="-765.8543625914314" y="-196.36781609195407">java.lang.Runnable</node>
+    <node x="-696.3266718913269" y="160.95088819226748">com.olexyn.abricore.flow.jobs.sq.TradeSqJob</node>
+    <node x="-512.5709308400766" y="-196.36781609195407">com.olexyn.abricore.flow.jobs.Job</node>
+    <node x="-123.30972212096924" y="207.95088819226748">com.olexyn.abricore.flow.jobs.store.ReadTmpCsvToDbJob</node>
+    <node x="-432.5321316614418" y="160.95088819226748">com.olexyn.abricore.flow.jobs.tw.ObserveTwJob</node>
+    <node x="-753.3266718913269" y="254.95088819226748">com.olexyn.abricore.flow.jobs.paper.PaperTradeSqJob</node>
+    <node x="-56.532815119924294" y="160.95088819226748">com.olexyn.abricore.flow.jobs.sq.SyncOptionsSqJob</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.olexyn.abricore.flow.jobs.Job" target="java.lang.Runnable" relationship="REALIZATION">
+      <point x="-40.5" y="0.0" />
+      <point x="74.0" y="0.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.SJob" target="com.olexyn.abricore.model.runtime.LockAware" relationship="REALIZATION">
+      <point x="-47.0" y="0.0" />
+      <point x="80.0" y="0.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.SJob" target="com.olexyn.abricore.flow.jobs.Job" relationship="GENERALIZATION">
+      <point x="6.5" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.sq.SyncOptionsSqJob" target="com.olexyn.abricore.flow.jobs.Job" relationship="GENERALIZATION">
+      <point x="-68.73618488007571" y="-15.999888192267491" />
+      <point x="-8.269" y="12.0" />
+      <point x="-152.5" y="12.0" />
+      <point x="-152.5" y="-180.368" />
+      <point x="40.49993084007656" y="-1.839080459262732E-4" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.sq.ObservePositionsSqJob" target="com.olexyn.abricore.flow.jobs.Job" relationship="GENERALIZATION">
+      <point x="-108.63698634298055" y="-15.999888192267491" />
+      <point x="-152.5" y="-180.368" />
+      <point x="40.49993084007656" y="-1.839080459262732E-4" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.tw.ObserveTwJob" target="com.olexyn.abricore.flow.jobs.SJob" relationship="GENERALIZATION">
+      <point x="-95.9998683385582" y="1.1180773250885068E-4" />
+      <point x="-455.0" y="176.951" />
+      <point x="-455.0" y="74.0" />
+      <point x="-510.0" y="74.0" />
+      <point x="-31.429069159923415" y="16.000016718913287" />
+    </edge>
+    <edge source="com.olexyn.abricore.model.runtime.AObserver" target="com.olexyn.abricore.model.runtime.LockAware" relationship="INTERFACE_GENERALIZATION">
+      <point x="-2.5" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.paper.PaperObserveTwJob" target="com.olexyn.abricore.flow.jobs.fetch.util.FetchAware" relationship="REALIZATION">
+      <point x="0.0" y="16.0" />
+      <point x="-365.0321316614418" y="304.4508881922675" />
+      <point x="-1019.992" y="304.4508881922675" />
+      <point x="-15.000359456635351" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.sq.TradeSqJob" target="com.olexyn.abricore.model.runtime.AObserver" relationship="REALIZATION">
+      <point x="-74.5" y="-16.0" />
+      <point x="6.527690700104472" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.sq.TradeSqJob" target="com.olexyn.abricore.flow.jobs.SJob" relationship="GENERALIZATION">
+      <point x="13.972671891326854" y="-15.999888192267491" />
+      <point x="-600.354" y="74.0" />
+      <point x="-510.0" y="74.0" />
+      <point x="-31.429069159923415" y="16.000016718913287" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.sq.TradeSqJob" target="com.olexyn.abricore.flow.jobs.fetch.util.FetchAware" relationship="REALIZATION">
+      <point x="-82.0" y="0.0" />
+      <point x="84.0" y="0.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.paper.PaperObserveTwJob" target="com.olexyn.abricore.flow.jobs.tw.ObserveTwJob" relationship="GENERALIZATION">
+      <point x="28.5" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.tw.DownloadTwJob" target="com.olexyn.abricore.flow.jobs.Job" relationship="GENERALIZATION">
+      <point x="-3.0230127890717995E-5" y="-15.999888192267491" />
+      <point x="114.731" y="12.0" />
+      <point x="-152.5" y="12.0" />
+      <point x="-152.5" y="-180.368" />
+      <point x="40.49993084007656" y="-1.839080459262732E-4" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.paper.PaperTradeSqJob" target="com.olexyn.abricore.flow.jobs.sq.TradeSqJob" relationship="GENERALIZATION">
+      <point x="28.5" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.Job" target="com.olexyn.abricore.util.CtxAware" relationship="GENERALIZATION">
+      <point x="0.0" y="-16.0" />
+      <point x="34.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.flow.jobs.store.ReadTmpCsvToDbJob" target="com.olexyn.abricore.flow.jobs.Job" relationship="GENERALIZATION">
+      <point x="-124.50027787903076" y="-15.999888192267491" />
+      <point x="-115.81" y="12.0" />
+      <point x="-152.5" y="12.0" />
+      <point x="-152.5" y="-180.368" />
+      <point x="40.49993084007656" y="-1.839080459262732E-4" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.3910034602076125" showDependencies="false" x="-391.6492537313444" y="180.23631840795994" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

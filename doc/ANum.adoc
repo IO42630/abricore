@@ -1,0 +1,9 @@
+= ANum
+:toc:
+:toclevels: 5
+:stylesheet: ../../shared/adoc-styles.css
+
+=== Details
+* has a `null` value:
+** `-0.0` in runtime
+** `null` in DB

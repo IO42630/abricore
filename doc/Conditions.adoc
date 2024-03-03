@@ -1,0 +1,61 @@
+= Conditions
+:toc:
+:toclevels: 5
+:stylesheet: ../../shared/adoc-styles.css
+
+====
+* Main link:../README.adoc[README.adoc].
+====
+
+Strategy suggestions so far is ascending order of complexity:
+
+{empty} +
+
+==== MaCross
+* longulate ma20 and ma50
+* longulate Cross
+* Decisions
+** MA20 crosses above MA50 -> sell, enter long
+** MA20 crosses below MA50 -> sell, enter short
+
+
+{empty} +
+
+==== Bolliger
+* longulate Bolliger Bands
+* longulate Trend (via MA history)
+* Decisions:
+** if trend bullish
+*** and price below lower bolliger -> enter long
+*** and price above higher bolliger -> enter short
+** if trend bearish
+*** and price below lower bolliger -> enter short
+*** and price above higher bolliger -> enter long
+** if price reaches ma -> sell
+
+{empty} +
+
+==== Bolliger Trend
+*
+
+==== Basic Support Strategy
+Consists of buy-condition, initial-stop condition, secondary-stop conditions.
+
+*buy condition*
+
+* determine support
+* if uptick after support
+** then buy
+
+*initial-stop condition*
+
+* if next lower support < -10%
+** then stop-loss at next lower support
+** else stop-loss at 10%
+
+*secondary-stop condition(s)*
+
+* if reaches break-even + 5%
+** then stop-loss at break-even
+* if reaches next higher support
+** then stop-loss at next higher support -5%

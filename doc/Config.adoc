@@ -1,0 +1,21 @@
+= Data
+:toc:
+:toclevels: 5
+:stylesheet: ../../shared/adoc-styles.css
+
+====
+* Main link:../README.adoc[README.adoc].
+====
+
+== link:..//util/src/main/resources/config.properties[config.properties]
+* static properties.
+* Takes precedence over `events.properties`.
+* contains configs for the JOBs (non-exhaustive list):
+** `DOWNLOAD TW`
+*** `tw.download.interval.minutes`
+** `OBSERVE POSITIONS SQ`
+** `TRADE SQ`
+
+
+== link:..//util/src/main/resources/events.properties[events.properties]
+* properties that can be set at runtime.

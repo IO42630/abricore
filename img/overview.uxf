@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>15</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>855</x>
+      <y>600</y>
+      <w>120</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+flow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>810</x>
+      <y>660</y>
+      <w>90</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+store</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>930</x>
+      <y>660</y>
+      <w>90</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+navi</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>855</x>
+      <y>720</y>
+      <w>120</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+model</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>855</x>
+      <y>780</y>
+      <w>120</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+util</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>720</x>
+      <y>660</y>
+      <w>60</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+CSV
+bg=gray
+transparency=80</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1050</x>
+      <y>660</y>
+      <w>60</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+Web
+bg=gray
+transparency=80</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>720</x>
+      <y>615</y>
+      <w>60</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+H2
+bg=gray
+transparency=80</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>720</x>
+      <y>705</y>
+      <w>60</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>halign=left
+JSON
+bg=gray
+transparency=80</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>900</x>
+      <y>525</y>
+      <w>45</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>930</x>
+      <y>540</y>
+      <w>150</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>main
+style=wordwrap</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

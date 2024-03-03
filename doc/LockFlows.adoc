@@ -1,0 +1,12 @@
+= Lock Flows
+:toc:
+:toclevels: 5
+:stylesheet: ../../shared/adoc-styles.css
+
+{empty} +
+
+=== PaperTrade vs PaperObserve
+
+image::../img/paper-start-lock-flow.svg[,80%]
+
+image::../img/paper-start-lock-flow2.svg[,80%]

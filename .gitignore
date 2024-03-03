@@ -1,2 +1,16 @@
-/target/
+*/target/
+target
 *.iml
+/lib/
+*.csv
+.idea
+*chromedriver*
+
+
+# env
+*.env
+!*default.env
+
+# properties
+*.properties
+!*default.properties

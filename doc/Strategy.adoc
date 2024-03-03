@@ -1,0 +1,153 @@
+= Strategy
+:toc:
+:toclevels: 5
+:stylesheet: ../../shared/adoc-styles.css
+
+====
+* Main link:../README.adoc[README.adoc].
+====
+
+{empty} +
+
+'''
+
+== Storage
+* This is a digression about technical / historical details:
+** serializing labdas has proven to be difficult.
+** thus we explicitly implement the subclasses of e.g. `TransactionCondition`.
+** this works, because we have a limited number of subclasses.
+
+==  How are Choices about Trades made?
+
+* The following 3 components play together: `VectorKey`, `VectorDto`, `TransactionCondition`
+** `VectorKey` is a plain enum.
+It defines some expected parameters.
+** `VectorDto` is an array+ of values.
+** `TransactionCondition` is a lambda, which is supplied a `VectorDto` and returns a `boolean` based on values identified by `VectorKey`.
+
+
+
+
+* generally we try to use lambdas (see section `Functional Interfaces`)
+
+
+{empty} +
+
+== `VectorDto`
+* purpose:
+** create a vector (for holding strategy parameters)
+** delegate to each entry :
+*** { upperBound, lowerBound, precision }
+*** generation of new values
+
+[source]
+VectorDto
+    Map : VectorKey -> BoundParam
+                        value
+                        upperBound
+                        lowerBound
+                        precision
+
+* `VectorKey` is an enum
+
+{empty} +
+
+== Strategy Creation
+
+===== `StrategyDto`
+* purpose: dumb dto
+
+===== `StrategyTemplateFactory`
+* purpose:
+** hardcoded strategy templates
+** returns `StrategyDto`
+
+===== `StrategyBuilder`
+* purpose:
+** can build simple fields
+** is `ctx` aware ->  thus can also calculate fields such as fitness.
+
+===== `StrategyBuilderFactory`
+* purpose:
+** injects `ctx` into `StrategyBuilder` -> simplifies syntax
+
+{empty} +
+
+== Strategy Rules
+* The _rules_ a strategy follows are held by its _fields_.
+* These _rules_ are lambdas.
+* The types of these _fields_ match functional interfaces.
+* The values of these _fields_ are set by _providers_.
+** I.e. the _providers_ return lambdas.
+
+
+==== Functional Interfaces
+
+[%header,cols="1,3"]
+|===
+| Name | `A -> B`
+| `DistanceGenerator` | `Series -> long`
+| `SizingCondition` | `long -> long`
+| `TransactionCondition` | `(Series, TradeDto, VectorDto) -> boolean`
+|===
+
+==== Providers
+* Basic _providers_ are _driven_ directly via param `X`.
+* `TransactionCondition` _providers_ are  _driven_ solely by `VectorDto`.
+
+[cols="1,1,2"]
+|===
+| `DistanceGenerator` | `factorDistance(X)` | Multiples last traded price in Series `A` by `X`.
+| `SizingCondition` |  `fixedSize(X)` | Ignores `A`, returns `X` as fixed `B`.
+.7+| `TransactionCondition` | `HasBolTailSize` |
+| `HasFavorableSide` |
+| `HasRsiRadius` |
+| `HasTailDepth` |
+| `HasTrend` |
+| `StopLossAtBol` |
+| `StopLossAtMa` |
+|===
+
+==== Fields
+
+[%header,cols="1,1,6"]
+|===
+| Functional Iface | Strategy Field | Purpose
+.4+| `DistanceGenerator` | `sellDistance` | When selling, usually must _bid_ higher, to guarantee execution. `sellDistance` determines _how much_ higher the bid should be.
+| `buyDistance` | When buying, usually must _bid_ lower, to guarantee execution. `buyDistance` determines _how much_ lower the bid should be.
+| `maxOptionDistance` | TODO
+| `minOptionDistance` | TODO
+.2+| `SizingCondition`  |  `sizingInCondition` | TODO
+|  `sizingOutCondition` | TODO
+.4+| `TransactionCondition` | `callBuyCondition` | TODO
+| `callSellCondition` | TODO
+| `putBuyCondition` | TODO
+| `putSellCondition` | TODO
+
+|===
+
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+{empty} +
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

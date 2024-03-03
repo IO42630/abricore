@@ -1,0 +1,74 @@
+/* main.css */
+
+:root {
+    /* Define color palette */
+    --background-color: #000000;
+    --orange: #DCB464;
+    --pink: #DC64B4;
+    --lime: #B4DC64;
+    --purple: #B464DC;
+    --teal: #64DCB4;
+    --sky: #64B4DC;
+}
+
+body {
+    background-color: var(--background-color);
+    color: #FFFFFF; /* White text color for contrast against the background */
+    font-family: 'Arial', sans-serif; /* Example font */
+    font-size: 18px;
+}
+
+a {
+    color: var(--sky);
+    text-decoration: none; /* Removes underline from links */
+}
+
+a:hover {
+    color: var(--teal);
+}
+
+h1, h2, h3 {
+    color: var(--orange);
+}
+
+.button {
+    background-color: var(--lime);
+    color: var(--background-color);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--pink);
+}
+
+.input {
+    background-color: var(--background-color);
+    color: var(--lime);
+    border: 1px solid var(--purple);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.forms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: left;
+    padding: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 8px;
+}

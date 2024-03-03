@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.olexyn.abricore.model.runtime.snapshots.Series</OriginalElement>
+  <nodes>
+    <node x="-82.0" y="-15.499999999999986">com.olexyn.abricore.model.runtime.snapshots.Observable</node>
+    <node x="-55.5" y="66.50000000000001">com.olexyn.abricore.model.runtime.snapshots.Series</node>
+    <node x="-84.0" y="148.5">com.olexyn.abricore.store.runtime.PaperSeries</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.olexyn.abricore.model.runtime.snapshots.Series" target="com.olexyn.abricore.model.runtime.snapshots.Observable" relationship="REALIZATION">
+      <point x="0.0" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="com.olexyn.abricore.store.runtime.PaperSeries" target="com.olexyn.abricore.model.runtime.snapshots.Series" relationship="GENERALIZATION">
+      <point x="0.0" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.5" showDependencies="false" x="10.0" y="92.0" />
+  <SelectedNodes>
+    <node>com.olexyn.abricore.store.runtime.PaperSeries</node>
+    <node>com.olexyn.abricore.model.runtime.snapshots.Series</node>
+    <node>com.olexyn.abricore.model.runtime.snapshots.Observable</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
