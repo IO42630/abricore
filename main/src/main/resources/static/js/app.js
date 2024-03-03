@@ -1,12 +1,13 @@
-// app.js
-function queryProperty() {
-    const propertyName = document.getElementById('propertyNameInput').value;
-    const url = `/query-property?propertyName=${encodeURIComponent(propertyName)}`;
+
+
+function describe(subjectNameHolderId, resultHolderId) {
+    const subjectName = document.getElementById(subjectNameHolderId).value;
+    const url = `/api/describe?subject=${encodeURIComponent(subjectName)}`;
 
     fetch(url)
         .then(response => response.text()) // Assuming the response is plain text
         .then(data => {
-            document.getElementById('result').innerText = data;
+            document.getElementById(resultHolderId).innerText = data;
         })
         .catch(error => console.error('Error:', error));
 }

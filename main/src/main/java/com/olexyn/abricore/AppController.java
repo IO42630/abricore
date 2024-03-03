@@ -5,17 +5,13 @@ import com.olexyn.abricore.flow.TaskType;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.runtime.SeriesService;
-import com.olexyn.abricore.util.Property;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.olexyn.propconf.PropConf;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.olexyn.abricore.MainApp.ctx;
@@ -35,27 +31,19 @@ public class AppController {
 
     @PostMapping("/start-job")
     public String startJob(@RequestParam String jobType) throws InterruptedException {
-        MainApp.start(JobType.of(jobType), List.of()); // Example call, adjust as necessary
+        MainApp.start(JobType.of(jobType), List.of());
         return ROOT;
     }
 
     @PostMapping("/end-job")
-    public String endJob(@RequestParam String jobName, Model model) {
-        // Logic to end a job based on jobName
-        // Adapt this to your application's job management
-        MainApp.cancelJob(jobName); // Example call, adjust as necessary
+    public String endJob(@RequestParam String jobType) {
+        MainApp.cancelJob(jobType);
         return ROOT;
     }
 
     @PostMapping("/run-task")
-    public String runTask(@RequestParam String taskStr) {
-        MainApp.runTask(TaskType.of(taskStr), List.of()); // Example call, adjust as necessary
-        return ROOT;
-    }
-
-    @PostMapping("/init-cache")
-    public String postInitCache() {
-        ctx.getBean(SeriesService.class).initCache();
+    public String runTask(@RequestParam String taskType) {
+        MainApp.runTask(TaskType.of(taskType), List.of());
         return ROOT;
     }
 
@@ -65,11 +53,7 @@ public class AppController {
         return ROOT;
     }
 
-    @GetMapping("/query-property")
-    @ResponseBody
-    public String queryProperty(@RequestParam String propertyName) throws IOException {
-        return MainApp.describe(propertyName);
-    }
+
 
 
     @PostMapping("/property")
@@ -79,7 +63,7 @@ public class AppController {
     ) {
         // Logic to end a job based on jobName
         // Adapt this to your application's job management
-        Property.getEvents().setProperty(propName, propValue);
+//        PropConf.set(propName, propValue); TODO
         return ROOT;
     }
 
@@ -91,8 +75,15 @@ public class AppController {
 
     @PostMapping("/exit")
     public String exit() throws InterruptedException {
-        MainApp.exit();
-        return INDEX;
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000); // Delay to allow the client to receive the redirect response
+                MainApp.exit();
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+        return ROOT;
     }
 
     @PostMapping("/smoke-tw-nav")
