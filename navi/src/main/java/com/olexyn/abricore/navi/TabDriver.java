@@ -2,7 +2,9 @@ package com.olexyn.abricore.navi;
 
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
+import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.util.Constants;
+import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -11,12 +13,15 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -35,16 +40,21 @@ import static com.olexyn.abricore.util.Constants.WORKING_DIR;
 
 @Lazy
 @Service
-public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExecutor {
+public class TabDriver extends CtxAware implements MWatchable, JavascriptExecutor {
 
     private static final String ABOUT_BLANK = "about:blank";
     private static final String CHROME_DRIVER = "chromedriver_119";
     private final Map<String, Tab> tabs = new HashMap<>();
 
-    private static final ChromeDriverService SERVICE;
-    private static final DesiredCapabilities CAP;
+    private static ChromeDriverService SERVICE;
+    private static DesiredCapabilities CAP;
 
-    static {
+    private ChromeDriver  chromeDriver;
+
+
+    @Autowired
+    public TabDriver(ConfigurableApplicationContext ctx) {
+        super(ctx);
         var path = Path.of(PropConf.get(WORKING_DIR), "/navi/src/main/resources/", CHROME_DRIVER);
         SERVICE = new ChromeDriverService.Builder()
             .usingDriverExecutable(path.toFile())
@@ -56,7 +66,7 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        if (PropConf.is("headless")) {
+        if (bean(EventDao.class).getBool("headless")) {
             options.addArguments("--window-size=1920,1080");
             options.addArguments("--headless");
         }
@@ -67,13 +77,56 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
         chromePrefs.put("download.prompt_for_download", false);
         options.setExperimentalOption("prefs", chromePrefs);
         CAP.setCapability(ChromeOptions.CAPABILITY, options);
-    }
-
-    public TabDriver() {
-        super(SERVICE, CAP);
+        chromeDriver = new ChromeDriver(SERVICE, CAP);
         MWatch.setAlive(TabDriver.class);
         manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
+
+    public WebDriver.Options manage() {
+        return chromeDriver.manage();
+    }
+
+    public WebDriver.Navigation navigate() {
+        return chromeDriver.navigate();
+    }
+
+    public WebDriver.TargetLocator switchTo() {
+        return chromeDriver.switchTo();
+    }
+
+    public String getWindowHandle() {
+        return chromeDriver.getWindowHandle();
+    }
+
+    public Set<String> getWindowHandles() {
+        return chromeDriver.getWindowHandles();
+    }
+
+    public String getTitle() {
+        return chromeDriver.getTitle();
+    }
+
+    public String getCurrentUrl() {
+        return chromeDriver.getCurrentUrl();
+    }
+
+    public String getPageSource() {
+        return chromeDriver.getPageSource();
+    }
+
+    public void close() {
+        chromeDriver.close();
+    }
+
+    public void quit() {
+        chromeDriver.quit();
+    }
+
+    public List<WebElement> findElements(By by) {
+        return chromeDriver.findElements(by);
+    }
+
+
 
     public synchronized void registerCurrentTab(TabPurpose purpose) {
         Tab tab = new Tab(getWindowHandle());
@@ -167,14 +220,12 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
         navigate().refresh();
     }
 
-    @Override
     public synchronized void get(String url) {
-        super.get(url);
+        chromeDriver.get(url);
     }
 
-    @Override
     public synchronized WebElement findElement(By by) {
-        return super.findElement(by);
+        return chromeDriver.findElement(by);
     }
 
     public synchronized void executeScript(String script) {
@@ -232,6 +283,16 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
             }
         }
         return FRAME_ID_NONE_FOUND;
+    }
+
+    @Override
+    public Object executeScript(String script, Object... args) {
+        return chromeDriver.executeScript(script, args);
+    }
+
+    @Override
+    public Object executeAsyncScript(String script, Object... args) {
+        return chromeDriver.executeAsyncScript(script, args);
     }
 
     public enum CRITERIA {
