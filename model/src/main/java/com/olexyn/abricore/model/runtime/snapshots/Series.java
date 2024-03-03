@@ -2,11 +2,11 @@ package com.olexyn.abricore.model.runtime.snapshots;
 
 import com.olexyn.abricore.model.runtime.AObserver;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.TimeSide;
 import com.olexyn.abricore.util.exception.MissingException;
 import com.olexyn.abricore.util.exception.SoftCalcException;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,7 +41,7 @@ import static com.olexyn.abricore.util.num.NumUtil.fromInt;
  */
 public class Series extends ProtoSeries implements Observable {
 
-    private static final int PATCH_SIZE = Integer.parseInt(Property.get("series.patch.size"));
+    private static final int PATCH_SIZE = PropConf.getInt("series.patch.size");
 
     private final List<AObserver> observers = new ArrayList<>();
 
@@ -210,7 +210,7 @@ public class Series extends ProtoSeries implements Observable {
         for (AObserver observer : List.copyOf(observers)) {
             synchronized(observer.getLock()) {
                 observer.getLock().safeWait(
-                    Property.getDuration("trade.wait.for.observers.to.react.milli")
+                    PropConf.getDuration("trade.wait.for.observers.to.react.milli")
                 );
             }
         }
