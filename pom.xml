@@ -16,6 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <xx.java.version>19</xx.java.version>
+        <xx.project.version>0.1</xx.project.version>
         <querydsl.version>5.0.0</querydsl.version>
         <hibernate.version>5.6.12.Final</hibernate.version>
         <jaxb.version>2.3.1</jaxb.version>

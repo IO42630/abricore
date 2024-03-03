@@ -7,10 +7,30 @@ services:
 #    abricore:
 #        container_name: abricore
 #        image: io42630/abricore:latest
+#        volumes:
+#            - /home/user/home/app/abricore/quotes/tmp/:/paths/abricore/quotes/tmp
+#            - /home/user/home/app/abricore/quotes/processed/:/paths/abricore/quotes/processed
+#            - /home/user/home/app/abricore/reports/:/paths/abricore/reports
+#            - /home/user/home/app/abricore/logs:/paths/abricore/logs
+#            - /home/user/home/shade/app/abricore/creds:/paths/abricore/creds/abricore/creds
+#        environment:
+#            - quotes.dir.tmp=/paths/abricore/quotes/tmp
+#            - quotes.dir.processed=/paths/abricore/quotes/processed
+#            - report.dir=/paths/abricore/reports
+#            - logs.dir=/paths/abricore/logs
+#            - cred.sq=${CRED_SQ_PATH}
+#            - cred.tw=${CRED_TW_PATH}
+#            - spring.datasource.url=jdbc:mariadb://abricore-db:3306/ABRICORE
+#            - spring.datasource.username=user
+#            - spring.datasource.password=${MYSQL_PASSWORD}
+#            - server.port=24002
+#        ports:
+#            - "24002:24002"
+#            - "24003:5005"
 
     abricore-db:
         container_name: abricore-db
-        image: mariadb:10.11.2-jammy
+        image: io42630/abricore-db:latest
         command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
         volumes:
             - /home/user/home/db/abricore:/var/lib/mysql
