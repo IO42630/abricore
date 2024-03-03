@@ -33,11 +33,11 @@ public class Evolution extends CtxAware implements Runnable {
 
     private final StrategyUtil strategyUtil;
     private final Supplier<StrategyBuilder> sB = () -> bean(StrategyBuilder.class);
-    private static final int POPULATION_SIZE = Integer.parseInt(Property.get("population.size"));
+    private static final int POPULATION_SIZE = Integer.parseInt(PropConf.get("population.size"));
     private final Map<Integer, List<StrategyDto>> POPULATIONS = new TreeMap<>();
     private int currentGeneration = 0;
     private static final int KIDS_N = 4;
-    private static final int MAX_GENERATIONS = 20000;
+    private static final int MAX_GENERATIONS = Integer.parseInt(PropConf.get("max.generations"));
     private static final long[] IMPULSES = {P10, P20, P30, P50, P70, P80, ONE, TWO};
     private final Instant TIMER_START = Instant.now();
 

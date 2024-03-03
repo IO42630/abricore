@@ -48,7 +48,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class MainApp {
 
-    static { Property.init(); }
+    static {
+        PropConf.load("config.properties");
+    }
 
     public static ConfigurableApplicationContext ctx = SpringApplication.run(MainApp.class);
 
@@ -87,15 +89,15 @@ public class MainApp {
 
 
      static String describe(String topic) throws IOException {
-        String desc  = Property.get(topic);
-        if (desc != null) {
-            return desc;
-        }
+        String desc  = PropConf.get(topic);
+         if (!desc.isEmpty()) {
+             return desc;
+         }
 
         switch (topic) {
             case "tmp":
                 LogU.infoPlain("status:");
-                var pathStr = Property.get("quotes.dir.tmp");
+                var pathStr = PropConf.get("quotes.dir.tmp");
                 var path = Path.of(pathStr);
                 try (var list = Files.list(path)) {
                     long entries = list.count();
@@ -145,7 +147,7 @@ public class MainApp {
             case SYNC_OPTIONS_SQ -> startJob(new SyncOptionsSqJob(ctx, strategy));
             case TRADE_SQ -> {
                 strategy = ctx.getBean(StrategyTemplates.class).tradeSqTest();
-                if (Property.isNot("trade.is.test")) {
+                if (PropConf.isNot("trade.is.test")) {
                     strategy = ctx.getBean(StrategyTemplates.class).tradeSq();
                 }
                 var syncOptionsSqJob = (SyncOptionsSqJob) startJob(new SyncOptionsSqJob(ctx, strategy));

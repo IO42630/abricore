@@ -20,11 +20,11 @@ import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.ProtoTradeService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.TradeService;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -55,7 +55,7 @@ import static com.olexyn.abricore.util.num.NumCalc.times;
  */
 public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
 
-    private static final Duration WAIT_BETWEEN_TRADES = Property.getDuration("trade.sq.wait.between.trades.seconds");
+    private static final Duration WAIT_BETWEEN_TRADES = PropConf.getDuration("trade.sq.wait.between.trades.seconds");
 
     private final PositionService positionService;
     private final AssetService assetService;
@@ -97,13 +97,13 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         }
         while (!shouldStart()) {
             synchronized(getLock()) {
-                getLock().safeWait(Property.getDuration("trade.wait.for.dependencies.milli"));
+                getLock().safeWait(PropConf.getDuration("trade.wait.for.dependencies.milli"));
             }
         }
         while (!shouldStop()) {
             synchronized(getLock()) {
                 tryToPlaceOrders();
-                getLock().safeWait(Property.getDuration("trade.wait.for.snapshot.milli"));
+                getLock().safeWait(PropConf.getDuration("trade.wait.for.snapshot.milli"));
             }
         }
         removeThisObserver();

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.olexyn.propconf.PropConf;
 import org.json.JSONObject;
 
 import java.time.Instant;
@@ -45,7 +46,7 @@ public final class DataUtil {
     }
 
     public static Instant getInstant(String dateTimeProperty) {
-        var dateTime = parseDateTime(Property.get(dateTimeProperty));
+        var dateTime = parseDateTime(PropConf.get(dateTimeProperty));
         return getInstant(dateTime);
     }
 

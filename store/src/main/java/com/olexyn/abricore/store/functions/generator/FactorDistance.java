@@ -3,6 +3,7 @@ package com.olexyn.abricore.store.functions.generator;
 import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.strategy.functions.DistanceGenerator;
 import com.olexyn.abricore.util.exception.MissingException;
+import com.olexyn.abricore.util.num.NumSerialize;
 
 import java.io.Serial;
 
@@ -21,6 +22,10 @@ public class FactorDistance implements DistanceGenerator {
 
     public FactorDistance(long value) {
         this.factor = value;
+    }
+
+    public FactorDistance(String value) {
+        this.factor = NumSerialize.fromStr(value);
     }
 
     @Override

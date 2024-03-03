@@ -30,7 +30,9 @@ import static com.olexyn.abricore.util.num.NumCalc.div;
 public class VectorMergeTask extends CtxAware implements Task {
 
 
-    private static final long VECTOR_MERGE_FACTOR = Property.getNum("vector.merge.factor");
+    private static final long VECTOR_MERGE_FACTOR =
+        NumSerialize.fromStr(PropConf.get("vector.merge.factor"));
+
 
     public VectorMergeTask(ConfigurableApplicationContext ctx) {
         super(ctx);

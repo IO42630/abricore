@@ -5,10 +5,10 @@ import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.store.dao.SnapshotDao;
 import com.olexyn.abricore.store.runtime.AssetService;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.exception.StoreException;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -48,7 +48,7 @@ public class TmpCsvStore {
 
     public void readTmpCsvToDb() throws IOException {
         LogU.infoStart("parsing TMP CSV.");
-        Path tmpQuoteDir = Paths.get(Property.get("quotes.dir.tmp"));
+        Path tmpQuoteDir = Paths.get(PropConf.get("quotes.dir.tmp"));
 
         try (var pathStream = Files.list(tmpQuoteDir)) {
             pathStream

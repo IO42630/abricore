@@ -5,11 +5,11 @@ import com.olexyn.abricore.flow.jobs.Job;
 import com.olexyn.abricore.flow.jobs.store.ReadTmpCsvToDbJob;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.navi.tw.TwNavigator;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.enums.CmdOptions;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.time.Duration;
@@ -25,7 +25,7 @@ import static com.olexyn.abricore.util.enums.CmdOptions.FORCE;
 public class DownloadTwJob extends Job {
 
 
-    private static final long INTERVAL_BETWEEN_DOWNLOADS = Long.parseLong(Property.get("tw.download.interval.minutes"));
+    private static final long INTERVAL_BETWEEN_DOWNLOADS = PropConf.getLong("tw.download.interval.minutes");
 
     private final List<AssetDto> assets = new ArrayList<>();
     private final List<CmdOptions> options = new ArrayList<>();
@@ -44,11 +44,11 @@ public class DownloadTwJob extends Job {
         LogU.infoStart(EMPTY);
         bean(TwNavigator.class).doLogin();
         while (!isCancelled()) {
-            var lastTwDownload = Instant.parse(Property.get("tw.last.download"));
+            var lastTwDownload = Instant.parse(PropConf.get("tw.last.download"));
             if (options.contains(FORCE) || lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                 options.remove(FORCE);
                 fetchData();
-                Property.getEvents().setProperty("tw.last.download", Instant.now().toString());
+//                PropConf.set("tw.last.download", Instant.now().toString()); TODO save this to DB
                 startJob(new ReadTmpCsvToDbJob(getCtx()));
             }
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);

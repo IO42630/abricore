@@ -3,7 +3,7 @@ package com.olexyn.abricore.flow.jobs.util.time;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.util.CtxAware;
-import com.olexyn.abricore.util.Property;
+import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -25,9 +25,9 @@ import java.time.ZoneOffset;
 @Getter
 public abstract class ProtoTimeHelper extends CtxAware {
 
-    protected static final Duration START_BUYING_SECONDS = Property.getDuration("trade.sq.time.offset.to.start.buying.seconds");
-    protected static final Duration STOP_BUYING_SECONDS = Property.getDuration("trade.sq.time.offset.to.stop.buying.seconds");
-    protected static final Duration FORCE_SELL_SECONDS = Property.getDuration("trade.sq.time.offset.to.force.sell.seconds");
+    protected static final Duration START_BUYING_SECONDS = PropConf.getDuration("trade.sq.time.offset.to.start.buying.seconds");
+    protected static final Duration STOP_BUYING_SECONDS = PropConf.getDuration("trade.sq.time.offset.to.stop.buying.seconds");
+    protected static final Duration FORCE_SELL_SECONDS = PropConf.getDuration("trade.sq.time.offset.to.force.sell.seconds");
 
     protected static final Clock CLOCK = Clock.systemDefaultZone();
 

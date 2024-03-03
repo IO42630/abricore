@@ -12,13 +12,13 @@ import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.DataUtil;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 import com.olexyn.abricore.util.enums.OptionStatus;
 import com.olexyn.abricore.util.enums.PositionStatus;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.By;
@@ -518,7 +518,7 @@ public class SqNavigator extends SqSession implements Navigator {
      * Fetches the details of an asset from the detail page.
      */
     public TradeDto placeBuyOrder(TradeDto trade) {
-        if (Property.getBool("trade.sq.disable.trade")) {
+        if (PropConf.getBool("trade.sq.disable.trade")) {
             LogU.infoPlain("DUMMY BUY [%s] of [%s] @ [%s]", trade.getAmount(), trade.getAsset(), trade.getBuyPrice());
             return trade;
         }
@@ -546,7 +546,7 @@ public class SqNavigator extends SqSession implements Navigator {
      * Fetches the details of an asset from the detail page.
      */
     public TradeDto placeSellOrder(TradeDto trade) {
-        if (Property.getBool("trade.sq.disable.trade")) {
+        if (PropConf.getBool("trade.sq.disable.trade")) {
             LogU.infoPlain("DUMMY SELL [%s] of [%s] @ [%s]", trade.getAmount(), trade.getAsset(), trade.getBuyPrice());
             return trade;
         }

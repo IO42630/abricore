@@ -1,6 +1,6 @@
 package com.olexyn.abricore.util.log;
 
-import com.olexyn.abricore.util.Property;
+import com.olexyn.propconf.PropConf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,7 +33,7 @@ public final class LogU {
     private static Set<String> ignores = null;
 
     static {
-        String raw = Property.get("threads.prefix.to.ignore.below.info");
+        String raw = PropConf.get("threads.prefix.to.ignore.below.info");
         ignores = Arrays.stream(raw.split(":")).collect(Collectors.toSet());
     }
 
@@ -48,7 +48,7 @@ public final class LogU {
         ch.setFormatter(new LogFormatter());
         logger.addHandler(ch);
 
-        String dir = Property.get("logs.dir") + "main.log";
+        String dir = PropConf.get("logs.dir") + "main.log";
         try {
             var fh = new FileHandler(dir, true);
             fh.setFormatter(new LogFormatter());

@@ -11,6 +11,7 @@ import com.olexyn.abricore.store.functions.condition.HasBolTailSize;
 import com.olexyn.abricore.store.functions.condition.IgnoreFalse;
 import com.olexyn.abricore.store.functions.condition.IgnoreTrue;
 import com.olexyn.abricore.util.CtxAware;
+import com.olexyn.abricore.util.num.NumSerialize;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -116,6 +117,11 @@ public class StrategyBuilder extends CtxAware {
         if (underlying != null) {
             strategy.setUnderlying(underlying);
         }
+        return this;
+    }
+
+    public StrategyBuilder setAllocatedCapital(String allocatedCapital) {
+        strategy.setAllocatedCapital(NumSerialize.fromStr(allocatedCapital));
         return this;
     }
 

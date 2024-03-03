@@ -6,7 +6,8 @@ import com.olexyn.abricore.store.functions.generator.FactorDistance;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.DataUtil;
-import com.olexyn.abricore.util.Property;
+import com.olexyn.abricore.util.num.NumSerialize;
+import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -47,8 +48,12 @@ public class StrategyTemplates extends CtxAware {
             .setMaxRatio(ONE)
             .setSizingInCondition(cTmpl.fixed("20"))
             .setSizingOutCondition(cTmpl.fixed("20"))
-            .setMinOptionDistance(new FactorDistance(Property.getNum("trade.min.option.distance.factor")))
-            .setMaxOptionDistance(new FactorDistance(Property.getNum("trade.max.option.distance.factor")))
+            .setMinOptionDistance(new FactorDistance(
+                PropConf.get("trade.min.option.distance.factor"))
+            )
+            .setMaxOptionDistance(new FactorDistance(
+                PropConf.get("trade.max.option.distance.factor"))
+            )
             .build();
     }
 
@@ -59,8 +64,8 @@ public class StrategyTemplates extends CtxAware {
             .setAllocatedCapital(EP2)
             .setFrom(Instant.now().minus(Duration.ofDays(3)))
             .setTo(Instant.now().plus(Duration.ofDays(3)))
-            .setSellDistance(new FactorDistance(Property.getNum("trade.sell.distance.factor")))
-            .setBuyDistance(new FactorDistance(Property.getNum("trade.buy.distance.factor")))
+            .setSellDistance(new FactorDistance(PropConf.get("trade.sell.distance.factor")))
+            .setBuyDistance(new FactorDistance(PropConf.get("trade.buy.distance.factor")))
             .alwaysBuySell()
             .setName(XAGUSD_TRADE_SQ_TEST)
             .build();
@@ -78,15 +83,15 @@ public class StrategyTemplates extends CtxAware {
     public StrategyDto evolutionTest() {
         return bean(StrategyBuilder.class)
             .init(dummy())
-            .setAllocatedCapital(Property.getNum("paper.trade.capital"))
+            .setAllocatedCapital(PropConf.get("paper.trade.capital"))
             .setFrom(DataUtil.getInstant("paper.trade.start"))
             .setTo(DataUtil.getInstant("paper.trade.end"))
-            .setSizingInCondition(cTmpl.fixed(Property.get("paper.trade.sizing.in.fixed.size")))
-            .setSizingOutCondition(cTmpl.fixed(Property.get("paper.trade.sizing.out.fixed.size")))
-            .setSellDistance(new FactorDistance(Property.getNum("paper.trade.sell.distance.factor")))
-            .setBuyDistance(new FactorDistance(Property.getNum("paper.trade.buy.distance.factor")))
-            .setMinOptionDistance(new FactorDistance(Property.getNum("paper.trade.min.option.distance.factor")))
-            .setMaxOptionDistance(new FactorDistance(Property.getNum("paper.trade.max.option.distance.factor")))
+            .setSizingInCondition(cTmpl.fixed(PropConf.get("paper.trade.sizing.in.fixed.size")))
+            .setSizingOutCondition(cTmpl.fixed(PropConf.get("paper.trade.sizing.out.fixed.size")))
+            .setSellDistance(new FactorDistance(PropConf.get("paper.trade.sell.distance.factor")))
+            .setBuyDistance(new FactorDistance(PropConf.get("paper.trade.buy.distance.factor")))
+            .setMinOptionDistance(new FactorDistance(PropConf.get("paper.trade.min.option.distance.factor")))
+            .setMaxOptionDistance(new FactorDistance(PropConf.get("paper.trade.max.option.distance.factor")))
             .setCallBuyCondition(cTmpl.fullBuy())
             .setCallSellCondition(cTmpl.fullSell())
             .setPutBuyCondition(cTmpl.fullBuy())

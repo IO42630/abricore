@@ -3,8 +3,8 @@ package com.olexyn.abricore.model;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.exception.CalcException;
+import com.olexyn.propconf.PropConf;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class SeriesUtilTest {
 
     @Before
     public void init() {
-        Property.init();
+        PropConf.load("config.properties");
         asset = new AssetDto("TEST") { };
         series = new Series(asset);
 

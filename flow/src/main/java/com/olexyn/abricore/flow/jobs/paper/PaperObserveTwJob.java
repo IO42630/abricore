@@ -6,9 +6,9 @@ import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.store.runtime.PaperSeriesService;
 import com.olexyn.abricore.store.runtime.SeriesService;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,7 +30,7 @@ public class PaperObserveTwJob extends ObserveTwJob {
     @Setter
     private Instant current = null;
 
-    private static final Duration PAPER_GRID = Property.getDuration("evo.paper.grid.milli");
+    private static final Duration PAPER_GRID = PropConf.getDuration("evo.paper.grid.milli");
 
 
 
@@ -45,7 +45,7 @@ public class PaperObserveTwJob extends ObserveTwJob {
     @Override
     public void run() {
         synchronized(getLock()) {
-            getLock().safeWait(Property.getDuration("paper.trade.wait.for.trade.job.seconds"));
+            getLock().safeWait(PropConf.getDuration("paper.trade.wait.for.trade.job.seconds"));
         }
         long fetchCount = 0;
         current = getStrategy().getFrom();

@@ -3,9 +3,9 @@ package com.olexyn.abricore.store.csv;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.FileUtil;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.exception.StoreException;
+import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,7 +76,7 @@ public class FileNameUtil {
             .replace(COL, UL)
             .replace(COMMA, UL)
             .replace(SPACE, UL);
-        return Paths.get(Property.get("quotes.dir.processed"), fileName);
+        return Paths.get(PropConf.get("quotes.dir.processed"), fileName);
     }
 
 }

@@ -13,11 +13,12 @@ import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.store.runtime.PaperSeriesService;
 import com.olexyn.abricore.store.runtime.PaperTradeService;
 import com.olexyn.abricore.store.runtime.ProtoTradeService;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.abricore.util.num.NumSerialize;
+import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,8 +37,8 @@ import static com.olexyn.abricore.util.num.NumCalc.times;
 
 public class PaperTradeSqJob extends TradeSqJob {
 
-    private static final int MAX_BUY_GRID_COUNT = Property.getInt("evo.max.buy.grid.count");
-    private static final int MAX_SELL_GRID_COUNT = Property.getInt("evo.max.sell.grid.count");
+    private static final int MAX_BUY_GRID_COUNT = PropConf.getInt("evo.max.buy.grid.count");
+    private static final int MAX_SELL_GRID_COUNT = PropConf.getInt("evo.max.sell.grid.count");
 
     private int buyGridCounter;
     private int sellGridCounter;
@@ -90,7 +91,7 @@ public class PaperTradeSqJob extends TradeSqJob {
     public void placeBuyOrder(TradeDto trade) {
         OptionDto option = (OptionDto) trade.getAsset();
         if (option == null) { return; }
-        var penalty = Property.getNum("paper.trade.sanity.price.penalty");
+        var penalty = NumSerialize.fromStr(PropConf.get("paper.trade.sanity.price.penalty"));
         var expectedPrice = dummyPrice(getUnderlying(), option);
         var sanityPrice = expectedPrice + penalty;
         trade.setBuyPrice(sanityPrice);
@@ -117,7 +118,7 @@ public class PaperTradeSqJob extends TradeSqJob {
                 break;
             case OPEN_EXECUTED:
                 OptionDto option = (OptionDto) trade.getAsset();
-                long penalty = Property.getNum("paper.trade.sanity.price.penalty");
+                long penalty = NumSerialize.fromStr(PropConf.get("paper.trade.sanity.price.penalty"));
                 trade.setSellPrice(dummyPrice(getUnderlying(), option) - penalty);
                 trade.setSellInstant(getObservedSeries().getLastKey());
                 if (Duration.between(trade.getBuyInstant(), trade.getSellInstant()).getSeconds() < TRADE_HOLD_TIME) {

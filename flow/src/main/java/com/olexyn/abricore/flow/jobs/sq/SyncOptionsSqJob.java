@@ -8,10 +8,10 @@ import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.SeriesService;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.enums.OptionStatus;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.time.Duration;
@@ -64,7 +64,7 @@ public class SyncOptionsSqJob extends Job {
     private Stream<OptionDto> findOptions() {
         var lastSnap = bean(SeriesService.class).getLast(underlyingAsset);
         if (lastSnap == null) { return Stream.empty(); }
-        var days = Long.parseLong(Property.get("sync.options.sq.option.distance.timeframe.days"));
+        var days = PropConf.getLong("sync.options.sq.option.distance.timeframe.days");
         var series = bean(SeriesService.class).of(underlyingAsset, lastSnap.getInstant(), Duration.ofDays(days));
         if (series == null) { return Stream.empty(); }
         long minOptionDistance = strategy.getMinOptionDistance().generate(series);

@@ -5,9 +5,9 @@ import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.navi.Navigator;
 import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.util.Constants;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -44,8 +44,8 @@ public class TwNavigator extends TwSession implements Navigator {
     static boolean timeSkipDone = false;
     protected static boolean cookieAccepted = false;
 
-    private static final long TIMEFRAME_OF_DOWNLOAD = Long.parseLong(Property.get("tw.download.timeframe.hours"));
-    private static final long WAIT_TO_LOAD = Long.parseLong(Property.get("tw.download.timeframe.wait.to.load.seconds"));
+    private static final long TIMEFRAME_OF_DOWNLOAD =PropConf.getLong("tw.download.timeframe.hours");
+    private static final long WAIT_TO_LOAD = PropConf.getLong("tw.download.timeframe.wait.to.load.seconds");
 
     @Autowired
     public TwNavigator(TabDriver td) {

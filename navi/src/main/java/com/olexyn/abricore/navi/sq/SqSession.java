@@ -5,8 +5,8 @@ import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.navi.TabPurpose;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.openqa.selenium.By;
 
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public abstract class SqSession extends Session implements MWatchable {
 
     @Override
     protected Map<String, String> fetchCredentials() {
-        var extractedMap = extractCredentialMap(Property.get("cred.sq"));
+        var extractedMap = extractCredentialMap(PropConf.get("cred.sq"));
         Map<String, String> credentialMap = new HashMap<>();
         credentialMap.put(USER, extractedMap.get(PREFIX + USER));
         credentialMap.put(PWD, extractedMap.get(PREFIX + PWD));

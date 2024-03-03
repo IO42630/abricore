@@ -3,8 +3,8 @@ package com.olexyn.abricore.navi;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.abricore.util.Constants;
-import com.olexyn.abricore.util.Property;
 import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.propconf.PropConf;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -45,7 +45,7 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
     private static final DesiredCapabilities CAP;
 
     static {
-        var path = Path.of(Property.get(WORKING_DIR), "/navi/src/main/resources/", CHROME_DRIVER);
+        var path = Path.of(PropConf.get(WORKING_DIR), "/navi/src/main/resources/", CHROME_DRIVER);
         SERVICE = new ChromeDriverService.Builder()
             .usingDriverExecutable(path.toFile())
             .usingAnyFreePort()
@@ -56,14 +56,14 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        if (Property.is("headless")) {
+        if (PropConf.is("headless")) {
             options.addArguments("--window-size=1920,1080");
             options.addArguments("--headless");
         }
         // see also https://chromium.googlesource.com/chromium/src/+/master/chrome/common/pref_names.cc
         HashMap<String, Object> chromePrefs = new HashMap<>();
         chromePrefs.put("profile.default_content_settings.popups", 0);
-        chromePrefs.put("download.default_directory", Property.get("quotes.dir.tmp"));
+        chromePrefs.put("download.default_directory", PropConf.get("quotes.dir.tmp"));
         chromePrefs.put("download.prompt_for_download", false);
         options.setExperimentalOption("prefs", chromePrefs);
         CAP.setCapability(ChromeOptions.CAPABILITY, options);
@@ -137,7 +137,7 @@ public class TabDriver extends ChromeDriver implements MWatchable, JavascriptExe
      * If the current tab is empty, it is registered - this happens usually only with the initial tab of the session.
      */
     public synchronized void newTab(TabPurpose purpose) {
-        String currentUrl = getCurrentUrl();
+        String currentUrl = getCurrentUrl(); // TODO this throws error, just get a new window
         if (currentUrl.isEmpty()
             || currentUrl.equals("data:,")
             || currentUrl.equals(ABOUT_BLANK)) {
