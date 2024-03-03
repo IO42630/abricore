@@ -2,6 +2,12 @@ version: '3'
 services:
 
     #  See .env for vars.
+
+
+#    abricore:
+#        container_name: abricore
+#        image: io42630/abricore:latest
+
     abricore-db:
         container_name: abricore-db
         image: mariadb:10.11.2-jammy

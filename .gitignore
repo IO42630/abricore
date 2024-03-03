@@ -14,3 +14,4 @@ target
 # properties
 *.properties
 !*default.properties
+**.jar
