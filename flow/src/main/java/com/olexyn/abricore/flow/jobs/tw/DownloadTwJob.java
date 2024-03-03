@@ -5,6 +5,8 @@ import com.olexyn.abricore.flow.jobs.Job;
 import com.olexyn.abricore.flow.jobs.store.ReadTmpCsvToDbJob;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.navi.tw.TwNavigator;
+import com.olexyn.abricore.store.dao.EventDao;
+import com.olexyn.abricore.store.repo.EventRepo;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.enums.CmdOptions;
@@ -30,7 +32,11 @@ public class DownloadTwJob extends Job {
     private final List<AssetDto> assets = new ArrayList<>();
     private final List<CmdOptions> options = new ArrayList<>();
 
-    public DownloadTwJob(ConfigurableApplicationContext ctx, List<AssetDto> assets, List<CmdOptions> options) {
+    public DownloadTwJob(
+        ConfigurableApplicationContext ctx,
+        List<AssetDto> assets,
+        List<CmdOptions> options
+    ) {
         super(ctx);
         this.options.addAll(options);
         this.assets.addAll(assets);
@@ -44,11 +50,11 @@ public class DownloadTwJob extends Job {
         LogU.infoStart(EMPTY);
         bean(TwNavigator.class).doLogin();
         while (!isCancelled()) {
-            var lastTwDownload = Instant.parse(PropConf.get("tw.last.download"));
+            var lastTwDownload = bean(EventDao.class).getInstant("tw.last.download");
             if (options.contains(FORCE) || lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {
                 options.remove(FORCE);
                 fetchData();
-//                PropConf.set("tw.last.download", Instant.now().toString()); TODO save this to DB
+                bean(EventDao.class).set("tw.last.download", Instant.now().toString());
                 startJob(new ReadTmpCsvToDbJob(getCtx()));
             }
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
