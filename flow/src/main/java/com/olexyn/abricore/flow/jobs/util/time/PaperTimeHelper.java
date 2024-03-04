@@ -27,6 +27,10 @@ public class PaperTimeHelper extends ProtoTimeHelper {
     private Series paperSeries;
 
 
+    private static final Instant START_BUYING_CYCLE = DataUtil.getInstant("paper.trade.start").plus(START_BUYING_SECONDS);
+    private static final Instant FORCED_CYCLE_END = DataUtil.getInstant("paper.trade.end").minus(FORCE_SELL_SECONDS);
+
+
     protected PaperTimeHelper(ConfigurableApplicationContext ctx) {
         super(ctx);
     }
@@ -93,11 +97,11 @@ public class PaperTimeHelper extends ProtoTimeHelper {
     }
 
     boolean isStartBuyingTimeAfterCycleStart() {
-        return now().isAfter(DataUtil.getInstant("paper.trade.start").plus(START_BUYING_SECONDS));
+        return now().isAfter(START_BUYING_CYCLE);
     }
 
     boolean isSellForcedCycleEnd() {
-        return now().isAfter(DataUtil.getInstant("paper.trade.end").minus(FORCE_SELL_SECONDS));
+        return now().isAfter(FORCED_CYCLE_END);
     }
 
 
