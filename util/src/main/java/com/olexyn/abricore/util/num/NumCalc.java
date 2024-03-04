@@ -40,7 +40,7 @@ import static java.lang.Long.MIN_VALUE;
 @UtilityClass
 public class NumCalc {
 
-
+    private static final String TIMES_OVERFLOW = "Times overflow.";
 
     /**
      * The closer the numbers together, the larger the loss of precision.
@@ -87,53 +87,33 @@ public class NumCalc {
     public static long times(long... values) {
         long result = ONE;
         for (long y : values) {
-            if (y > NINE_EP7) { throw new SoftCalcException("Times overflow."); }
+            if (y > NINE_EP7) { throw new SoftCalcException(TIMES_OVERFLOW); }
             long abs = abs(result);
             if (abs < EN8) {
                 result = result * EN7 * y / EP2;
-                continue;
-            }
-            if (abs < EN7) {
+            } else if (abs < EN7) {
                 result = result * EN8 * y / EP1;
-                continue;
-            }
-            if (abs < EN6) {
+            } else if (abs < EN6) {
                 result = result * y / EP0;
-                continue;
-            }
-            if (abs < EN5) {
+            } else if (abs < EN5) {
                 result = result / EN8 * y / EN1;
-                continue;
-            }
-            if (abs < EN4) {
+            } else if (abs < EN4) {
                 result = result / EN7 * y / EN2;
-                continue;
-            }
-            if (abs < EN3) {
+            } else if (abs < EN3) {
                 result = result / EN6 * y / EN3;
-                continue;
-            }
-            if (abs < EN2) {
+            } else if (abs < EN2) {
                 result = result / EN5 * y / EN4;
-                continue;
-            }
-            if (abs < EN1) {
+            } else if (abs < EN1) {
                 result = result / EN4 * y / EN5;
-                continue;
-            }
-            if (abs < EP0) {
+            } else if (abs < EP0) {
                 result = result / EN3 * y / EN6;
-                continue;
-            }
-            if (abs < EP1) {
+            } else if (abs < EP1) {
                 result = result / EN2 * y / EN7;
-                continue;
-            }
-            if (abs < EP2) {
+            } else if (abs < EP2) {
                 result = result / EN1 * y / EN8;
-                continue;
+            } else {
+                result = result / ONE * y;
             }
-            result = result / ONE * y;
         }
         return result;
     }
