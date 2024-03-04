@@ -95,9 +95,7 @@ public class Series extends ProtoSeries implements Observable {
         Instant from = getKeyAtDurationOffset(offset.plus(duration), AFTER);
         Instant to = getKeyAtDurationOffset(offset, BEFORE);
         if (from.isAfter(to)) {
-            LogU.finePlain("from %s > to %s", from, to);
-            throw new SoftCalcException("" +
-                "Section likely empty. Refusing to continue due to risk of side effects."
+            throw new SoftCalcException("Section likely empty. Refusing to continue due to risk of side effects."
             );
         }
         return tree().subMap(from, true, to, true);
@@ -189,7 +187,7 @@ public class Series extends ProtoSeries implements Observable {
         put(snapshot, true);
     }
 
-    public void put(SnapshotDto snapshot, boolean wait) {
+    private void put(SnapshotDto snapshot, boolean wait) {
         snapshot.setSeries(this);
         if (snapshot.getInstant() == null) { return; }
         SnapshotDto existing = hashMap().get(snapshot.getInstant());
@@ -199,6 +197,7 @@ public class Series extends ProtoSeries implements Observable {
         synchronized(this) {
             hashMap().put(snapshot.getInstant(), snapshot);
             tree().put(snapshot.getInstant(), snapshot);
+            setLastPutKey(snapshot.getInstant());
         }
         if (wait) {
             notifyObservers();

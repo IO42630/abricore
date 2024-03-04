@@ -2,6 +2,8 @@ package com.olexyn.abricore.model.runtime.snapshots;
 
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.util.log.LogU;
+import lombok.Getter;
+import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.Instant;
@@ -21,6 +23,12 @@ public abstract class ProtoSeries {
     private final HashMap<Instant, SnapshotDto> hashMap = new LinkedHashMap<>();
 
     private final TreeMap<Instant, SnapshotDto> treeMap = new TreeMap<>();
+
+    @Getter
+    @Setter
+    @Nullable
+    private Instant lastPutKey = null;
+
 
     public abstract AssetDto getAsset();
 
@@ -47,23 +55,14 @@ public abstract class ProtoSeries {
     }
 
     public @Nullable Instant getLastKey() {
-        if (hashMap.isEmpty()) {
-            LogU.warnPlain("Series for " + getAsset() + IS_EMPTY);
-            return null;
-        }
-        Instant lastKey = treeMap.lastKey();
-        if (lastKey == null) {
-            LogU.warnPlain("Last KEY of Series for " + getAsset() + IS_EMPTY);
-            return null;
-        }
-        return lastKey;
+        return getLastPutKey();
     }
 
 
     public @Nullable SnapshotDto getLast() {
-        Instant lastKey = getLastKey();
+        var lastKey = getLastKey();
         if (lastKey == null) { return null; }
-        return hashMap.get(getLastKey());
+        return hashMap.get(lastKey);
     }
 
 
