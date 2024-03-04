@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <module name="main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.olexyn.abricore.MainApp" />
-    <option name="VM_PARAMETERS" value="-Xms8G -Xmx320G -XX:MaxInlineLevel=32 -XX:MaxInlineSize=512" />
+    <option name="VM_PARAMETERS" value="-Xms8G -Xmx140G -XX:MaxInlineLevel=32 -XX:MaxInlineSize=512" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.olexyn.abricore.*" />
