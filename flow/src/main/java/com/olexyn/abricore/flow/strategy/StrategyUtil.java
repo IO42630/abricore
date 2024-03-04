@@ -27,18 +27,17 @@ public class StrategyUtil extends CtxAware {
         super(ctx);
     }
 
-    public boolean isOptionSelectable(StrategyDto strategyDto, Series series, OptionDto option) {
+    public boolean isOptionSelectable(StrategyDto strategyDto, Series series, OptionDto option, long minDistance) {
         var lastSnap = series.getLast();
         if (lastSnap == null) { return false; }
         long lastUnderlyingPrice = lastSnap.getTradePrice();
         long difference;
-        long distance = strategyDto.getMinOptionDistance().generate(series); // TODO calc this only once
         if (option.getOptionType() == OptionType.CALL) {
             difference = lastUnderlyingPrice - option.getStrike();
         } else {
             difference = option.getStrike() - lastUnderlyingPrice;
         }
-        return difference > distance;
+        return difference > minDistance;
     }
 
     public void populateSeriesFromDb(StrategyDto strategy) {

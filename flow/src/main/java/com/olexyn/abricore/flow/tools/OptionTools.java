@@ -44,8 +44,9 @@ public class OptionTools extends CtxAware {
         StrategyDto strategy,
         Series underlyingSeries
     ) {
+        long minDistance = calcMinimalDistance(strategy, underlyingSeries);
         List<OptionDto> selectableOptions = assetService.getOptions(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option))
+            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
             .filter(option -> option.getStatus() != OptionStatus.DEAD)
             .toList();
         OptionDto call = selectableOptions.stream()
@@ -61,21 +62,30 @@ public class OptionTools extends CtxAware {
 
     long MIN_STRIKE = ONE;
     long MAX_STRIKE = 50 * ONE;
-    private static Map<AssetDto, List<OptionDto>> paperOptionMap = new HashMap<>();
+    private static Map<AssetDto, List<OptionDto>> paperCallOptionMap = new HashMap<>();
+    private static Map<AssetDto, List<OptionDto>> paperPutOptionMap = new HashMap<>();
 
 
     private void init(@Nullable AssetDto asset) {
         if (asset == null) {
             return;
         }
-        if (!paperOptionMap.containsKey(asset)) {
-            paperOptionMap.put(asset, new ArrayList<>());
+        if (!paperCallOptionMap.containsKey(asset)) {
+            paperCallOptionMap.put(asset, new ArrayList<>());
         }
-        var paperOptionsForUnderlying = paperOptionMap.get(asset);
-        if (paperOptionsForUnderlying.isEmpty()) {
+        if (!paperPutOptionMap.containsKey(asset)) {
+            paperPutOptionMap.put(asset, new ArrayList<>());
+        }
+        var paperCallOptionsForUnderlying = paperCallOptionMap.get(asset);
+        if (paperCallOptionsForUnderlying.isEmpty()) {
             for (long i = MIN_STRIKE; i < MAX_STRIKE; i = i + ONE) {
-                paperOptionsForUnderlying.add(makePaperOption(asset, i, CALL));
-                paperOptionsForUnderlying.add(makePaperOption(asset, i, PUT));
+                paperCallOptionsForUnderlying.add(makePaperOption(asset, i, CALL));
+            }
+        }
+        var paperPutOptionsForUnderlying = paperPutOptionMap.get(asset);
+        if (paperPutOptionsForUnderlying.isEmpty()) {
+            for (long i = MIN_STRIKE; i < MAX_STRIKE; i = i + ONE) {
+                paperPutOptionsForUnderlying.add(makePaperOption(asset, i, PUT));
             }
         }
     }
@@ -96,20 +106,18 @@ public class OptionTools extends CtxAware {
         return paperCall;
     }
 
-
+    private long calcMinimalDistance(StrategyDto strategy, Series series) {
+        return strategy.getMinOptionDistance().generate(series);
+    }
 
     public OptionBrace getPaperOptionBrace(StrategyDto strategy, Series underlyingSeries) {
-
-        List<OptionDto> selectableOptions = paperOptionMap.get(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option))
-            .filter(option -> option.getStatus() != OptionStatus.DEAD)
-            .toList();
-        OptionDto call = selectableOptions.stream()
-            .filter(option -> option.getOptionType() == CALL)
+        long minDistance = calcMinimalDistance(strategy, underlyingSeries);
+        var call = paperCallOptionMap.get(strategy.getUnderlying()).stream()
+            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
-        OptionDto put = selectableOptions.stream()
-            .filter(option -> option.getOptionType() == OptionType.PUT)
+        var put = paperPutOptionMap.get(strategy.getUnderlying()).stream()
+            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
         return new OptionBrace(call, put);
