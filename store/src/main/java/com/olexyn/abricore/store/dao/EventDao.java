@@ -30,7 +30,11 @@ public class EventDao {
     }
 
     public void set(String eventKey, String value) {
-        EventEntity eventEntity = new EventEntity();
+        var eventEntity  = eventRepo.findAll()
+            .stream()
+            .filter(e -> e.getEventKey().equals(eventKey))
+            .findFirst()
+            .orElse(new EventEntity());
         eventEntity.setEventKey(eventKey);
         eventEntity.setValue(value);
         eventRepo.save(eventEntity);
