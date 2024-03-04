@@ -2,6 +2,7 @@ package com.olexyn.abricore;
 
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.TaskType;
+import com.olexyn.abricore.flow.jobs.JobKeeper;
 import com.olexyn.abricore.flow.jobs.sq.ObservePositionsSqJob;
 import com.olexyn.abricore.flow.jobs.sq.SyncOptionsSqJob;
 import com.olexyn.abricore.flow.jobs.sq.TradeSqJob;
@@ -29,7 +30,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,7 +40,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import static com.olexyn.abricore.flow.JobType.EVOLVE;
-import static com.olexyn.abricore.flow.jobs.JobKeeper.getJobs;
 import static com.olexyn.abricore.flow.jobs.JobStarter.startJob;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -67,7 +66,7 @@ public class MainApp {
 
     public static void exit() throws InterruptedException {
         LogU.infoStart("((SHUTDOWN))");
-        for (var job : getJobs()) {
+        for (var job : ctx.getBean(JobKeeper.class).getJobs()) {
             cancelJob(job.getThread().getName());
         }
         while (!allJobsTerminated()) {
@@ -184,7 +183,7 @@ public class MainApp {
 
 
     static void cancelJob(String target) {
-        for (var job : getJobs()) {
+        for (var job : ctx.getBean(JobKeeper.class).getJobs()) {
             String name = job.getThread().getName();
             if (name.equals(target)) {
                 LogU.infoPlain("SENDING cancel to %s.", name);
@@ -195,7 +194,7 @@ public class MainApp {
 
     private static boolean allJobsTerminated() {
         boolean jobsTerminated = true;
-        for (var job : getJobs()) {
+        for (var job : ctx.getBean(JobKeeper.class).getJobs()) {
             if (job.getThread().isAlive()) {
                 jobsTerminated = false;
                 break;

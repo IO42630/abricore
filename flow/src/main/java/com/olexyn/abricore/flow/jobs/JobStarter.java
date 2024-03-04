@@ -9,7 +9,6 @@ public final class JobStarter {
     public static Job prepareJob(Job job, String... nameSuffix) {
         job.setThread(new Thread(job));
         job.getThread().setName(job.getType().name() + StringUtils.join(nameSuffix));
-        JobKeeper.addJob(job);
         return job;
     }
 

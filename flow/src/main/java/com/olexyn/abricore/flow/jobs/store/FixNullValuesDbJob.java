@@ -29,14 +29,11 @@ public class FixNullValuesDbJob extends Job {
     private static final int PAGE_SIZE = 1000;
 
     @Override
-    public void run() {
-
-        LogU.infoStart(EMPTY);
+    public void nestedRun() {
         fixPositionRepo();
         fixSnapshotRepo();
         fixSymbolRepo();
         fixTradeRepo();
-        LogU.infoEnd(EMPTY);
     }
 
     private String fixNull(String value) {

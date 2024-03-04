@@ -43,7 +43,7 @@ public class PaperObserveTwJob extends ObserveTwJob {
      * - put any logic for cancelling Observers here.
      */
     @Override
-    public void run() {
+    public void nestedRun() {
         synchronized(getLock()) {
             getLock().safeWait(PropConf.getDuration("paper.trade.wait.for.trade.job.seconds"));
         }
@@ -60,7 +60,6 @@ public class PaperObserveTwJob extends ObserveTwJob {
             getLock().notifyAll();
         }
         getThread().interrupt();
-        LogU.fineEnd(getUuid().toString());
     }
 
     @Override

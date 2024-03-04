@@ -7,9 +7,11 @@ import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.log.LogU;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import static com.olexyn.abricore.flow.JobType.UNKNOWN;
+import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 
@@ -30,6 +32,7 @@ public class Job extends CtxAware implements Runnable {
     @Getter
     private final JobTimer jobTimer = new JobTimer();
 
+
     protected Job(ConfigurableApplicationContext ctx) {
         super(ctx);
         this.jobName = Thread.currentThread().getName();
@@ -41,7 +44,24 @@ public class Job extends CtxAware implements Runnable {
     }
 
     @Override
-    public void run() { /* NOP */ }
+    public final void run() {
+        preRun();
+        nestedRun();
+        postRun();
+    }
+
+    private void preRun() {
+        bean(JobKeeper.class).addJob(this);
+        LogU.infoStart(getUuid().toString());
+    }
+
+    protected void nestedRun() { /* NOP */ }
+
+    private void postRun() {
+        LogU.infoEnd(getUuid().toString());
+        bean(JobKeeper.class).removeJob(this);
+    }
+
 
     public FlowHint fetchData() { return OK; }
 

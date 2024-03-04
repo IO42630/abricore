@@ -1,8 +1,12 @@
 package com.olexyn.abricore.flow.jobs;
 
 import com.olexyn.abricore.flow.JobType;
+import com.olexyn.abricore.util.CtxAware;
 import lombok.Synchronized;
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +20,14 @@ import java.util.stream.Stream;
 /**
  * Keep track of all Jobs.
  */
-@UtilityClass
-public final class JobKeeper {
+@Service
+public final class JobKeeper extends CtxAware {
+
+
+    @Autowired
+    public JobKeeper(ConfigurableApplicationContext ctx) {
+        super(ctx);
+    }
 
     private static final Map<UUID, List<Job>> JOBS = new HashMap<>();
 
@@ -25,7 +35,7 @@ public final class JobKeeper {
      * Keep this package private.
      */
     @Synchronized
-    void addJob(Job job) {
+    public void addJob(Job job) {
         JOBS.computeIfAbsent(job.getUuid(), k -> new ArrayList<>());
         JOBS.get(job.getUuid()).add(job);
     }
@@ -35,6 +45,12 @@ public final class JobKeeper {
         JOBS.values().forEach(jobs::addAll);
         return jobs;
     }
+
+    @Synchronized
+    public void removeJob(Job job) {
+        JOBS.get(job.getUuid()).remove(job);
+    }
+
 
     // STREAM ==================================================================
 
@@ -62,6 +78,11 @@ public final class JobKeeper {
     public Stream<SJob> streamDeadJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
         return streamJobsByUUIDAndType(uuid, jobTypes)
             .filter(e -> !e.getThread().isAlive());
+    }
+
+    public Stream<SJob> streamAliveJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
+        return streamJobsByUUIDAndType(uuid, jobTypes)
+            .filter(e -> e.getThread().isAlive());
     }
 
 }

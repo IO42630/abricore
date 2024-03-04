@@ -37,15 +37,13 @@ public class SyncOptionsSqJob extends Job {
     }
 
     @Override
-    public void run() {
-        LogU.infoStart(EMPTY);
+    public void nestedRun() {
         bean(SqNavigator.class).doLogin();
         while (!isCancelled()) {
             fetchData();
             loopCount++;
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
         }
-        LogU.infoEnd(EMPTY);
     }
 
     @Override

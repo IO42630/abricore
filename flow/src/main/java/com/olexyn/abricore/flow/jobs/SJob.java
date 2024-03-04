@@ -7,6 +7,7 @@ import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.util.Lock;
 import com.olexyn.abricore.util.LockKeeper;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.HashSet;
@@ -18,15 +19,15 @@ import java.util.stream.Stream;
  * SJob is a Job that is associated with a Strategy.
  * UUID is used to identify the Strategy.
  */
+@Getter
 public class SJob extends Job implements LockAware {
 
-    @Getter
     private final StrategyDto strategy;
 
-    @Getter
     private final AssetDto underlying;
 
 
+    @Setter
     private Set<JobType> jobDependencyTypes = new HashSet<>();
 
     protected SJob(
@@ -44,24 +45,24 @@ public class SJob extends Job implements LockAware {
         return getStrategy().getUuid();
     }
 
-    public Set<JobType> getJobDependencyTypes() {
-        return jobDependencyTypes;
-    }
-
-    public void setJobDependencyTypes(Set<JobType> jobDependencyTypes) {
-        this.jobDependencyTypes = jobDependencyTypes;
-    }
-
     public Stream<SJob> getDependencies() {
-        return JobKeeper.streamJobsByUUIDAndType(getUuid(), jobDependencyTypes);
+        return bean(JobKeeper.class).streamJobsByUUIDAndType(getUuid(), jobDependencyTypes);
     }
 
     public Stream<SJob> getDeadDependencies() {
-        return JobKeeper.streamDeadJobsByUUIDAndType(getUuid(), jobDependencyTypes);
+        return bean(JobKeeper.class).streamDeadJobsByUUIDAndType(getUuid(), jobDependencyTypes);
+    }
+
+    public Stream<SJob> getAliveDependencies() {
+        return bean(JobKeeper.class).streamAliveJobsByUUIDAndType(getUuid(), jobDependencyTypes);
     }
 
     public boolean hasDeadDependencies() {
         return getDeadDependencies().findFirst().isPresent();
+    }
+
+    public boolean hasAliveDependencies() {
+        return getAliveDependencies().findFirst().isPresent();
     }
 
     @Override

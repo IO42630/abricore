@@ -61,8 +61,6 @@ public class PaperTradeSqJob extends TradeSqJob {
         setJobDependencyTypes(Set.of(PAPER_OBS_TW));
     }
 
-
-
     @Override
     public void tryToPlaceSellOrders() {
         getLatentTradesOfUnderlying()

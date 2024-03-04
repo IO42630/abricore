@@ -89,8 +89,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     // MAIN BLOCK : START
 
     @Override
-    public void run() {
-        LogU.fineStart(getUuid().toString());
+    public void nestedRun() {
         synchronized(getLock()) {
             getObservedSeries().addObverser(this);
             getLock().notifyAll();
@@ -107,7 +106,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
             }
         }
         removeThisObserver();
-        LogU.fineEnd(getUuid().toString());
     }
 
     @Override
@@ -301,6 +299,11 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         if (isCancelled()) { return true; }
         if (hasDeadDependencies()) {
             LogU.finePlain("%s has DEAD dependencies.", getType());
+            setCancelled(true);
+            return true;
+        }
+        if (!hasAliveDependencies()) {
+            LogU.finePlain("%s no ALIVE dependencies.", getType());
             setCancelled(true);
             return true;
         }

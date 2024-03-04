@@ -9,13 +9,11 @@ import com.olexyn.abricore.navi.Session;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.enums.FlowHint;
-import com.olexyn.abricore.util.log.LogU;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 public class ObserveTwJob extends SJob {
@@ -31,8 +29,7 @@ public class ObserveTwJob extends SJob {
     }
 
     @Override
-    public void run() {
-        LogU.infoStart(EMPTY);
+    public void nestedRun() {
         nav.doLogin();
         while (!isCancelled()) {
             fetchData();
@@ -41,7 +38,6 @@ public class ObserveTwJob extends SJob {
         synchronized(getLock()) {
             getLock().notifyAll();
         }
-        LogU.infoEnd(EMPTY);
     }
 
     @Override

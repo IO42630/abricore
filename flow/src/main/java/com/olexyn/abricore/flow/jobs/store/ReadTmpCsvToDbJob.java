@@ -22,8 +22,7 @@ public class ReadTmpCsvToDbJob extends Job {
     }
 
     @Override
-    public void run() {
-        LogU.infoStart(EMPTY);
+    public void nestedRun() {
         try {
             new TmpCsvStore(
                 bean(SnapshotDao.class),
@@ -33,7 +32,6 @@ public class ReadTmpCsvToDbJob extends Job {
         } catch (IOException e) {
             LogU.warnPlain(e.getMessage());
         }
-        LogU.infoEnd(EMPTY);
     }
 
     @Override

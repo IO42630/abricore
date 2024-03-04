@@ -46,8 +46,7 @@ public class DownloadTwJob extends Job {
 
 
     @Override
-    public void run() {
-        LogU.infoStart(EMPTY);
+    public void nestedRun() {
         bean(TwNavigator.class).doLogin();
         while (!isCancelled()) {
             var lastTwDownload = bean(EventDao.class).getInstant("tw.last.download");
@@ -59,7 +58,6 @@ public class DownloadTwJob extends Job {
             }
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
         }
-        LogU.infoEnd(EMPTY);
     }
 
     @Override
