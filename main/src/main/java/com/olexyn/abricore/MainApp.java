@@ -23,6 +23,7 @@ import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.TradeService;
 import com.olexyn.abricore.store.runtime.VectorService;
+import com.olexyn.abricore.util.MemState;
 import com.olexyn.abricore.util.enums.CmdOptions;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
@@ -60,7 +61,8 @@ public class MainApp {
     private static final Scanner INPUT = new Scanner(System.in, UTF_8);
 
     public static void main(String... args) {
-       // NOP
+        var x = new MemState();
+        int br = 0;
     }
 
 
