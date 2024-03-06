@@ -4,8 +4,10 @@ import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.TaskType;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.navi.tw.TwNavigator;
+import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.propconf.PropConf;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,14 @@ import static com.olexyn.abricore.MainApp.ctx;
 
 @Controller
 public class AppController {
+
+
+    private EventDao eventDao;
+
+    @Autowired
+    public AppController(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
 
     private static final String INDEX= "index";
     private static final String ROOT= "redirect:/";
@@ -61,9 +71,7 @@ public class AppController {
         @RequestParam String propName,
         @RequestParam String propValue
     ) {
-        // Logic to end a job based on jobName
-        // Adapt this to your application's job management
-//        PropConf.set(propName, propValue); TODO
+        eventDao.set(propName, propValue);
         return ROOT;
     }
 

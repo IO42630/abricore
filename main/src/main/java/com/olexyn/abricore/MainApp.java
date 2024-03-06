@@ -18,6 +18,7 @@ import com.olexyn.abricore.flow.tasks.VectorSaveTask;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
+import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.SeriesService;
@@ -93,6 +94,10 @@ public class MainApp {
 
 
      static String describe(String topic) throws IOException {
+        String  event = ctx.getBean(EventDao.class).get(topic);
+        if (event != null) {
+            return event;
+        }
         String desc  = PropConf.get(topic);
          if (!desc.isEmpty()) {
              return desc;

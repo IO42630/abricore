@@ -40,6 +40,15 @@ public class EventDao {
         eventRepo.save(eventEntity);
     }
 
+
+    public @Nullable String get(String eventKey) {
+        return eventRepo.findAll()
+            .stream().filter(e -> e.getEventKey().equals(eventKey))
+            .map(EventEntity::getValue)
+            .findFirst()
+            .orElse(null);
+    }
+
     public Instant getInstant(String eventKey) {
         return eventRepo.findAll()
             .stream().filter(e -> e.getEventKey().equals(eventKey))
