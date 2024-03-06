@@ -42,6 +42,7 @@ import static com.olexyn.abricore.util.num.NumUtil.fromInt;
 public class Series extends ProtoSeries implements Observable {
 
     private static final int PATCH_SIZE = PropConf.getInt("series.patch.size");
+    private static final Duration WAIT_FOR_OBS_TO_RACT = PropConf.getDuration("trade.wait.for.observers.to.react.milli");
 
     private final List<AObserver> observers = new ArrayList<>();
 
@@ -123,8 +124,8 @@ public class Series extends ProtoSeries implements Observable {
         long sum = section.values().stream()
             .filter(snap -> snap.getInstant().getEpochSecond() % safeOverRatio == 0)
             .limit(samleSize)
-            .map(SnapshotDto::getTradePrice)
-            .reduce(Long::sum).orElse(0L);
+            .mapToLong(SnapshotDto::getTradePrice)
+            .sum();
         return div(sum, fromInt(samleSize));
     }
 
@@ -136,8 +137,8 @@ public class Series extends ProtoSeries implements Observable {
         var section = getSection(offset, duration);
         long sumOfSquares = section.values().stream()
             .map(SnapshotDto::getTradePrice)
-            .map(traded -> square(traded - (ma)))
-            .reduce(Long::sum).orElse(0L);
+            .mapToLong(traded -> square(traded - (ma)))
+            .sum();
         return sqrt(div(sumOfSquares, fromInt(section.size())));
     }
 
@@ -208,9 +209,7 @@ public class Series extends ProtoSeries implements Observable {
     public void notifyObservers() {
         for (AObserver observer : List.copyOf(observers)) {
             synchronized(observer.getLock()) {
-                observer.getLock().safeWait(
-                    PropConf.getDuration("trade.wait.for.observers.to.react.milli")
-                );
+                observer.getLock().safeWait(WAIT_FOR_OBS_TO_RACT);
             }
         }
     }

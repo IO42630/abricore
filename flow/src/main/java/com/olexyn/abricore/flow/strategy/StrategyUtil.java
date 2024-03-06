@@ -3,11 +3,13 @@ package com.olexyn.abricore.flow.strategy;
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
 import com.olexyn.abricore.model.runtime.assets.OptionType;
 import com.olexyn.abricore.model.runtime.snapshots.Series;
+import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.enums.TransactionType;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -27,8 +29,7 @@ public class StrategyUtil extends CtxAware {
         super(ctx);
     }
 
-    public boolean isOptionSelectable(StrategyDto strategyDto, Series series, OptionDto option, long minDistance) {
-        var lastSnap = series.getLast();
+    public boolean isOptionSelectable(@Nullable SnapshotDto lastSnap, OptionDto option, long minDistance) {
         if (lastSnap == null) { return false; }
         long lastUnderlyingPrice = lastSnap.getTradePrice();
         long difference;

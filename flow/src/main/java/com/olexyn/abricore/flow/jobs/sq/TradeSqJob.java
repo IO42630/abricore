@@ -120,7 +120,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
 
     @Override
     public final void tryToPlaceBuyOrders() {
-        LogU.finePlain("BUY - Try to place orders.");
         if (isWaitBetweenTradesNOK()) { return; }
         var optionBrace = getOptionBrace();
         OptionType.stream().forEach(optionType -> {

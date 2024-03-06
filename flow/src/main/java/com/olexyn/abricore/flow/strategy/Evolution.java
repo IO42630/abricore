@@ -177,7 +177,7 @@ public class Evolution extends CtxAware implements Runnable {
                 .collect(Collectors.toSet());
             bean(VectorService.class).addAll(newVectors);
             bean(VectorMergeTask.class).run();
-
+            bean(VectorService.class).save();
         }
         LogU.warnEnd("DONE");
         bean(VectorService.class).save();

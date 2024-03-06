@@ -45,8 +45,9 @@ public class OptionTools extends CtxAware {
         Series underlyingSeries
     ) {
         long minDistance = calcMinimalDistance(strategy, underlyingSeries);
+        var lastSnap = underlyingSeries.getLast();
         List<OptionDto> selectableOptions = assetService.getOptions(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
+            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
             .filter(option -> option.getStatus() != OptionStatus.DEAD)
             .toList();
         OptionDto call = selectableOptions.stream()
@@ -112,12 +113,13 @@ public class OptionTools extends CtxAware {
 
     public OptionBrace getPaperOptionBrace(StrategyDto strategy, Series underlyingSeries) {
         long minDistance = calcMinimalDistance(strategy, underlyingSeries);
+        var lastSnap = underlyingSeries.getLast();
         var call = paperCallOptionMap.get(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
+            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
         var put = paperPutOptionMap.get(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(strategy, underlyingSeries, option, minDistance))
+            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
         return new OptionBrace(call, put);
