@@ -46,7 +46,7 @@ public class GapReportTask extends CtxAware implements Task {
 
             Set<FrameDto> gaps = new HashSet<>();
             while (frame != null && frame.getEnd() != null) {
-                if (frame.getDuration().minus(Duration.ofSeconds(300)).isPositive()) {
+                if (!frame.getDuration().minus(Duration.ofSeconds(300)).isNegative()) {
                     frame.setFrameType(FrameType.GAP);
                     gaps.add(frame);
                 }

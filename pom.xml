@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.olexyn</groupId>
         <artifactId>min-root</artifactId>
-        <version>jdk17-spring-0.0</version>
+        <version>jdk17-spring-0.1</version>
     </parent>
     <groupId>com.olexyn.abricore</groupId>
     <artifactId>abricore</artifactId>
@@ -15,7 +15,7 @@
     <url>https://www.olexyn.com</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <xx.java.version>19</xx.java.version>
+        <xx.java.version>17</xx.java.version>
         <xx.project.version>0.1</xx.project.version>
         <querydsl.version>5.0.0</querydsl.version>
         <hibernate.version>5.6.12.Final</hibernate.version>
