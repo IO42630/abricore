@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.olexyn.abricore.flow.JobType.OBS_TW;
+import static com.olexyn.abricore.flow.strategy.StrategyUtil.resolveCondition;
 import static com.olexyn.abricore.util.enums.TradeStatus.OPENING_POS;
 import static com.olexyn.abricore.util.enums.TradeStatus.OPEN_PREPARED;
 import static com.olexyn.abricore.util.enums.TransactionType.BUY;
@@ -216,8 +217,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     }
 
     protected boolean testCondition(TransactionType txType, OptionType optionType, TradeDto trade) {
-        var condition = bean(StrategyUtil.class)
-            .resolveCondition(
+        var condition = resolveCondition(
                 getStrategy(),
                 txType,
                 optionType

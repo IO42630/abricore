@@ -3,6 +3,7 @@ package com.olexyn.abricore.flow.strategy;
 import com.olexyn.abricore.flow.strategy.templates.StrategyTemplates;
 import com.olexyn.abricore.flow.tasks.VectorMergeTask;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
+import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.log.LogU;
@@ -56,7 +57,7 @@ public class Evolution extends CtxAware implements Runnable {
 
         var strategy = bean(StrategyTemplates.class).evolutionTest();
         strategy.setFitness(0);
-        strategyUtil.populateSeriesFromDb(strategy);
+        populateSeriesFromDb(strategy);
 
         var vectors = new ArrayList<>(bean(VectorService.class).getVectors());
 
@@ -74,10 +75,17 @@ public class Evolution extends CtxAware implements Runnable {
         }
 
         lazyCalcFitness(population);
-        MetricsCalculator.calculateRating(population);
-        MetricsCalculator.calculateAvgDuration(population);
+        MetricsCalculator.calcRating(population);
         population.sort(StrategyDto::compareTo);
         return population;
+    }
+
+    public void populateSeriesFromDb(StrategyDto strategy) {
+        bean(SeriesService.class).of(
+            strategy.getUnderlying(),
+            strategy.getFrom(),
+            strategy.getTo()
+        );
     }
 
     public List<StrategyDto> evolve(List<StrategyDto> oldGen) {
@@ -169,8 +177,7 @@ public class Evolution extends CtxAware implements Runnable {
         while (currentGeneration < MAX_GENERATIONS) {
             List<StrategyDto> newGen = evolve(POPULATIONS.get(currentGeneration));
             POPULATIONS.put(++currentGeneration, newGen);
-            MetricsCalculator.calculateRating(newGen);
-            MetricsCalculator.calculateAvgDuration(newGen);
+            MetricsCalculator.calcRating(newGen);
             var newVectors = newGen.stream()
                 .map(StrategyDto::getVector)
                 .filter(v -> v.getRating() > 0)

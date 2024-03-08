@@ -1,6 +1,5 @@
 package com.olexyn.abricore.flow.tools;
 
-import com.olexyn.abricore.flow.strategy.StrategyUtil;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.OptionBrace;
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.olexyn.abricore.flow.strategy.StrategyUtil.isOptionSelectable;
 import static com.olexyn.abricore.model.runtime.assets.OptionType.CALL;
 import static com.olexyn.abricore.model.runtime.assets.OptionType.PUT;
 import static com.olexyn.abricore.util.num.Num.ONE;
@@ -30,12 +30,10 @@ import static com.olexyn.abricore.util.num.NumUtil.prettyStr;
 @Component
 public class OptionTools extends CtxAware {
 
-    private final StrategyUtil strategyUtil;
 
     @Autowired
     public OptionTools(ConfigurableApplicationContext ctx) {
         super(ctx);
-        this.strategyUtil = bean(StrategyUtil.class);
         init(ctx.getBean(AssetService.class).ofName("XAGUSD"));
     }
 
@@ -47,7 +45,7 @@ public class OptionTools extends CtxAware {
         long minDistance = calcMinimalDistance(strategy, underlyingSeries);
         var lastSnap = underlyingSeries.getLast();
         List<OptionDto> selectableOptions = assetService.getOptions(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
+            .filter(option -> isOptionSelectable(lastSnap, option, minDistance))
             .filter(option -> option.getStatus() != OptionStatus.DEAD)
             .toList();
         OptionDto call = selectableOptions.stream()
@@ -115,11 +113,11 @@ public class OptionTools extends CtxAware {
         long minDistance = calcMinimalDistance(strategy, underlyingSeries);
         var lastSnap = underlyingSeries.getLast();
         var call = paperCallOptionMap.get(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
+            .filter(option -> isOptionSelectable(lastSnap, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
         var put = paperPutOptionMap.get(strategy.getUnderlying()).stream()
-            .filter(option -> strategyUtil.isOptionSelectable(lastSnap, option, minDistance))
+            .filter(option -> isOptionSelectable(lastSnap, option, minDistance))
             .sorted()
             .findFirst().orElse(null);
         return new OptionBrace(call, put);

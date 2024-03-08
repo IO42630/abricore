@@ -2,17 +2,12 @@ package com.olexyn.abricore.flow.strategy;
 
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
 import com.olexyn.abricore.model.runtime.assets.OptionType;
-import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition;
-import com.olexyn.abricore.store.runtime.SeriesService;
-import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.enums.TransactionType;
+import lombok.experimental.UtilityClass;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
@@ -20,16 +15,13 @@ import static com.olexyn.abricore.model.runtime.assets.OptionType.CALL;
 import static com.olexyn.abricore.model.runtime.assets.OptionType.PUT;
 import static com.olexyn.abricore.util.enums.TransactionType.BUY;
 import static com.olexyn.abricore.util.enums.TransactionType.SELL;
+import static com.olexyn.abricore.util.num.NumCalc.times;
 
-@Component
-public class StrategyUtil extends CtxAware {
+@UtilityClass
+public class StrategyUtil {
 
-    @Autowired
-    public StrategyUtil(ConfigurableApplicationContext ctx) {
-        super(ctx);
-    }
 
-    public boolean isOptionSelectable(@Nullable SnapshotDto lastSnap, OptionDto option, long minDistance) {
+    public static boolean isOptionSelectable(@Nullable SnapshotDto lastSnap, OptionDto option, long minDistance) {
         if (lastSnap == null) { return false; }
         long lastUnderlyingPrice = lastSnap.getTradePrice();
         long difference;
@@ -41,15 +33,7 @@ public class StrategyUtil extends CtxAware {
         return difference > minDistance;
     }
 
-    public void populateSeriesFromDb(StrategyDto strategy) {
-        bean(SeriesService.class).of(
-            strategy.getUnderlying(),
-            strategy.getFrom(),
-            strategy.getTo()
-        );
-    }
-
-    public Optional<TransactionCondition> resolveCondition(
+    public static Optional<TransactionCondition> resolveCondition(
         StrategyDto strategy,
         TransactionType txType,
         OptionType optionType
@@ -65,6 +49,13 @@ public class StrategyUtil extends CtxAware {
             condition = strategy.getPutSellCondition();
         }
         return Optional.ofNullable(condition);
+    }
+
+    public static long getVolume(StrategyDto strategy) {
+        return strategy.getTrades().stream()
+            .map(trade -> times(trade.getBuyPrice(), trade.getAmount()))
+            .mapToLong(x -> x   )
+            .sum();
     }
 
 }
