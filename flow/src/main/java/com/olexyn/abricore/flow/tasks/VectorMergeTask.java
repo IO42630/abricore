@@ -7,12 +7,14 @@ import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.abricore.util.num.NumSerialize;
 import com.olexyn.propconf.PropConf;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.olexyn.abricore.util.num.Num.ONE;
 import static com.olexyn.abricore.util.num.Num.TWO;
@@ -33,9 +35,15 @@ public class VectorMergeTask extends CtxAware implements Task {
     private static final long VECTOR_MERGE_FACTOR =
         NumSerialize.fromStr(PropConf.get("vector.merge.factor"));
 
+    private final VectorService vectorService;
 
-    public VectorMergeTask(ConfigurableApplicationContext ctx) {
+    @Autowired
+    public VectorMergeTask(
+        ConfigurableApplicationContext ctx,
+        VectorService vectorService
+    ) {
         super(ctx);
+        this.vectorService = vectorService;
     }
 
 
@@ -44,14 +52,18 @@ public class VectorMergeTask extends CtxAware implements Task {
     @Override
     public void run() {
 
-        var vectors = new ArrayList<>(bean(VectorService.class).getVectors());
-        merge(vectors);
+        List<VectorDto> vectors = new ArrayList<>(vectorService.getVectors());
+        vectors = merge(vectors);
+        vectorService.clear();
+        vectorService.addAll(Set.copyOf(vectors));
 
     }
 
-    void merge(List<VectorDto> vectors) {
+
+    List<VectorDto> merge(List<VectorDto> vectors) {
         var trimmed = deletedmerge(vectors);
         LogU.infoPlain("Vectors: %s -(trimmed to)-> %s",vectors.size(), trimmed.size());
+        return trimmed;
     }
 
 
@@ -67,9 +79,6 @@ public class VectorMergeTask extends CtxAware implements Task {
         }
         return vectors;
     }
-
-
-
 
 
 

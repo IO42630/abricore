@@ -26,7 +26,7 @@ public class VectorService implements IService {
     @Override
     @Synchronized
     public void save() {
-        vectorDao.deleteAll();
+        vectorDao.deleteAll(); // TODO
         vectorDao.saveDtos(getVectors());
     }
 
@@ -36,6 +36,10 @@ public class VectorService implements IService {
 
     public void remove(VectorDto vector) {
         VECTORS.remove(vector);
+    }
+
+    public void clear() {
+        VECTORS.clear();
     }
 
     public void addAll(Set<VectorDto> vectors) {
