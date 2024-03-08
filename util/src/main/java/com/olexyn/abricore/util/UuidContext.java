@@ -50,4 +50,11 @@ public class UuidContext {
         mapUuid.get(aClass).remove(uuid);
     }
 
+    @Synchronized
+    public void clear(UUID uuid) {
+        for (var entry : mapUuid.entrySet()) {
+            entry.getValue().remove(uuid);
+        }
+    }
+
 }

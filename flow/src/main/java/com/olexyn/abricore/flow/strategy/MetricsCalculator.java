@@ -91,6 +91,9 @@ public class MetricsCalculator extends CtxAware {
             }
             strategy.setFitness(totalWin);
         }
+        for (var strategy : strategies) {
+            getCtx().getBean(UuidContext.class).clear(strategy.getUuid());
+        }
     }
 
     /**
