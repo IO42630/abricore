@@ -2,14 +2,14 @@ package com.olexyn.abricore;
 
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.TaskType;
-import com.olexyn.abricore.model.runtime.snapshots.FrameDto;
+import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.dao.EventDao;
-import com.olexyn.abricore.store.dao.FrameDao;
+import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.DataUtil;
-import com.olexyn.abricore.util.enums.FrameType;
+import com.olexyn.abricore.util.enums.SnapshotDistanceType;
 import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,21 +30,21 @@ public class AppController {
 
 
     private final EventDao eventDao;
-    private final FrameDao frameDao;
+    private final SnapshotDistanceDao frameDao;
 
-    private final List<FrameDto> gaps = new ArrayList<>();
+    private final List<SnapshotDistanceDto> gaps = new ArrayList<>();
 
     @Autowired
     public AppController(
         EventDao eventDao,
-        FrameDao frameDao
+        SnapshotDistanceDao frameDao
     ) {
         this.eventDao = eventDao;
         this.frameDao = frameDao;
     }
 
-    private static final String INDEX= "index";
-    private static final String ROOT= "redirect:/";
+    private static final String INDEX = "index";
+    private static final String ROOT = "redirect:/";
 
     @GetMapping("/")
     public String index(Model model) {
@@ -60,11 +61,12 @@ public class AppController {
         var fromI = DataUtil.getInstantSoDay(DataUtil.parseDate(fromEvol));
         var toI = DataUtil.getInstantEoDay(DataUtil.parseDate(toEvol));
         gaps.clear();
-        frameDao.findAllByAssetAndFrameType("XAGUSD", FrameType.GAP)
+        frameDao.findAllByAssetAndSnapshotDistanceType("XAGUSD", SnapshotDistanceType.GAP)
             .stream()
-            .filter(frame ->frame.getEnd() != null)
-            .filter(frame -> frame.getStart().isAfter(fromI))
-            .filter(frame -> frame.getEnd().isBefore(toI))
+            .filter(snd -> snd.getEnd() != null)
+            .filter(snd -> snd.getStart().isAfter(fromI))
+            .filter(snd -> snd.getEnd().isBefore(toI))
+            .filter(snd -> snd.isLargerThan(Duration.ofHours(1)))
             .forEach(gaps::add);
 
         //

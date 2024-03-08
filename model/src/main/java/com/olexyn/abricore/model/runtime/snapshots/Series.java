@@ -166,8 +166,8 @@ public class Series extends ProtoSeries implements Observable {
         return result;
     }
 
-    public FrameDto getFrame(Instant start) {
-        return new FrameDto(this, start);
+    public SnapshotDistanceDto getSnapshotDistance(Instant start) {
+        return new SnapshotDistanceDto(this, start);
     }
 
     public SnapshotDto lower(@Nullable SnapshotDto currentSnap) {

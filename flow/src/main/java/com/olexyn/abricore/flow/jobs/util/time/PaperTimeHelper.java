@@ -1,9 +1,9 @@
 package com.olexyn.abricore.flow.jobs.util.time;
 
-import com.olexyn.abricore.model.runtime.snapshots.FrameDto;
+import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
 import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
-import com.olexyn.abricore.store.dao.FrameDao;
+import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.PaperSeriesService;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.exception.MissingException;
@@ -17,13 +17,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
 
-import static com.olexyn.abricore.util.enums.FrameType.GAP;
+import static com.olexyn.abricore.util.enums.SnapshotDistanceType.GAP;
 
 @Scope("prototype")
 @Component
 public class PaperTimeHelper extends ProtoTimeHelper {
 
-    private TreeMap<Instant, FrameDto> gaps = new TreeMap<>();
+    private TreeMap<Instant, SnapshotDistanceDto> gaps = new TreeMap<>();
     private Series paperSeries;
 
 
@@ -39,8 +39,8 @@ public class PaperTimeHelper extends ProtoTimeHelper {
     public PaperTimeHelper init(StrategyDto strategy) {
         super.init(strategy);
         this.paperSeries = bean(PaperSeriesService.class).of(getAsset());
-        bean(FrameDao.class).findAllByAssetAndFrameType(getAsset().getName(), GAP)
-            .forEach(frame -> gaps.put(frame.getStart(), frame));
+        bean(SnapshotDistanceDao.class).findAllByAssetAndSnapshotDistanceType(getAsset().getName(), GAP)
+            .forEach(snd -> gaps.put(snd.getStart(), snd));
         return this;
     }
 

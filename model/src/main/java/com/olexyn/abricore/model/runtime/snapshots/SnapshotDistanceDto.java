@@ -3,7 +3,7 @@ package com.olexyn.abricore.model.runtime.snapshots;
 import com.olexyn.abricore.model.runtime.Dto;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.util.DataUtil;
-import com.olexyn.abricore.util.enums.FrameType;
+import com.olexyn.abricore.util.enums.SnapshotDistanceType;
 import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,7 +18,7 @@ import java.util.Objects;
  * Space between two adjacent Instants in a Series.
  */
 @Getter
-public class FrameDto implements Dto<FrameDto> {
+public class SnapshotDistanceDto implements Dto<SnapshotDistanceDto> {
 
     @Serial
     private static final long serialVersionUID = 8175538251022363241L;
@@ -27,7 +27,7 @@ public class FrameDto implements Dto<FrameDto> {
     private Long id;
 
     @Setter
-    private FrameType frameType;
+    private SnapshotDistanceType snapshotDistanceType;
 
     private final Instant start;
 
@@ -36,11 +36,14 @@ public class FrameDto implements Dto<FrameDto> {
     private Instant end = null;
 
     @Setter
+    private String length;
+
+    @Setter
     private Duration duration;
 
     private final Series series;
 
-    public FrameDto(Series series, Instant start) {
+    public SnapshotDistanceDto(Series series, Instant start) {
         this.start = start;
         this.series = series;
         if (start != null) {
@@ -63,7 +66,18 @@ public class FrameDto implements Dto<FrameDto> {
         return DataUtil.getLocalDate(end);
     }
 
-
+    public @Nullable String getLength() {
+        if (length != null) {
+            return length;
+        }
+        if (duration == null || getStart() == null || getEnd() == null) {
+            return null;
+        }
+        var h = duration.toHours();
+        var m = duration.minusHours(h).toMinutes();
+        this.length = String.format("%d:%02d", h, m);
+        return length;
+    }
 
 
     public Duration getDuration() {
@@ -74,11 +88,15 @@ public class FrameDto implements Dto<FrameDto> {
         return duration;
     }
 
-    public final @Nullable FrameDto next() {
+    public boolean isLargerThan(Duration d) {
+        return getDuration().compareTo(d) > 0;
+    }
+
+    public final @Nullable SnapshotDistanceDto next() {
         if (getEnd() == null) {
             return null;
         }
-        return new FrameDto(series, getEnd());
+        return new SnapshotDistanceDto(series, getEnd());
     }
 
     @Override
@@ -92,13 +110,13 @@ public class FrameDto implements Dto<FrameDto> {
     }
 
     @Override
-    public FrameDto mergeFrom(FrameDto other) {
-        return new FrameDto(other.getSeries(), other.getStart());
+    public SnapshotDistanceDto mergeFrom(SnapshotDistanceDto other) {
+        return new SnapshotDistanceDto(other.getSeries(), other.getStart());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, frameType, start, end, series);
+        return Objects.hash(id, snapshotDistanceType, start, end, series);
     }
 
 }

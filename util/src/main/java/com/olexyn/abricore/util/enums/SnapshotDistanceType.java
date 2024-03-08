@@ -1,6 +1,6 @@
 package com.olexyn.abricore.util.enums;
 
-public enum FrameType {
+public enum SnapshotDistanceType {
     DATA,
     GAP
 }

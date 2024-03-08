@@ -1,6 +1,6 @@
 package com.olexyn.abricore.store;
 
-import com.olexyn.abricore.model.data.FrameEntity;
+import com.olexyn.abricore.model.data.SnapshotDistanceEntity;
 import com.olexyn.abricore.model.data.PositionEntity;
 import com.olexyn.abricore.model.data.SnapshotEntity;
 import com.olexyn.abricore.model.data.SymbolEntity;
@@ -12,7 +12,7 @@ import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.DummyAssetDto;
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
-import com.olexyn.abricore.model.runtime.snapshots.FrameDto;
+import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.vector.BoundParam;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
@@ -221,25 +221,26 @@ public class Mapper extends CtxAware {
         return dto;
     }
 
-    public FrameEntity toFrameEntity(FrameDto dto) {
-        var entity = new FrameEntity();
+    public SnapshotDistanceEntity toSnapshotDistanceEntity(SnapshotDistanceDto dto) {
+        var entity = new SnapshotDistanceEntity();
         entity.setId(dto.getId());
         entity.setAsset(dto.getAsset().getName());
-        entity.setFrameType(dto.getFrameType());
+        entity.setSnapshotDistanceType(dto.getSnapshotDistanceType());
         entity.setStart(dto.getStart());
         entity.setEnd(dto.getEnd());
-        entity.setDuration(dto.getDuration());
+        entity.setLength(dto.getLength());
         return entity;
     }
 
-    public FrameDto toFrameDto(FrameEntity entity) {
+    public SnapshotDistanceDto toSnapshotDistanceDto(SnapshotDistanceEntity entity) {
         var asset = bean(AssetService.class).ofName(entity.getAsset());
         var series = bean(SeriesService.class).of(asset);
         assert series != null;
-        var dto = new FrameDto(series, entity.getStart());
+        var dto = new SnapshotDistanceDto(series, entity.getStart());
         dto.setId(entity.getId());
-        dto.setFrameType(entity.getFrameType());
-        dto.setDuration(entity.getDuration());
+        dto.setSnapshotDistanceType(entity.getSnapshotDistanceType());
+        dto.setEnd(entity.getEnd());
+        dto.setLength(entity.getLength());
         return dto;
     }
 

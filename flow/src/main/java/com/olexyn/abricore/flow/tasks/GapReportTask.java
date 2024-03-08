@@ -1,11 +1,11 @@
 package com.olexyn.abricore.flow.tasks;
 
-import com.olexyn.abricore.model.runtime.snapshots.FrameDto;
-import com.olexyn.abricore.store.dao.FrameDao;
+import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
+import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.CtxAware;
-import com.olexyn.abricore.util.enums.FrameType;
+import com.olexyn.abricore.util.enums.SnapshotDistanceType;
 import com.olexyn.abricore.util.log.LogU;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -41,19 +41,19 @@ public class GapReportTask extends CtxAware implements Task {
             assert fullSeries != null;
             var first = fullSeries.getFirstKey();
             assert first != null;
-            var frame = fullSeries.getFrame(first);
+            var snd = fullSeries.getSnapshotDistance(first);
 
 
-            Set<FrameDto> gaps = new HashSet<>();
-            while (frame != null && frame.getEnd() != null) {
-                if (!frame.getDuration().minus(Duration.ofSeconds(300)).isNegative()) {
-                    frame.setFrameType(FrameType.GAP);
-                    gaps.add(frame);
+            Set<SnapshotDistanceDto> gaps = new HashSet<>();
+            while (snd != null && snd.getEnd() != null) {
+                if (snd.isLargerThan(Duration.ofMinutes(5))) {
+                    snd.setSnapshotDistanceType(SnapshotDistanceType.GAP);
+                    gaps.add(snd);
                 }
-                frame = frame.next();
+                snd = snd.next();
             }
 
-            bean(FrameDao.class).saveDtos(gaps);
+            bean(SnapshotDistanceDao.class).saveDtos(gaps);
 
 
         });

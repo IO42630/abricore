@@ -8,7 +8,7 @@ import com.olexyn.abricore.flow.tools.OptionTools;
 import com.olexyn.abricore.model.runtime.TradeDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.navi.tw.TwNavigator;
-import com.olexyn.abricore.store.dao.FrameDao;
+import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.PaperTradeService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.CtxAware;
@@ -130,7 +130,7 @@ public class MetricsCalculator extends CtxAware {
         uuidCtx.removeBean(TwNavigator.class, strategy.getUuid());
         uuidCtx.removeBean(TimeHelper.class, strategy.getUuid());
         uuidCtx.removeBean(OptionTools.class, strategy.getUuid());
-        uuidCtx.removeBean(FrameDao.class, strategy.getUuid());
+        uuidCtx.removeBean(SnapshotDistanceDao.class, strategy.getUuid());
         uuidCtx.removeBean(PaperTradeService.class, strategy.getUuid());
         uuidCtx.removeBean(PaperTimeHelper.class, strategy.getUuid());
     }

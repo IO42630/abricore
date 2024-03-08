@@ -1,6 +1,6 @@
 package com.olexyn.abricore.model.data;
 
-import com.olexyn.abricore.util.enums.FrameType;
+import com.olexyn.abricore.util.enums.SnapshotDistanceType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +15,13 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "T_FRAME", uniqueConstraints = @UniqueConstraint(columnNames = {"ID"}))
-public class FrameEntity implements Serializable, AbstractEntity {
+@Table(name = "T_SNAPSHOT_DISTANCE", uniqueConstraints = @UniqueConstraint(columnNames = {"ID"}))
+public class SnapshotDistanceEntity implements Serializable, AbstractEntity {
 
     @Serial
     private static final long serialVersionUID = 8876770018937777412L;
@@ -36,8 +35,8 @@ public class FrameEntity implements Serializable, AbstractEntity {
     private String asset;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "FRAME_TYPE", nullable = false, length = 30)
-    private FrameType frameType;
+    @Column(name = "SNAPSHOT_DISTANCE_TYPE", nullable = false, length = 30)
+    private SnapshotDistanceType snapshotDistanceType;
 
     @Column(name = "START", length = 30)
     private Instant start;
@@ -45,8 +44,8 @@ public class FrameEntity implements Serializable, AbstractEntity {
     @Column(name = "END", length = 30)
     private Instant end;
 
-    @Column(name = "DURATION", length = 30)
-    private Duration duration;
+    @Column(name = "LENGTH", length = 30)
+    private String length;
 
 }
 
