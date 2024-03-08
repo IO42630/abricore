@@ -2,6 +2,7 @@ package com.olexyn.abricore.model.runtime.snapshots;
 
 import com.olexyn.abricore.model.runtime.Dto;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
+import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.FrameType;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.Serial;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -49,6 +51,19 @@ public class FrameDto implements Dto<FrameDto> {
     public AssetDto getAsset() {
         return series.getAsset();
     }
+
+    public LocalDate getStartDate() {
+        return DataUtil.getLocalDate(start);
+    }
+
+    public @Nullable LocalDate getEndDate() {
+        if (end == null) {
+            return null;
+        }
+        return DataUtil.getLocalDate(end);
+    }
+
+
 
 
     public Duration getDuration() {

@@ -2,13 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Job Management</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 </head>
 <body>
+
+<script th:src="@{/js/pikaday.js}"></script>
 
 <h2>Job Management</h2>
 
 <div class="forms-container">
+
+    <form th:action="@{/set-evol-date}" method="post">
+        <label for="fromEvol">From</label>
+        <input id="fromEvol" name="fromEvol">
+        <label for="toEvol">To</label>
+        <input id="toEvol" name="toEvol">
+        <!-- id is for reference to js, name is for reference to java -->
+        <button type="submit">Set</button>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Start</th>
+            <th>End</th>
+            <!-- Add other column headers as needed -->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="gap : ${gaps}">
+            <td th:text="${gap.getStartDate()}">Start Date</td>
+            <td th:text="${gap.getEndDate()}">End Date</td>
+            <!-- Add other cells as needed -->
+        </tr>
+        </tbody>
+    </table>
 
 
     <div th:each="jobType : ${jobTypes}">

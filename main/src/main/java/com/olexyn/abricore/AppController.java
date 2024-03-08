@@ -2,10 +2,14 @@ package com.olexyn.abricore;
 
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.TaskType;
+import com.olexyn.abricore.model.runtime.snapshots.FrameDto;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.dao.EventDao;
+import com.olexyn.abricore.store.dao.FrameDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
+import com.olexyn.abricore.util.DataUtil;
+import com.olexyn.abricore.util.enums.FrameType;
 import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.olexyn.abricore.MainApp.ctx;
 
@@ -22,11 +28,18 @@ import static com.olexyn.abricore.MainApp.ctx;
 public class AppController {
 
 
-    private EventDao eventDao;
+    private final EventDao eventDao;
+    private final FrameDao frameDao;
+
+    private final List<FrameDto> gaps = new ArrayList<>();
 
     @Autowired
-    public AppController(EventDao eventDao) {
+    public AppController(
+        EventDao eventDao,
+        FrameDao frameDao
+    ) {
         this.eventDao = eventDao;
+        this.frameDao = frameDao;
     }
 
     private static final String INDEX= "index";
@@ -36,7 +49,26 @@ public class AppController {
     public String index(Model model) {
         model.addAttribute("jobTypes", JobType.validValues());
         model.addAttribute("taskTypes", TaskType.validValues());
+        model.addAttribute("gaps", gaps);
+        ;
         return INDEX;
+    }
+
+
+    @PostMapping("/set-evol-date")
+    public String setEvolDate(@RequestParam String fromEvol, @RequestParam String toEvol, Model model) {
+        var fromI = DataUtil.getInstantSoDay(DataUtil.parseDate(fromEvol));
+        var toI = DataUtil.getInstantEoDay(DataUtil.parseDate(toEvol));
+        gaps.clear();
+        frameDao.findAllByAssetAndFrameType("XAGUSD", FrameType.GAP)
+            .stream()
+            .filter(frame ->frame.getEnd() != null)
+            .filter(frame -> frame.getStart().isAfter(fromI))
+            .filter(frame -> frame.getEnd().isBefore(toI))
+            .forEach(gaps::add);
+
+        //
+        return ROOT;
     }
 
     @PostMapping("/start-job")

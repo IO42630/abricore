@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.olexyn.propconf.PropConf;
+import lombok.experimental.UtilityClass;
 import org.json.JSONObject;
 
 import java.time.Instant;
@@ -17,9 +18,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+@UtilityClass
 public final class DataUtil {
 
-    private DataUtil() { }
+    public static final ZoneId DEFAULT_ZONE = ZoneId.of("Europe/Zurich");
 
     public static final DateTimeFormatter SQ_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     public static final DateTimeFormatter SQ_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -29,20 +31,39 @@ public final class DataUtil {
         return LocalDateTime.parse(string, SQ_DATE_TIME_FORMATTER);
     }
 
-    public static LocalDateTime parseDate(String string) {
-        return LocalDateTime.parse(string, SQ_DATE_FORMATTER);
+    public static LocalDate parseDate(String string) {
+        return LocalDate.parse(string, SQ_DATE_FORMATTER);
     }
 
     public static LocalTime parseTime(String string) {
         return LocalTime.parse(string, SQ_TIME_FORMATTER);
     }
 
+
     public static Instant getInstant(LocalDate date, LocalTime time) {
-        return Instant.from(ZonedDateTime.of(date, time, ZoneId.of("Europe/Zurich")));
+        return Instant.from(ZonedDateTime.of(date, time, DEFAULT_ZONE));
+    }
+
+    public static LocalDate getLocalDate(Instant instant) {
+        return instant.atZone(DEFAULT_ZONE).toLocalDate();
+    }
+
+    public static Instant getInstantSoDay(LocalDate date) {
+        LocalDateTime dateTime = date.atStartOfDay();
+        return Instant.from(ZonedDateTime.of(dateTime, DEFAULT_ZONE));
+    }
+
+    public static Instant getInstantEoDay(LocalDate date) {
+        LocalDateTime dateTime = date.atTime(23, 59, 59);
+        return Instant.from(ZonedDateTime.of(dateTime, DEFAULT_ZONE));
     }
 
     public static Instant getInstant(LocalDateTime dateTime) {
-        return Instant.from(ZonedDateTime.of(dateTime, ZoneId.of("Europe/Zurich")));
+        return Instant.from(ZonedDateTime.of(dateTime, DEFAULT_ZONE));
+    }
+
+    public static LocalDateTime getLocalDateTime(Instant instant) {
+        return instant.atZone(DEFAULT_ZONE).toLocalDateTime();
     }
 
     public static Instant getInstant(String dateTimeProperty) {
