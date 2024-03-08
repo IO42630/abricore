@@ -1,15 +1,19 @@
 package com.olexyn.abricore.model.runtime;
 
 
-
-
-
 import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
+
+@Setter
 @Getter
 public abstract class ProtoDto implements Dto<ProtoDto> {
 
-    private final Long id = null;
+    @Serial
+    private static final long serialVersionUID = -9143909897035119771L;
+
+    private Long id = null;
 
     @Override
     public boolean isComplete() {

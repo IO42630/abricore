@@ -59,6 +59,7 @@ public class Series extends ProtoSeries implements Observable {
         return asset;
     }
 
+    @Override
     public SnapshotDto getSnapshot(Instant instant) {
         if (instant == null) { throw new MissingException(); }
         var resultSnap = hashMap().get(instant);
@@ -66,6 +67,7 @@ public class Series extends ProtoSeries implements Observable {
         return resultSnap;
     }
 
+    @Override
     public long getLastTraded() {
         var lastSnap = getLast();
         if (lastSnap == null) { return 0; }
@@ -76,10 +78,12 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * Get the first Snapshot BEFORE the Instant determined by the given offset.
      */
+    @Override
     public SnapshotDto getSnapshotBeforeOffset(Duration offset) {
         return hashMap().get(getKeyAtDurationOffset(offset, BEFORE));
     }
 
+    @Override
     public NavigableMap<Instant, SnapshotDto> getSection(Duration offset) {
         Instant from = getKeyAtDurationOffset(offset, AFTER);
         return tree().tailMap(from, true);
@@ -89,6 +93,7 @@ public class Series extends ProtoSeries implements Observable {
      * Get Section of the Series.
      * Includes the Snapshot at the offset.
      */
+    @Override
     public NavigableMap<Instant, SnapshotDto> getSection(
         Duration offset,
         Duration duration
@@ -102,6 +107,7 @@ public class Series extends ProtoSeries implements Observable {
         return tree().subMap(from, true, to, true);
     }
 
+    @Override
     public long growth(Duration offset, Duration duration) {
         var from = getKeyAtDurationOffset(offset.plus(duration), AFTER);
         var to = getKeyAtDurationOffset(offset, BEFORE);
@@ -116,6 +122,7 @@ public class Series extends ProtoSeries implements Observable {
      * Moving Average.
      * The duration may be rather large, so we pick 50 samples from the section.
      */
+    @Override
     public long ma(Duration offset, Duration duration) {
         var section = getSection(offset, duration);
         int samleSize = 50;
@@ -132,6 +139,7 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * Standard Deviation.
      */
+    @Override
     public long std(Duration offset, Duration duration) {
         long ma = ma(offset, duration);
         var section = getSection(offset, duration);
@@ -146,6 +154,7 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * @param bolTimes : NUM
      */
+    @Override
     public long bolRadius(Duration offset, Duration duration, long bolTimes) {
         return times(std(offset, duration), bolTimes);
     }
@@ -166,6 +175,7 @@ public class Series extends ProtoSeries implements Observable {
         return result;
     }
 
+    @Override
     public SnapshotDistanceDto getSnapshotDistance(Instant start) {
         return new SnapshotDistanceDto(this, start);
     }
@@ -180,10 +190,12 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * PUT SYNC, but do not WAIT for OBS to call back.
      */
+    @Override
     public void putNoWait(SnapshotDto snapshot) {
         put(snapshot, false);
     }
 
+    @Override
     public void put(SnapshotDto snapshot) {
         put(snapshot, true);
     }
@@ -218,6 +230,7 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * @param bolTimes : NUM
      */
+    @Override
     public boolean priceInBol(Duration offset, Duration duration, long bolTimes) {
         long traded = getSnapshotBeforeOffset(offset).getTradePrice();
         assert Objects.nonNull(traded);
@@ -246,6 +259,7 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * @param barAmount : NUM
      */
+    @Override
     public long[] avgUpDown(Duration duration) {
         var section = getSection(duration);
         int size = section.size();
@@ -268,6 +282,7 @@ public class Series extends ProtoSeries implements Observable {
 
 
 
+    @Override
     public long rs(Duration duration) {
         var avgUpDown = avgUpDown(duration);
         return div(
@@ -277,6 +292,7 @@ public class Series extends ProtoSeries implements Observable {
     }
 
 
+    @Override
     public long rsi(Duration duration) {
         return EP2 - div(
             EP2,
@@ -291,6 +307,7 @@ public class Series extends ProtoSeries implements Observable {
      * If the gap is > 20S we do not patch it.
      * This is because a large gap is not the result of omitted trade data, but an overall gap in historical data.
      */
+    @Override
     public void patch() {
         LogU.infoStart("patch %s", getAsset());
         List<SnapshotDto> patches = new ArrayList<>();
@@ -335,13 +352,14 @@ public class Series extends ProtoSeries implements Observable {
         );
     }
 
+    @Override
     public void addObverser(AObserver obs) {
         observers.add(obs);
     }
 
+    @Override
     public void removeObserver(AObserver obs) {
         observers.remove(obs);
     }
-
 
 }

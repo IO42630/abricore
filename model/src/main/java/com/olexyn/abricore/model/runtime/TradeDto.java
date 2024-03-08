@@ -49,8 +49,7 @@ public class TradeDto implements Serializable, Dto<TradeDto>, AssetHolder {
     }
 
     public void setId(Long id) {
-        if (this.id != null) { return; }
-        this.id = id;
+        if (this.id == null) { this.id = id; }
     }
 
     @Override
@@ -90,13 +89,11 @@ public class TradeDto implements Serializable, Dto<TradeDto>, AssetHolder {
     }
 
     public void setBuyId(String buyId) {
-        if (this.buyId != null) { return; }
-        this.buyId = buyId;
+        if (this.buyId == null) { this.buyId = buyId; }
     }
 
     public void setSellId(String sellId) {
-        if (this.sellId != null) { return; }
-        this.sellId = sellId;
+        if (this.sellId == null) { this.sellId = sellId; }
     }
 
     public void setBuyFee(long buyFee) {

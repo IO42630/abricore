@@ -17,6 +17,7 @@ public class PositionDto implements Serializable, Dto<PositionDto>, AssetHolder 
     private static final long serialVersionUID = -588196728393639962L;
     private Long id = null;
     private AssetDto asset = null;
+    @Getter
     private PositionStatus status = null;
     private long amount;
     private long price;
@@ -27,8 +28,9 @@ public class PositionDto implements Serializable, Dto<PositionDto>, AssetHolder 
     }
 
     public void setId(Long id) {
-        if (this.id != null) { return; }
-        this.id = id;
+        if (this.id == null) {
+            this.id = id;
+        }
     }
 
     @Override
@@ -40,10 +42,6 @@ public class PositionDto implements Serializable, Dto<PositionDto>, AssetHolder 
     public void setAsset(@Nullable AssetDto asset) {
         if (asset == null) { return; }
         this.asset = asset;
-    }
-
-    public PositionStatus getStatus() {
-        return status;
     }
 
     public void setStatus(@Nullable PositionStatus status) {

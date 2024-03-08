@@ -15,7 +15,7 @@ import java.util.TreeMap;
 /**
  * Extract the basic wrapper for the TreeMap and HashMap here.
  */
-public abstract class ProtoSeries {
+public abstract class ProtoSeries implements ISeries {
 
     private static final String IS_EMPTY = " is empty.";
 
@@ -30,7 +30,6 @@ public abstract class ProtoSeries {
     private Instant lastPutKey = null;
 
 
-    public abstract AssetDto getAsset();
 
     protected HashMap<Instant, SnapshotDto> hashMap() {
         return hashMap;
@@ -41,6 +40,7 @@ public abstract class ProtoSeries {
     }
 
 
+    @Override
     public @Nullable Instant getFirstKey() {
         if (hashMap.isEmpty()) {
             LogU.warnPlain("Series for " + getAsset() + IS_EMPTY);
@@ -54,11 +54,13 @@ public abstract class ProtoSeries {
         return firstKey;
     }
 
+    @Override
     public @Nullable Instant getLastKey() {
         return getLastPutKey();
     }
 
 
+    @Override
     public @Nullable SnapshotDto getLast() {
         var lastKey = getLastKey();
         if (lastKey == null) { return null; }
@@ -67,38 +69,41 @@ public abstract class ProtoSeries {
 
 
 
+    @Override
     public Instant getSameOrFirstBefore(Instant instant) {
         if (hashMap.containsKey(instant)) { return instant; }
         return treeMap.lowerKey(instant);
     }
 
+    @Override
     public Instant getSameOrFirstAfter(Instant instant) {
         if (hashMap.containsKey(instant)) { return instant; }
         return higherKey(instant);
     }
 
 
+    @Override
     public Instant higherKey(Instant key) {
         return treeMap.higherKey(key);
     }
 
+    @Override
     public Instant lowerKey(Instant key) {
         return treeMap.higherKey(key);
     }
 
-
-
-
-
+    @Override
     public NavigableSet<Instant> getNavSet() {
         return treeMap.navigableKeySet();
     }
 
 
+    @Override
     public int size() { return treeMap.size(); }
 
     public boolean isEmpty() { return size() == 0; }
 
+    @Override
     public void clear() {
         hashMap.clear();
         treeMap.clear();
