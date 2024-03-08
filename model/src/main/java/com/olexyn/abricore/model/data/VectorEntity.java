@@ -36,6 +36,12 @@ public class VectorEntity implements Serializable, AbstractEntity {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @Column(name = "PROFIT_BY_DAY")
+    private Long profitByDay;
+
+    @Column(name = "PROFIT_BY_VOLUME")
+    private Long profitByVolume;
+
     @Column(name = "RATING")
     private Long rating;
 

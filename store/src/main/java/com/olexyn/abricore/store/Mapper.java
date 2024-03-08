@@ -179,6 +179,8 @@ public class Mapper extends CtxAware {
     public VectorEntity toVectorEntity(VectorDto dto) {
         var entity = new VectorEntity();
         entity.setId(dto.getId());
+        entity.setProfitByDay(dto.getProfitByDay());
+        entity.setProfitByVolume(dto.getProfitByVolume());
         entity.setRating(dto.getRating());
         entity.setSampleCount(dto.getSampleCount());
         entity.setAvgDuration(dto.getAvgDuration());
@@ -203,6 +205,8 @@ public class Mapper extends CtxAware {
     public VectorDto toVectorDto(VectorEntity entity) {
         var dto = new VectorDto();
         dto.setId(entity.getId());
+        dto.setProfitByDay(entity.getProfitByDay());
+        dto.setProfitByVolume(entity.getProfitByVolume());
         dto.setRating(entity.getRating());
         dto.setSampleCount(entity.getSampleCount());
         dto.setAvgDuration(entity.getAvgDuration());

@@ -33,7 +33,6 @@ import static com.olexyn.abricore.util.num.Num.TWO;
 @Component
 public class Evolution extends CtxAware implements Runnable {
 
-    private final StrategyUtil strategyUtil;
     private final Supplier<StrategyBuilder> sB = () -> bean(StrategyBuilder.class);
     private static final int POPULATION_SIZE = Integer.parseInt(PropConf.get("population.size"));
     private final Map<Integer, List<StrategyDto>> POPULATIONS = new TreeMap<>();
@@ -46,7 +45,6 @@ public class Evolution extends CtxAware implements Runnable {
     @Autowired
     public Evolution(ConfigurableApplicationContext ctx) {
         super(ctx);
-        this.strategyUtil = bean(StrategyUtil.class);
     }
 
     /**
@@ -62,10 +60,7 @@ public class Evolution extends CtxAware implements Runnable {
         var vectors = new ArrayList<>(bean(VectorService.class).getVectors());
 
         // top by : rating * duratino * count
-        vectors.sort((v1, v2) -> Long.compare(
-            v2.getRating()* v2.getAvgDuration() * v2.getSampleCount(),
-            v1.getRating() * v1.getAvgDuration() * v1.getSampleCount()
-        ));
+        vectors.sort((v1, v2) -> Long.compare(v2.getRating(), v1.getRating()));
         vectors.stream().limit(POPULATION_SIZE)
             .forEach(v -> population.add(strategy.cloneTemplate(v)));
 

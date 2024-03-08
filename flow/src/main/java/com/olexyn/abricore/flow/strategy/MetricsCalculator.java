@@ -98,27 +98,71 @@ public class MetricsCalculator extends CtxAware {
 
     /**
      * Calculate the rating of a strategy.
-     * Formula: rating = 1KK * fitness / volume
+     * Formula: rating = fitness * 24 / duration
      * Thus:
-     * - 5 gain for 1000 volume (0.5%)  would have a rating of 5K.
-     * - 20 gain for 1000 volume (2.0%)  would have a rating of 20K.
-     * - 60 gain for 1000 volume (6.0%) would have a rating of 60K.
+     * - 5 gain for 1 day would have a rating of 5.
+     * - 20 gain for 1 day would have a rating of 20.
+     * - 60 gain for 1 day would have a rating of 60.
      */
-    public static void calculateRating(List<StrategyDto> strategies) {
-
-
+    private static void calcProfitByDay(List<StrategyDto> strategies) {
         strategies.forEach(strategy -> {
-            long dailyProfit = toInt(strategy.getFitness())
-                * 24L
-                / strategy.getDuration().toHours();
-            strategy.getVector().setRating(dailyProfit);
+            int fit = toInt(strategy.getFitness());
+            fit = Math.max(fit, 0);
+            long hours = strategy.getDuration().toHours();
+            hours = Math.max(hours, 1);
+            strategy.getVector().setProfitByDay(fit * 24L / hours);
         });
 
     }
 
-    public static void calculateAvgDuration(List<StrategyDto> strategies) {
+    /**
+     * Calculate the rating of a strategy.
+     * Formula: rating = 1K * fitness / volume
+     * Thus:
+     * - 5 gain for 1000 volume (0.5%)  would have a rating of 5.
+     * - 20 gain for 1000 volume (2.0%)  would have a rating of 20.
+     * - 60 gain for 1000 volume (6.0%) would have a rating of 60.
+     */
+    private static void calcProfitByVolume(List<StrategyDto> strategies) {
         strategies.forEach(strategy -> {
-            strategy.getVector().setAvgDuration(strategy.getDuration().toHours());
+            int fit = toInt(strategy.getFitness());
+            fit = Math.max(fit, 0);
+            int volume = toInt(StrategyUtil.getVolume(strategy));
+            volume = Math.max(volume, 1);
+            long profit = 1000L * fit / volume;
+            strategy.getVector().setProfitByVolume(profit);
+        });
+
+    }
+
+
+    /**
+     * Calculate the rating of a strategy.
+     * Formula: rating = sqrt (profitByDay * profitByVolume * runningTime)
+     * Thus:
+     * - sqrt (   5 ( 5 profit/day) *  5 (0.5% profit/volume) * 96 (24h*4samples) ) =  34
+     * - sqrt ( 200 (20 profit/day) * 20 (2.0% profit/volume) * 96 (24h*4samples) ) = 619
+     */
+    public static void calcRating(List<StrategyDto> strategies) {
+        updateAvgDurationAndSampleCount(strategies);
+        calcProfitByVolume(strategies);
+        calcProfitByDay(strategies);
+        strategies.forEach(strategy -> {
+            var v = strategy.getVector();
+            var runningTime = v.getAvgDuration() * v.getSampleCount();
+            double root = Math.sqrt(v.getProfitByDay() * v.getProfitByVolume() * runningTime);
+            v.setRating((long) root);
+        });
+    }
+
+    private static void updateAvgDurationAndSampleCount(List<StrategyDto> strategies) {
+        strategies.forEach(strategy -> {
+            long oldDuration = strategy.getVector().getAvgDuration();
+            long oldCount = strategy.getVector().getSampleCount();
+            long newDuration = strategy.getDuration().toHours();
+            long newCount = oldCount + 1;
+            long newAvg = (oldDuration * oldCount + newDuration) / newCount;
+            strategy.getVector().setAvgDuration(newAvg);
         });
     }
 

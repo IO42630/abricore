@@ -24,9 +24,6 @@ import static com.olexyn.abricore.util.num.NumCalc.div;
 
 
 /**
- * GapReportTask reads the table t_snapshot and creates a report of gaps.
- * If it finds a gap, it will create a Segment of  type GAP.
- * Finally it will user
  */
 @Component
 public class VectorMergeTask extends CtxAware implements Task {
@@ -54,9 +51,17 @@ public class VectorMergeTask extends CtxAware implements Task {
 
         List<VectorDto> vectors = new ArrayList<>(vectorService.getVectors());
         vectors = merge(vectors);
+        vectors = limit(vectors);
         vectorService.clear();
         vectorService.addAll(Set.copyOf(vectors));
 
+    }
+
+    List<VectorDto> limit(List<VectorDto> vectors) {
+        return vectors.stream()
+            .sorted((a, b) -> Long.compare(b.getRating(), a.getRating()))
+            .limit(1000)
+            .toList();
     }
 
 
@@ -95,7 +100,9 @@ public class VectorMergeTask extends CtxAware implements Task {
 
             if (aZero || bZero) { return false; }
 
-            long ratio = div(aBound.getValue(), bBound.getValue());
+            long abRatio = div(aBound.getValue(), bBound.getValue());
+            long baRatio = div(bBound.getValue(), aBound.getValue());
+            long ratio = Math.max(abRatio, baRatio);
             boolean valueMatches = abs(ratio - ONE) < VECTOR_MERGE_FACTOR;
 
             if (!valueMatches) { return false; }

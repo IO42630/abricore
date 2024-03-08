@@ -39,6 +39,12 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
     private Long id;
 
     @Setter
+    private Long profitByDay = 0L;
+
+    @Setter
+    private Long profitByVolume = 0L;
+
+    @Setter
     private Long rating = 0L;
 
     @Setter
