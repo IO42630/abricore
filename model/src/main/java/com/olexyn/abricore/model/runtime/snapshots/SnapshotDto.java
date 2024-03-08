@@ -25,11 +25,14 @@ public class SnapshotDto implements Dto<SnapshotDto>, AssetHolder {
 
     private Long id = null;
 
-    @Getter
+    /**
+     * Touched is set to true when the SnapShotDto is created or modified. <br>
+     * If the intention is for the SnapShotDto to be considered non-touched, <br>
+     * e.g. when mapping from SnapShotEntity, <br>
+     * then set touched to false manually.
+     */
     private boolean touched;
-    private Series series = null;
     private AssetDto asset = null;
-    private String assetName = null;
 
     private Instant instant = null;
     private long tradePrice;
@@ -43,49 +46,29 @@ public class SnapshotDto implements Dto<SnapshotDto>, AssetHolder {
         this.touched = true;
     }
 
-    public SnapshotDto(String assetName) {
-        setAssetName(assetName);
-        this.touched = true;
-    }
-
     public SnapshotDto(@NonNull AssetDto asset) {
         setAsset(asset);
-        setAssetName(asset.getName());
         this.touched = true;
     }
 
-    /**
-     * Touched is set to true when the SnapShotDto is created or modified. <br>
-     * If the intention is for the SnapShotDto to be considered non-touched, <br>
-     * e.g. when mapping from SnapShotEntity, <br>
-     * then set touched to false manually.
-     */
-    public void setTouched(boolean touched) {
-        this.touched = touched;
-    }
-
-    public void setSeries(@Nullable Series series) {
-        if (this.series != null) { return; }
-        if (series == null) { return; }
-        this.series = series;
-        setTouched(true);
-    }
 
     @Override
     public void setAsset(@Nullable AssetDto asset) {
-        if (this.asset != null) { return; }
         if (asset == null) { return; }
-        this.asset = asset;
-        setTouched(true);
+        if (this.asset == null) {
+            this.asset = asset;
+            setTouched(true);
+        }
     }
 
 
 
     public void setInstant(@Nullable Instant instant) {
-        if (this.instant != null) { return; }
         if (instant == null) { return; }
-        this.instant = instant;
-        setTouched(true);
+        if (this.instant == null) {
+            this.instant = instant;
+            setTouched(true);
+        }
     }
 
     public void setTradePrice(long tradePrice) {
@@ -157,9 +140,6 @@ public class SnapshotDto implements Dto<SnapshotDto>, AssetHolder {
         boolean sameInstant = this.getInstant().equals(other.getInstant());
         if (!sameAsset || !sameInstant) {
             throw new DataCorruptionException();
-        }
-        if (this.series == null) {
-            setSeries(other.getSeries());
         }
         setTradePrice(other.getTradePrice());
         setBidPrice(other.getBidPrice());

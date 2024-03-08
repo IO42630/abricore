@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SeriesService extends ProtoSeriesService {
 
-    public SeriesService(SnapshotDao snapshotDao, AssetService assetService) {
-        super(snapshotDao, assetService);
+    public SeriesService(
+        SnapshotDao snapshotDao,
+        AssetService assetService,
+        EventService eventService
+    ) {
+        super(snapshotDao, assetService, eventService);
     }
 
 }

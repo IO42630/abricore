@@ -211,7 +211,6 @@ public class Series extends ProtoSeries implements Observable {
     }
 
     private void put(SnapshotDto snapshot, boolean wait) {
-        snapshot.setSeries(this);
         if (snapshot.getInstant() == null) { return; }
         SnapshotDto existing = hashMap().get(snapshot.getInstant());
         if (existing != null) {

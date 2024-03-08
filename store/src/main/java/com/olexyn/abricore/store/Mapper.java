@@ -75,7 +75,7 @@ public class Mapper extends CtxAware {
     }
 
     public SnapshotDto toSnapShotDto(SnapshotEntity entity) {
-        SnapshotDto dto = new SnapshotDto(entity.getAsset());
+        SnapshotDto dto = new SnapshotDto();
         dto.setAsset(new DummyAssetDto(entity.getAsset()));
         dto.setId(entity.getId());
         dto.setInstant(entity.getInstant());

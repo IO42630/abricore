@@ -89,7 +89,7 @@ public class TmpCsvStore {
     }
 
     private Series readFromTmpCsv(Path path, AssetDto asset, Interval interval) {
-        Series out = new Series(asset);
+        Series out = new Series(asset, 50);
 
         try {
             asset = fileNameUtil.mapToFirstAsset(path);

@@ -73,7 +73,6 @@ public abstract class ProtoSeriesService implements ISeriesService {
         var series = of(asset);
         LogU.infoStart("loading data for %s from DB", asset);
         snapshotDao.findAllByAsset(asset)
-            .peek(snap -> snap.setSeries(series))
             .forEach(series::putNoWait);
         LogU.infoEnd("%s records found for %s", series.size(), asset);
         return series;
@@ -107,7 +106,6 @@ public abstract class ProtoSeriesService implements ISeriesService {
         var asset = series.getAsset();
         LogU.infoStart("loading data for %s from DB", asset);
         snapshotDao.getSegment(asset, from, to)
-            .peek(snap -> snap.setSeries(series))
             .forEach(series::putNoWait);
         LogU.infoEnd("%s records found for %s", series.size(), asset);
         return series;
