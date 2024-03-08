@@ -46,12 +46,15 @@ public class Series extends ProtoSeries implements Observable {
 
     private final List<AObserver> observers = new ArrayList<>();
 
+    private final int sampleSize;
+
 
 
     private final AssetDto asset;
 
-    public Series(AssetDto asset) {
+    public Series(AssetDto asset, int samleSize) {
         this.asset = asset;
+        this.sampleSize = samleSize;
     }
 
     @Override
@@ -121,19 +124,22 @@ public class Series extends ProtoSeries implements Observable {
     /**
      * Moving Average.
      * The duration may be rather large, so we pick 50 samples from the section.
+     * Example:
+     * duration     section.size()   overRatio  safeOverRatio     result
+     * 5m           150              3          3                 50 (150/3)
+     * 1m           30               1          1                 30 (30/1)
      */
     @Override
     public long ma(Duration offset, Duration duration) {
         var section = getSection(offset, duration);
-        int samleSize = 50;
-        int overRatio = section.size() / samleSize;
+        int overRatio = section.size() / sampleSize;
         int safeOverRatio = overRatio == 0 ? 1 : overRatio;
         long sum = section.values().stream()
             .filter(snap -> snap.getInstant().getEpochSecond() % safeOverRatio == 0)
-            .limit(samleSize)
+            .limit(sampleSize)
             .mapToLong(SnapshotDto::getTradePrice)
             .sum();
-        return div(sum, fromInt(samleSize));
+        return div(sum, fromInt(sampleSize));
     }
 
     /**
@@ -143,11 +149,15 @@ public class Series extends ProtoSeries implements Observable {
     public long std(Duration offset, Duration duration) {
         long ma = ma(offset, duration);
         var section = getSection(offset, duration);
+        int overRatio = section.size() / sampleSize;
+        int safeOverRatio = overRatio == 0 ? 1 : overRatio;
         long sumOfSquares = section.values().stream()
+            .filter(snap -> snap.getInstant().getEpochSecond() % safeOverRatio == 0)
+            .limit(sampleSize)
             .map(SnapshotDto::getTradePrice)
             .mapToLong(traded -> square(traded - (ma)))
             .sum();
-        return sqrt(div(sumOfSquares, fromInt(section.size())));
+        return sqrt(div(sumOfSquares, fromInt(sampleSize)));
     }
 
 

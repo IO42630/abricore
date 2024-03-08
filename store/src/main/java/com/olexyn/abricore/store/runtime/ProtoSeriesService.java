@@ -28,14 +28,17 @@ public abstract class ProtoSeriesService implements ISeriesService {
     private final Map<AssetDto, Series> seriesMap = new HashMap<>();
     private final SnapshotDao snapshotDao;
     private final AssetService assetService;
+    private final int sampleSize;
 
     @Autowired
     protected ProtoSeriesService(
         SnapshotDao snapshotDao,
-        AssetService assetService
+        AssetService assetService,
+        EventService eventService
     ) {
         this.snapshotDao = snapshotDao;
         this.assetService = assetService;
+        this.sampleSize = eventService.describeInt("series.calc.sample.size.base");
     }
 
     /**
@@ -62,7 +65,7 @@ public abstract class ProtoSeriesService implements ISeriesService {
     }
 
     protected void addNewSeries(AssetDto asset) {
-        getSeriesMap().put(asset, new Series(asset));
+        getSeriesMap().put(asset, new Series(asset, sampleSize));
     }
 
     @Override

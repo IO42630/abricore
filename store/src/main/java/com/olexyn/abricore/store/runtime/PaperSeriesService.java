@@ -20,15 +20,18 @@ public class PaperSeriesService extends ProtoSeriesService {
 
     private final SeriesService baseSeriesService;
     private final Map<AssetDto, Series> paperSeriesSet = new HashMap<>();
+    private final int sampleSize;
 
     @Autowired
     public PaperSeriesService(
         SeriesService baseSeriesService,
         SnapshotDao snapshotDao,
-        AssetService assetService
+        AssetService assetService,
+        EventService eventService
     ) {
-        super(snapshotDao, assetService);
+        super(snapshotDao, assetService, eventService);
         this.baseSeriesService = baseSeriesService;
+        this.sampleSize = eventService.describeInt("series.calc.sample.size.paper");
     }
 
     @Override
@@ -40,7 +43,7 @@ public class PaperSeriesService extends ProtoSeriesService {
     protected void addNewSeries(AssetDto asset) {
         var baseSeries = baseSeriesService.of(asset);
         if (baseSeries == null) { return; }
-        getSeriesMap().put(asset, new Series(asset));
+        getSeriesMap().put(asset, new Series(asset, sampleSize));
     }
 
     @Override

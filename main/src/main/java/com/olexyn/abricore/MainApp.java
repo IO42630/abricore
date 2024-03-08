@@ -90,41 +90,6 @@ public class MainApp {
         System.exit(0);
     }
 
-
-
-
-     static String describe(String topic) throws IOException {
-        String  event = ctx.getBean(EventDao.class).get(topic);
-        if (event != null) {
-            return event;
-        }
-        String desc  = PropConf.get(topic);
-         if (!desc.isEmpty()) {
-             return desc;
-         }
-
-        switch (topic) {
-            case "tmp":
-                LogU.infoPlain("status:");
-                var pathStr = PropConf.get("quotes.dir.tmp");
-                var path = Path.of(pathStr);
-                try (var list = Files.list(path)) {
-                    long entries = list.count();
-                    if (entries == 0) {
-                        desc = topic + " is empty.";
-                    } else {
-                        desc = topic + " contains " + entries + " files";
-                    }
-                }
-                break;
-            default:
-                desc = "Invalid query was ignored.";
-                break;
-        }
-         LogU.infoPlain(desc);
-         return  desc;
-    }
-
     static void start(JobType type, List<CmdOptions> cmdOptions) throws InterruptedException {
         var strategy = ctx.getBean(StrategyTemplates.class).dummy();
         switch (type) {
