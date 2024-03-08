@@ -37,7 +37,7 @@ public class SeriesUtilTest {
     public void init() {
         PropConf.load("config.properties");
         asset = new AssetDto("TEST") { };
-        series = new Series(asset);
+        series = new Series(asset, 50);
 
 
 
