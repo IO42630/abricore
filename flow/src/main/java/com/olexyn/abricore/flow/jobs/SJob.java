@@ -49,16 +49,10 @@ public class SJob extends Job implements LockAware {
         return bean(JobKeeper.class).streamJobsByUUIDAndType(getUuid(), jobDependencyTypes);
     }
 
-    public Stream<SJob> getDeadDependencies() {
-        return bean(JobKeeper.class).streamDeadJobsByUUIDAndType(getUuid(), jobDependencyTypes);
-    }
+
 
     public Stream<SJob> getAliveDependencies() {
         return bean(JobKeeper.class).streamAliveJobsByUUIDAndType(getUuid(), jobDependencyTypes);
-    }
-
-    public boolean hasDeadDependencies() {
-        return getDeadDependencies().findFirst().isPresent();
     }
 
     public boolean hasAliveDependencies() {

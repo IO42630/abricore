@@ -295,11 +295,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
 
     private boolean shouldStop() {
         if (isCancelled()) { return true; }
-        if (hasDeadDependencies()) {
-            LogU.finePlain("%s has DEAD dependencies.", getType());
-            setCancelled(true);
-            return true;
-        }
         if (!hasAliveDependencies()) {
             LogU.finePlain("%s no ALIVE dependencies.", getType());
             setCancelled(true);

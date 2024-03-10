@@ -29,14 +29,14 @@ public final class JobKeeper extends CtxAware {
         super(ctx);
     }
 
-    private static final Map<UUID, List<Job>> JOBS = new HashMap<>();
+    private static final Map<UUID, Set<Job>> JOBS = new HashMap<>();
 
     /**
      * Keep this package private.
      */
     @Synchronized
     public void addJob(Job job) {
-        JOBS.computeIfAbsent(job.getUuid(), k -> new ArrayList<>());
+        JOBS.computeIfAbsent(job.getUuid(), k -> new HashSet<>());
         JOBS.get(job.getUuid()).add(job);
     }
 
@@ -56,7 +56,7 @@ public final class JobKeeper extends CtxAware {
 
     @Synchronized
     private Stream<Job> streamJobs(UUID uuid) {
-        return new HashSet<>(JOBS.get(uuid)).stream();
+        return JOBS.get(uuid).stream();
     }
 
     public Stream<SJob> streamStrategyAwareJobs(UUID uuid) {
@@ -73,11 +73,6 @@ public final class JobKeeper extends CtxAware {
     public Stream<SJob> streamJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
         return streamJobsByUUID(uuid)
             .filter(e -> jobTypes.contains(e.getType()));
-    }
-
-    public Stream<SJob> streamDeadJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
-        return streamJobsByUUIDAndType(uuid, jobTypes)
-            .filter(e -> !e.getThread().isAlive());
     }
 
     public Stream<SJob> streamAliveJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {

@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Objects;
+
 import static com.olexyn.abricore.flow.JobType.UNKNOWN;
 import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
@@ -80,6 +82,19 @@ public class Job extends CtxAware implements Runnable {
      */
     void setThread(Thread thread) {
         this.thread = thread;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUuid(), getType(), jobName);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Job otherJob
+            && otherJob.getUuid().equals(getUuid())
+            && otherJob.getType() == getType()
+            && otherJob.jobName.equals(jobName);
     }
 
 }
