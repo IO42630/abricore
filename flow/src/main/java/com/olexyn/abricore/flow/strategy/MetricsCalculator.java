@@ -173,7 +173,6 @@ public class MetricsCalculator extends CtxAware {
         uuidCtx.removeBean(SeriesService.class, strategy.getUuid());
         uuidCtx.removeBean(TwNavigator.class, strategy.getUuid());
         uuidCtx.removeBean(TimeHelper.class, strategy.getUuid());
-        uuidCtx.removeBean(OptionTools.class, strategy.getUuid());
         uuidCtx.removeBean(SnapshotDistanceDao.class, strategy.getUuid());
         uuidCtx.removeBean(PaperTradeService.class, strategy.getUuid());
         uuidCtx.removeBean(PaperTimeHelper.class, strategy.getUuid());

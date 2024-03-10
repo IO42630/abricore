@@ -3,7 +3,7 @@ package com.olexyn.abricore.flow.jobs.paper;
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.jobs.sq.TradeSqJob;
 import com.olexyn.abricore.flow.jobs.util.time.PaperTimeHelper;
-import com.olexyn.abricore.flow.tools.OptionTools;
+import com.olexyn.abricore.flow.tools.PaperOptionTools;
 import com.olexyn.abricore.model.runtime.TradeDto;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.OptionBrace;
@@ -138,8 +138,7 @@ public class PaperTradeSqJob extends TradeSqJob {
 
     @Override
     protected OptionBrace getOptionBrace() {
-        return bean(OptionTools.class)
-            .getPaperOptionBrace(getStrategy(), getObservedSeries());
+        return PaperOptionTools.getPaperOptionBrace(getStrategy(), getObservedSeries());
     }
 
     @Override

@@ -15,10 +15,10 @@ import com.olexyn.abricore.flow.strategy.templates.StrategyTemplates;
 import com.olexyn.abricore.flow.tasks.GapReportTask;
 import com.olexyn.abricore.flow.tasks.VectorMergeTask;
 import com.olexyn.abricore.flow.tasks.VectorSaveTask;
+import com.olexyn.abricore.flow.tools.PaperOptionTools;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
-import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.SeriesService;
@@ -33,9 +33,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +59,9 @@ public class MainApp {
     private static final Scanner INPUT = new Scanner(System.in, UTF_8);
 
     public static void main(String... args) {
+
+        PaperOptionTools.init(ctx.getBean(AssetService.class).ofName("XAGUSD"));
+
         var x = new MemState();
         int br = 0;
     }
