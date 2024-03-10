@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.olexyn.abricore.util.Constants.L_BRACE;
 import static com.olexyn.abricore.util.Constants.R_BRACE;
@@ -131,33 +132,38 @@ public class Series extends ProtoSeries implements Observable {
      */
     @Override
     public long ma(Duration offset, Duration duration) {
-        var section = getSection(offset, duration);
-        int overRatio = section.size() / sampleSize;
+        var sectionValues = getSection(offset, duration).values();
+        int overRatio = sectionValues.size() / sampleSize;
         int safeOverRatio = overRatio == 0 ? 1 : overRatio;
-        long sum = section.values().stream()
-            .filter(snap -> snap.getInstant().getEpochSecond() % safeOverRatio == 0)
-            .limit(sampleSize)
-            .mapToLong(SnapshotDto::getTradePrice)
-            .sum();
-        return div(sum, fromInt(sampleSize));
+        long sum = 0;
+        int sumSize = 0;
+        for (var snap : sectionValues) {
+            if (snap.getInstant().getEpochSecond() % safeOverRatio == 0) {
+                sum = sum + snap.getTradePrice();
+                sumSize++;
+            }
+        }
+        return div(sum, fromInt(sumSize));
     }
 
     /**
      * Standard Deviation.
      */
     @Override
-    public long std(Duration offset, Duration duration) {
-        long ma = ma(offset, duration);
-        var section = getSection(offset, duration);
-        int overRatio = section.size() / sampleSize;
+    public long std(Duration offset, Duration duration, Optional<Long> maO) {
+        long ma = maO.orElseGet(() -> ma(offset, duration));
+        var sectionValues = getSection(offset, duration).values();
+        int overRatio = sectionValues.size() / sampleSize;
         int safeOverRatio = overRatio == 0 ? 1 : overRatio;
-        long sumOfSquares = section.values().stream()
-            .filter(snap -> snap.getInstant().getEpochSecond() % safeOverRatio == 0)
-            .limit(sampleSize)
-            .map(SnapshotDto::getTradePrice)
-            .mapToLong(traded -> square(traded - (ma)))
-            .sum();
-        return sqrt(div(sumOfSquares, fromInt(sampleSize)));
+        long sum = 0;
+        int sumSize = 0;
+        for (var snap : sectionValues) {
+            if (snap.getInstant().getEpochSecond() % safeOverRatio == 0) {
+                sum = sum + square(snap.getTradePrice() - ma);
+                sumSize++;
+            }
+        }
+        return sqrt(div(sum, fromInt(sumSize)));
     }
 
 
@@ -165,8 +171,8 @@ public class Series extends ProtoSeries implements Observable {
      * @param bolTimes : NUM
      */
     @Override
-    public long bolRadius(Duration offset, Duration duration, long bolTimes) {
-        return times(std(offset, duration), bolTimes);
+    public long bolRadius(Duration offset, Duration duration, long bolTimes, Optional<Long> maO) {
+        return times(std(offset, duration, maO), bolTimes);
     }
 
     /**
@@ -245,7 +251,7 @@ public class Series extends ProtoSeries implements Observable {
         assert Objects.nonNull(traded);
         long ma = ma(offset, duration);
         long lastPriceRadius = abs(traded - ma);
-        long lastBolRadius = bolRadius(offset, duration, bolTimes);
+        long lastBolRadius = bolRadius(offset, duration, bolTimes, Optional.of(ma));
         return lastPriceRadius < lastBolRadius;
     }
 

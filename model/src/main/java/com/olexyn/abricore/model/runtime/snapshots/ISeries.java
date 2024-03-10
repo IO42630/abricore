@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Optional;
 
 public interface ISeries {
 
@@ -45,9 +46,9 @@ public interface ISeries {
 
     long ma(Duration offset, Duration duration);
 
-    long std(Duration offset, Duration duration);
+    long std(Duration offset, Duration duration, Optional<Long> maO);
 
-    long bolRadius(Duration offset, Duration duration, long bolTimes);
+    long bolRadius(Duration offset, Duration duration, long bolTimes, Optional<Long> maO);
 
     SnapshotDistanceDto getSnapshotDistance(Instant start);
 
