@@ -13,6 +13,7 @@ import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.store.runtime.PaperSeriesService;
 import com.olexyn.abricore.store.runtime.PaperTradeService;
 import com.olexyn.abricore.store.runtime.ProtoTradeService;
+import com.olexyn.abricore.util.UuidContext;
 import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
@@ -43,6 +44,9 @@ public class PaperTradeSqJob extends TradeSqJob {
     private int buyGridCounter;
     private int sellGridCounter;
 
+    @Getter
+    private final ProtoTradeService tradeService;
+
 
     private static final int TRADE_HOLD_TIME = 60;
 
@@ -57,6 +61,7 @@ public class PaperTradeSqJob extends TradeSqJob {
     ) {
         super(ctx, strategy);
         this.cash = strategy.getAllocatedCapital();
+        this.tradeService = ctx.getBean(UuidContext.class).getBean(PaperTradeService.class, getUuid());
         setTimeHelper(bean(PaperTimeHelper.class).init(strategy));
         setJobDependencyTypes(Set.of(PAPER_OBS_TW));
     }
@@ -144,11 +149,6 @@ public class PaperTradeSqJob extends TradeSqJob {
     @Override
     public Series getObservedSeries() {
         return bean(PaperSeriesService.class).of(getUnderlying());
-    }
-
-    @Override
-    public ProtoTradeService getTradeService() {
-        return bean(PaperTradeService.class);
     }
 
     @Override

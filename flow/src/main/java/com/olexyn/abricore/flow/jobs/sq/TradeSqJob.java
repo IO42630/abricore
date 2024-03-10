@@ -5,7 +5,6 @@ import com.olexyn.abricore.flow.jobs.MainTradeBlock;
 import com.olexyn.abricore.flow.jobs.TradeJob;
 import com.olexyn.abricore.flow.jobs.util.time.ProtoTimeHelper;
 import com.olexyn.abricore.flow.jobs.util.time.TimeHelper;
-import com.olexyn.abricore.flow.strategy.StrategyUtil;
 import com.olexyn.abricore.flow.tools.OptionTools;
 import com.olexyn.abricore.model.runtime.AObserver;
 import com.olexyn.abricore.model.runtime.TradeDto;
@@ -20,6 +19,7 @@ import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.ProtoTradeService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.TradeService;
+import com.olexyn.abricore.util.UuidContext;
 import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
@@ -61,6 +61,8 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     private final PositionService positionService;
     private final AssetService assetService;
     private final SqNavigator sqNavigator;
+    @Getter
+    private final ProtoTradeService tradeService;
 
     @Getter
     @Setter
@@ -83,6 +85,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         this.positionService = ctx.getBean(PositionService.class);
         this.assetService = ctx.getBean(AssetService.class);
         this.sqNavigator = ctx.getBean(SqNavigator.class);
+        this.tradeService = ctx.getBean(UuidContext.class).getBean(TradeService.class, getUuid());
         setTimeHelper(bean(TimeHelper.class).init(strategy));
         setJobDependencyTypes(Set.of(OBS_TW));
     }
@@ -236,8 +239,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     }
 
     protected OptionBrace getOptionBrace() {
-        return bean(OptionTools.class)
-            .getOptionBrace(
+        return OptionTools.getOptionBrace(
                 assetService,
                 getStrategy(),
                 getObservedSeries()
@@ -249,10 +251,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         return bean(SeriesService.class).of(getUnderlying());
     }
 
-    @Override
-    public ProtoTradeService getTradeService() {
-        return bean(TradeService.class);
-    }
 
     @Override
     public JobType getType() { return JobType.TRADE_SQ; }
