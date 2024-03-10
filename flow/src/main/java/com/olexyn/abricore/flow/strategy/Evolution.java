@@ -3,6 +3,7 @@ package com.olexyn.abricore.flow.strategy;
 import com.olexyn.abricore.flow.strategy.templates.StrategyTemplates;
 import com.olexyn.abricore.flow.tasks.VectorMergeTask;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
+import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.CtxAware;
@@ -20,6 +21,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.olexyn.abricore.model.runtime.EventKeys.EVOLUTION_CURRENT_GENERATION;
 import static com.olexyn.abricore.util.num.Num.ONE;
 import static com.olexyn.abricore.util.num.Num.P10;
 import static com.olexyn.abricore.util.num.Num.P20;
@@ -179,7 +181,7 @@ public class Evolution extends CtxAware implements Runnable {
                 .collect(Collectors.toSet());
             bean(VectorService.class).addAll(newVectors);
             bean(VectorMergeTask.class).run();
-            bean(VectorService.class).save();
+            bean(EventDao.class).set(EVOLUTION_CURRENT_GENERATION, currentGeneration);
         }
         LogU.warnEnd("DONE");
     }

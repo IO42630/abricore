@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.olexyn.abricore.model.runtime.EventKeys.IS_HEADLESS;
 import static com.olexyn.abricore.navi.TabPurpose.SQ_SESSION;
 import static com.olexyn.abricore.navi.TabPurpose.TW_SESSION;
 import static com.olexyn.abricore.util.Constants.WORKING_DIR;
@@ -66,7 +67,7 @@ public class TabDriver extends CtxAware implements MWatchable, JavascriptExecuto
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        if (bean(EventDao.class).getBool("headless")) {
+        if (bean(EventDao.class).getBool(IS_HEADLESS)) {
             options.addArguments("--window-size=1920,1080");
             options.addArguments("--headless");
         }

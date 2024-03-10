@@ -31,6 +31,10 @@ public class EventDao {
         eventRepo.save(eventEntity);
     }
 
+    public void set(String eventKey, long value) {
+        set(eventKey, String.valueOf(value));
+    }
+
 
     public @Nullable String get(String eventKey) {
         return eventRepo.findAll()

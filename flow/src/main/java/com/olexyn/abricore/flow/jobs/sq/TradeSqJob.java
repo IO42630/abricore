@@ -36,6 +36,7 @@ import java.util.Set;
 
 import static com.olexyn.abricore.flow.JobType.OBS_TW;
 import static com.olexyn.abricore.flow.strategy.StrategyUtil.resolveCondition;
+import static com.olexyn.abricore.util.Constants.CHF;
 import static com.olexyn.abricore.util.enums.TradeStatus.OPENING_POS;
 import static com.olexyn.abricore.util.enums.TradeStatus.OPEN_PREPARED;
 import static com.olexyn.abricore.util.enums.TransactionType.BUY;
@@ -232,7 +233,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     // OVERRIDE GETTERS
 
     protected long getCash() {
-        var chfService = Optional.ofNullable(assetService.ofName("CHF"));
+        var chfService = Optional.ofNullable(assetService.ofName(CHF));
         if (chfService.isEmpty()) { return 0; }
         var cashPosition = positionService.of(chfService.get());
         return cashPosition == null ? 0 : cashPosition.getAmount();
