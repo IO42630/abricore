@@ -11,19 +11,19 @@ import com.olexyn.abricore.util.exception.SoftCalcException;
 import com.olexyn.abricore.util.log.LogU;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.Duration;
+import java.util.Optional;
 
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BARS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BOL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BUY;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.DEPTH;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.SELL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.SIZE;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.TAIL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_TAIL_DEPTH_BARS;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_TAIL_DEPTH_BOL_TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_TAIL_DEPTH_SIZE;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_TAIL_DEPTH_BARS;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_TAIL_DEPTH_BOL_TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_TAIL_DEPTH_SIZE;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
 
-public class HasTailDepth implements TransactionCondition {
+public class HasTailDepth implements TransactionCondition, Serializable {
 
     @Serial
     private static final long serialVersionUID = 4746646717191593610L;
@@ -36,11 +36,10 @@ public class HasTailDepth implements TransactionCondition {
         boolean isBuy = trade.getBuyPrice() == 0;
         OptionDto option = (OptionDto) trade.getAsset();
         boolean isCall = option.getOptionType() == OptionType.CALL;
-        var type = isBuy ? BUY : SELL;
-        int barAmount = toInt(vector.getValue(type, TAIL, DEPTH, BARS));
+        int barAmount = toInt(vector.getValue(isBuy ? BUY_TAIL_DEPTH_BARS : SELL_TAIL_DEPTH_BARS));
         var barDuration = Duration.ofSeconds(barAmount);
-        int tailSize = toInt(vector.getValue(type, TAIL, DEPTH, SIZE));
-        long tailDepth = vector.getValue(type, TAIL, DEPTH, BOL, TIMES);
+        int tailSize = toInt(vector.getValue(isBuy ? BUY_TAIL_DEPTH_SIZE : SELL_TAIL_DEPTH_SIZE));
+        long tailDepth = vector.getValue(isBuy ? BUY_TAIL_DEPTH_BOL_TIMES : SELL_TAIL_DEPTH_BOL_TIMES);
         try {
             int side = -1;
             if ((!isCall && isBuy) || (isCall && !isBuy)) { side = 1; }
@@ -50,7 +49,7 @@ public class HasTailDepth implements TransactionCondition {
             for (long offset = 1; offset < tailSize; offset++) {
                 var offsetDuration = Duration.ofSeconds(offset);
                 long lastTraded = series.getSnapshotBeforeOffset(offsetDuration).getTradePrice();
-                long tail = series.bolRadius(offsetDuration, barDuration, tailDepth);
+                long tail = series.bolRadius(offsetDuration, barDuration, tailDepth, Optional.empty());
                 if (side < 0 && lastTraded > tail) { hasTailDepth = true; }
                 if (side > 0 && lastTraded < tail) { hasTailDepth = true; }
             }

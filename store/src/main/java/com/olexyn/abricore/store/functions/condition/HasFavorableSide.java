@@ -6,14 +6,15 @@ import com.olexyn.abricore.model.runtime.assets.OptionType;
 import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
+import com.olexyn.abricore.model.runtime.strategy.vector.VectorKey;
 import com.olexyn.abricore.util.exception.MissingException;
 import com.olexyn.abricore.util.exception.SoftCalcException;
 import com.olexyn.abricore.util.log.LogU;
 
 import java.time.Duration;
 
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BARS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.SIDE;
+
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SIDE_BARS;
 import static com.olexyn.abricore.util.Constants.S0;
 import static com.olexyn.abricore.util.num.NumUtil.positive;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
@@ -33,7 +34,7 @@ public class HasFavorableSide implements TransactionCondition {
         OptionDto option = (OptionDto) trade.getAsset();
         boolean isCall = option.getOptionType() == OptionType.CALL;
         boolean isBuy = trade.getBuyPrice() == 0;
-        int barAmount = toInt(vector.getValue(SIDE, BARS));
+        int barAmount = toInt(vector.getValue(SIDE_BARS));
         var barDuration = Duration.ofSeconds(barAmount);
         try {
             long lastTraded = series.getLastTraded();

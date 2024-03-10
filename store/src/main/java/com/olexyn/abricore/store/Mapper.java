@@ -16,6 +16,7 @@ import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.vector.BoundParam;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
+import com.olexyn.abricore.model.runtime.strategy.vector.VectorKey;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.CtxAware;
@@ -213,7 +214,7 @@ public class Mapper extends CtxAware {
         var paramStr = MapperHelper.fromPrettyClob(entity.getParamMap());
         Arrays.stream(paramStr.split(";")).forEach(param -> {
             var paramArr = param.split(",");
-            var key = paramArr[0];
+            var key = VectorKey.valueOf(paramArr[0]);
             var value = fromStr(paramArr[1]);
             var lowerBound = fromStr(paramArr[2]);
             var upperBound = fromStr(paramArr[3]);

@@ -9,21 +9,24 @@ import com.olexyn.abricore.util.exception.SoftCalcException;
 import com.olexyn.abricore.util.log.LogU;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.Duration;
 
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BARS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BOL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BUY;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.SELL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.SIZE;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.TAIL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.TIMES;
+
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_BOL_TAIL_SIZE_BARS;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_BOL_TAIL_SIZE_BOL_TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_BOL_TAIL_SIZE_SIZE;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_BOL_TAIL_SIZE_BARS;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_BOL_TAIL_SIZE_BOL_TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_BOL_TAIL_SIZE_SIZE;
 import static com.olexyn.abricore.util.Constants.S0;
+import static com.olexyn.abricore.util.enums.TransactionType.BUY;
+import static com.olexyn.abricore.util.enums.TransactionType.SELL;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
 
 
 
-public class HasBolTailSize implements TransactionCondition {
+public class HasBolTailSize implements TransactionCondition, Serializable {
 
     @Serial
     private static final long serialVersionUID = -69827639204556502L;
@@ -34,15 +37,13 @@ public class HasBolTailSize implements TransactionCondition {
     @Override
     public boolean test(Series series, TradeDto trade, VectorDto vector) {
         boolean isBuy = trade.getBuyPrice() == 0;
-        var type = isBuy ? BUY : SELL;
-        int barAmount = toInt(vector.getValue(type, BOL, TAIL, SIZE, BARS));
-        int tailSize = toInt(vector.getValue(type, BOL, TAIL, SIZE, SIZE));
-        long bolTimes = vector.getValue(type, BOL, TAIL, SIZE, BOL, TIMES);
+        int barAmount = toInt(vector.getValue(isBuy ? BUY_BOL_TAIL_SIZE_BARS : SELL_BOL_TAIL_SIZE_BARS));
+        int tailSize = toInt(vector.getValue(isBuy ? BUY_BOL_TAIL_SIZE_SIZE : SELL_BOL_TAIL_SIZE_SIZE));
+        long bolTimes = vector.getValue(isBuy ? BUY_BOL_TAIL_SIZE_BOL_TIMES : SELL_BOL_TAIL_SIZE_BOL_TIMES);
         try {
             var barDuration = Duration.ofSeconds(barAmount);
             for (int tailPos = 1; tailPos < tailSize; tailPos++) {
                 var tailDuration = Duration.ofSeconds(tailPos);
-
                 if (series.priceInBol(tailDuration, barDuration, bolTimes)) {
                     return false;
                 }

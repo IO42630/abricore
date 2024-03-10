@@ -12,11 +12,8 @@ import com.olexyn.abricore.util.log.LogU;
 
 import java.time.Duration;
 
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BARS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BOL;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.LOSS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.STOP;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.TIMES;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.STOP_LOSS_BOL_BARS;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.STOP_LOSS_BOL_TIMES;
 import static com.olexyn.abricore.util.Constants.S0;
 import static com.olexyn.abricore.util.Constants.S1;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
@@ -31,8 +28,8 @@ public class StopLossAtBol implements TransactionCondition {
         try {
             OptionDto option = (OptionDto) trade.getAsset();
             boolean isCall = option.getOptionType() == OptionType.CALL;
-            long bolTimes = vector.getValue(STOP, LOSS, BOL, TIMES);
-            int barAmount = toInt(vector.getValue(STOP, LOSS, BOL, BARS));
+            long bolTimes = vector.getValue(STOP_LOSS_BOL_TIMES);
+            int barAmount = toInt(vector.getValue(STOP_LOSS_BOL_BARS));
             var barDuration = Duration.ofSeconds(barAmount);
 
             long currentMa = series.ma(S0, barDuration);

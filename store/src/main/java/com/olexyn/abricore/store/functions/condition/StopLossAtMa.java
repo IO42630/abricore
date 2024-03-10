@@ -12,10 +12,7 @@ import com.olexyn.abricore.util.log.LogU;
 
 import java.time.Duration;
 
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.BARS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.LOSS;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.MA;
-import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKeyWord.STOP;
+import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.STOP_LOSS_MA_BARS;
 import static com.olexyn.abricore.util.Constants.S0;
 import static com.olexyn.abricore.util.Constants.S1;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
@@ -31,7 +28,7 @@ public class StopLossAtMa implements TransactionCondition {
         try {
             OptionDto option = (OptionDto) trade.getAsset();
             boolean isCall = option.getOptionType() == OptionType.CALL;
-            int barAmount = toInt(vector.getValue(STOP, LOSS, MA, BARS));
+            int barAmount = toInt(vector.getValue(STOP_LOSS_MA_BARS));
             var barDuration = Duration.ofSeconds(barAmount);
             var currentSnap = series.getLast();
             if (currentSnap == null) { return false; }

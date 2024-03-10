@@ -5,18 +5,14 @@ import com.olexyn.abricore.util.exception.DataCorruptionException;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import static com.olexyn.abricore.util.Constants.UL;
 import static com.olexyn.abricore.util.num.NumSerialize.toStr;
 import static com.olexyn.abricore.util.num.NumUtil.prettyStr;
 
@@ -53,32 +49,22 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
     @Setter
     private Long avgDuration = 1L;
 
-    private final Map<String, BoundParam> paramMap = new TreeMap<>();
+    private final Map<VectorKey, BoundParam> paramMap = new EnumMap<>(VectorKey.class);
 
-    public BoundParam getBoundParam(VectorKeyWord... keys) {
-        return getBoundParam(List.of(keys));
-    }
-
-    public BoundParam getBoundParam(List<VectorKeyWord> keys) {
-        var key = StringUtils.join(keys, UL);
+    public BoundParam getBoundParam(VectorKey key) {
         return paramMap.get(key);
     }
 
-    private BoundParam getForceBoundParam(VectorKeyWord... keys) {
-        return getForceBoundParam(List.of(keys));
-    }
 
-    private BoundParam getForceBoundParam(List<VectorKeyWord> keys) {
-        var key = StringUtils.join(keys, UL);
+    private BoundParam getForceBoundParam(VectorKey key) {
         return paramMap.get(key);
     }
 
-    public void normalizeToLowerBound(VectorKeyWord... keys) {
-        getForceBoundParam(keys).normalizeToLowerBound();
+    public void normalizeToLowerBound(VectorKey key) {
+        getForceBoundParam(key).normalizeToLowerBound();
     }
 
-    public long getValue(VectorKeyWord... keys) {
-        var key = StringUtils.join(List.of(keys), UL);
+    public long getValue(VectorKey key) {
         return paramMap.get(key).getValue();
     }
 
@@ -86,17 +72,11 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
      * Put a BoundParam into the Vector.
      * If the BoundParam has no value, the value will be randomly generated.
      */
-    public void cloneParam(List<VectorKeyWord> keys, BoundParam value) {
-        var key = StringUtils.join(keys, UL);
-        cloneParam(key, value);
-    }
-
-    public void cloneParam(String key, BoundParam param) {
+    public void cloneParam(VectorKey key, BoundParam param) {
         paramMap.put(key, param.copy());
     }
 
-    public void set(List<VectorKeyWord> keys, long value) {
-        var key = StringUtils.join(keys, UL);
+    public void set(VectorKey key, long value) {
         paramMap.get(key).setValue(value);
     }
 
@@ -120,8 +100,7 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
             long selected = Math.round(Math.random() * vectorSize);
             for (var key : result.paramMap.keySet()) {
                 if (pointer == selected) {
-                    var keys = expand(key);
-                    result.cloneParam(keys, other.getBoundParam(keys));
+                    result.cloneParam(key, other.getBoundParam(key));
                 }
                 pointer++;
             }
@@ -139,12 +118,6 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
             (key, value) -> mutant.getParamMap().put(key, value.mutate(impulse))
         );
         return mutant;
-    }
-
-    private static List<VectorKeyWord> expand(String key) {
-        return Arrays.stream(key.split(UL))
-            .map(VectorKeyWord::valueOf)
-            .toList();
     }
 
     @Override
