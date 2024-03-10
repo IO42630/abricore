@@ -10,6 +10,7 @@ public interface Constants {
     String SPACE = " ";
     String COMMA = ",";
     String COL = ":";
+    String SEMICOLON = ";";
     String DOT = ".";
     String APOSTROPHE = "'";
     String L_BRACE = "(";
@@ -40,6 +41,7 @@ public interface Constants {
     Charset CHARSET = StandardCharsets.UTF_8;
     Random RNG = new Random();
     String NULL_INPUT_MESSAGE = "expected parameter was NULL";
+    String CHF = "CHF";
     // DURATIONS
     Duration MS1 = Duration.ofMillis(1);
     Duration MS10 = Duration.ofMillis(10);

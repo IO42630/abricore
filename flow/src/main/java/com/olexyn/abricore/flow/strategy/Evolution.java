@@ -182,7 +182,6 @@ public class Evolution extends CtxAware implements Runnable {
             bean(VectorService.class).save();
         }
         LogU.warnEnd("DONE");
-        bean(VectorService.class).save();
     }
 
 }

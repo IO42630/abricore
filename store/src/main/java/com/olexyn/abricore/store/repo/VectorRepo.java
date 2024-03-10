@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface VectorRepo extends JpaRepository<VectorEntity, Long> {
 
-    List<VectorEntity> findTop640ByOrderByRatingDesc();
 
 }

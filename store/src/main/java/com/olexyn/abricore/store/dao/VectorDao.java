@@ -31,13 +31,6 @@ public class VectorDao extends Dao<VectorEntity, VectorDto> {
         return this.vectorRepo;
     }
 
-    public List<VectorDto> findTop640ByRatingDesc() {
-        return vectorRepo.findTop640ByOrderByRatingDesc().stream()
-            .map(mapper::toVectorDto)
-            .map(this::postProcess)
-            .toList();
-    }
-
     @Override
     protected VectorDto toDto(VectorEntity entity) {
         return mapper.toVectorDto(entity);

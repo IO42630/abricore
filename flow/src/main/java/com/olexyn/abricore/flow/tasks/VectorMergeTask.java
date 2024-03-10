@@ -1,5 +1,6 @@
 package com.olexyn.abricore.flow.tasks;
 
+import com.olexyn.Pair;
 import com.olexyn.abricore.model.runtime.strategy.vector.BoundParam;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
 import com.olexyn.abricore.store.runtime.VectorService;
@@ -50,39 +51,45 @@ public class VectorMergeTask extends CtxAware implements Task {
     public void run() {
 
         List<VectorDto> vectors = new ArrayList<>(vectorService.getVectors());
-        vectors = merge(vectors);
-        vectors = limit(vectors);
-        vectorService.clear();
-        vectorService.addAll(Set.copyOf(vectors));
-
+        var pair = merge(vectors);
+        var merged = pair.getA();
+        var deleted = pair.getB();
+        LogU.infoPlain("MERGED:   %-6d ->  %-6d  (-%d)", vectors.size(), merged.size(), deleted.size());
+        vectorService.save(merged);
+        vectorService.delete(deleted);
     }
 
-    List<VectorDto> limit(List<VectorDto> vectors) {
-        return vectors.stream()
-            .sorted((a, b) -> Long.compare(b.getRating(), a.getRating()))
-            .limit(1000)
-            .toList();
-    }
+    Pair<List<VectorDto>> merge(List<VectorDto> originalVectors) {
+        List<VectorDto> mergedL = new ArrayList<>(originalVectors);
+        List<VectorDto> deletedL = new ArrayList<>();
+        boolean wasMerged = true;
+        while (wasMerged) {
+            wasMerged = false;
+            for (int i = 0; i < mergedL.size(); i++) {
+                for (int j = i + 1; j < mergedL.size(); j++) {
+                    VectorDto a = mergedL.get(i);
+                    VectorDto b = mergedL.get(j);
 
-
-    List<VectorDto> merge(List<VectorDto> vectors) {
-        var trimmed = deletedmerge(vectors);
-        LogU.infoPlain("Vectors: %s -(trimmed to)-> %s",vectors.size(), trimmed.size());
-        return trimmed;
-    }
-
-
-    List<VectorDto> deletedmerge(List<VectorDto> vectors) {
-        for (var a : vectors) {
-            for (var b : vectors) {
-                if (shouldMerge(a, b)) {
-                    mergeToA(a, b);
-                    vectors.remove(b);
-                    return deletedmerge(vectors);
+                    if (shouldMerge(a, b)) {
+                        if (a.getId() != null) {
+                            mergeToA(a, b);
+                            mergedL.remove(j);
+                            deletedL.add(b);
+                        } else {
+                            mergeToA(b, a);
+                            mergedL.remove(i);
+                            deletedL.add(a);
+                        }
+                        wasMerged = true;
+                        break;
+                    }
+                }
+                if (wasMerged) {
+                    break;
                 }
             }
         }
-        return vectors;
+        return new Pair<>(mergedL, deletedL);
     }
 
 
@@ -90,52 +97,48 @@ public class VectorMergeTask extends CtxAware implements Task {
     boolean shouldMerge(VectorDto a, VectorDto b) {
         if (a.equals(b)) { return false; }
         for (var key : a.getParamMap().keySet()) {
-
             var aBound = a.getParamMap().get(key);
             var bBound = b.getParamMap().get(key);
-            boolean aZero = aBound.getValue() == 0;
-            boolean bZero = bBound.getValue() == 0;
-
-            if (aZero && bZero) { continue; }
-
-            if (aZero || bZero) { return false; }
-
-            long abRatio = div(aBound.getValue(), bBound.getValue());
-            long baRatio = div(bBound.getValue(), aBound.getValue());
-            long ratio = Math.max(abRatio, baRatio);
-            boolean valueMatches = abs(ratio - ONE) < VECTOR_MERGE_FACTOR;
-
-            if (!valueMatches) { return false; }
+            if (!valueMatches(aBound, bBound)) { return false; }
         }
-
-
         return true;
     }
 
+    boolean valueMatches(BoundParam aBound, BoundParam bBound) {
+        boolean aZero = aBound.getValue() == 0;
+        boolean bZero = bBound.getValue() == 0;
+        if (aZero && bZero) { return true; }
+        if (aZero || bZero) { return false; }
+        long abRatio = div(aBound.getValue(), bBound.getValue());
+        long baRatio = div(bBound.getValue(), aBound.getValue());
+        long ratio = Math.max(abRatio, baRatio);
+        return abs(ratio - ONE) < VECTOR_MERGE_FACTOR;
+    }
 
-    private void mergeToA(VectorDto a, VectorDto b) {
 
-        var sampleSum = a.getSampleCount() + b.getSampleCount();
+    private void mergeToA(VectorDto aV, VectorDto bV) {
+
+        var sampleSum = aV.getSampleCount() + bV.getSampleCount();
 
         // (10 x 10) && (100 x 1)
         // (10 * 10) + (100 * 1) / (10 + 1)
         // 200 / 11= 18.18
-        var aRatingSum = a.getRating() * a.getSampleCount();
-        var bRatingSum = b.getRating() * b.getSampleCount();
-        a.setRating((aRatingSum + bRatingSum) / sampleSum);
+        var aRatingSum = aV.getRating() * aV.getSampleCount();
+        var bRatingSum = bV.getRating() * bV.getSampleCount();
+        aV.setRating((aRatingSum + bRatingSum) / sampleSum);
 
-        var aDurationSum = a.getAvgDuration() * a.getSampleCount();
-        var bDurationSum = b.getAvgDuration() * b.getSampleCount();
-        a.setAvgDuration((aDurationSum + bDurationSum) / sampleSum);
+        var aDurationSum = aV.getAvgDuration() * aV.getSampleCount();
+        var bDurationSum = bV.getAvgDuration() * bV.getSampleCount();
+        aV.setAvgDuration((aDurationSum + bDurationSum) / sampleSum);
 
-        var aSamples = Optional.ofNullable(a.getSampleCount()).orElse(1L);
-        var bSamples = Optional.ofNullable(b.getSampleCount()).orElse(1L);
-        a.setSampleCount(aSamples + bSamples);
-        for (var key : a.getParamMap().keySet()) {
-            var aBound = a.getParamMap().get(key);
-            var bBound = b.getParamMap().get(key);
+        var aSamples = Optional.ofNullable(aV.getSampleCount()).orElse(1L);
+        var bSamples = Optional.ofNullable(bV.getSampleCount()).orElse(1L);
+        aV.setSampleCount(aSamples + bSamples);
+        for (var key : aV.getParamMap().keySet()) {
+            var aBound = aV.getParamMap().get(key);
+            var bBound = bV.getParamMap().get(key);
             var mergedBound = merge(aBound, bBound);
-            a.getParamMap().put(key, mergedBound);
+            aV.getParamMap().put(key, mergedBound);
         }
     }
 

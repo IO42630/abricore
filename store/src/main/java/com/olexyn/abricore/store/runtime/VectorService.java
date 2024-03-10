@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -18,28 +19,37 @@ public class VectorService implements IService {
     @Autowired
     public VectorService(VectorDao vectorDao) {
         this.vectorDao = vectorDao;
-
         VECTORS.addAll(vectorDao.findDtos());
-
     }
 
     @Override
     @Synchronized
     public void save() {
-        vectorDao.deleteAll(); // TODO
         vectorDao.saveDtos(getVectors());
     }
 
-    public void add(VectorDto vector) {
+    public void save(VectorDto vector) {
         VECTORS.add(vector);
+        vectorDao.saveDtos(Set.of(vector));
     }
 
-    public void remove(VectorDto vector) {
+    public void save(List<VectorDto> vectors) {
+        VECTORS.addAll(vectors);
+        vectorDao.saveDtos(Set.copyOf(vectors));
+    }
+
+//    public void add(VectorDto vector) {
+//        VECTORS.add(vector);
+//    }
+
+    public void delete(VectorDto vector) {
         VECTORS.remove(vector);
+        vectorDao.delete(List.of(vector));
     }
 
-    public void clear() {
-        VECTORS.clear();
+    public void delete(List<VectorDto> vectors) {
+        vectors.forEach(VECTORS::remove);
+        vectorDao.delete(vectors);
     }
 
     public void addAll(Set<VectorDto> vectors) {

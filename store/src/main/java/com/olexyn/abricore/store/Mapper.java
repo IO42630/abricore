@@ -26,6 +26,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+import static com.olexyn.abricore.util.Constants.COMMA;
+import static com.olexyn.abricore.util.Constants.SEMICOLON;
 import static com.olexyn.abricore.util.num.NumSerialize.fromStr;
 import static com.olexyn.abricore.util.num.NumSerialize.toStr;
 
@@ -189,15 +191,15 @@ public class Mapper extends CtxAware {
         var paramSb = new StringBuilder();
         dto.getParamMap().forEach((key, value) -> paramSb
             .append(key)
-            .append(',')
+            .append(COMMA)
             .append(toStr(value.getValue()))
-            .append(',')
+            .append(COMMA)
             .append(toStr(value.getLowerBound()))
-            .append(',')
+            .append(COMMA)
             .append(toStr(value.getUpperBound()))
-            .append(',')
+            .append(COMMA)
             .append(toStr(value.getPrecision()))
-            .append(';')
+            .append(SEMICOLON)
         );
         entity.setParamMap(MapperHelper.toPrettyClob(paramSb.toString()));
         return entity;
@@ -212,16 +214,20 @@ public class Mapper extends CtxAware {
         dto.setSampleCount(entity.getSampleCount());
         dto.setAvgDuration(entity.getAvgDuration());
         var paramStr = MapperHelper.fromPrettyClob(entity.getParamMap());
-        Arrays.stream(paramStr.split(";")).forEach(param -> {
-            var paramArr = param.split(",");
-            var key = VectorKey.valueOf(paramArr[0]);
-            var value = fromStr(paramArr[1]);
-            var lowerBound = fromStr(paramArr[2]);
-            var upperBound = fromStr(paramArr[3]);
-            var precision = fromStr(paramArr[4]);
-            var boundParam = new BoundParam(lowerBound, upperBound, precision);
-            boundParam.setValue(value);
-            dto.getParamMap().put(key, boundParam);
+        Arrays.stream(paramStr.split(SEMICOLON)).forEach(param -> {
+            var paramArr = param.split(COMMA);
+            try {
+                var key = VectorKey.valueOf(paramArr[0]);
+                var value = fromStr(paramArr[1]);
+                var lowerBound = fromStr(paramArr[2]);
+                var upperBound = fromStr(paramArr[3]);
+                var precision = fromStr(paramArr[4]);
+                var boundParam = new BoundParam(lowerBound, upperBound, precision);
+                boundParam.setValue(value);
+                dto.getParamMap().put(key, boundParam);
+            } catch (Exception e) {
+                /* ignore */
+            }
         });
         return dto;
     }
