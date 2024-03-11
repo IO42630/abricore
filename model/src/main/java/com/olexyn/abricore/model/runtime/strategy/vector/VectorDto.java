@@ -158,7 +158,7 @@ public class VectorDto implements Serializable, Dto<VectorDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(paramString());
+        return Objects.hash(id);
     }
 
 }

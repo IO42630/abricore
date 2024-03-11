@@ -10,7 +10,6 @@ import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.SnapshotDistanceType;
-import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.olexyn.abricore.MainApp.ctx;
 
