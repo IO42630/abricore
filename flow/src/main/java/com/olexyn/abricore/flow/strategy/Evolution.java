@@ -7,12 +7,14 @@ import com.olexyn.abricore.store.dao.EventDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.CtxAware;
+import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +174,8 @@ public class Evolution extends CtxAware implements Runnable {
         POPULATIONS.put(currentGeneration, makeInitialPopulation());
 
         while (currentGeneration < MAX_GENERATIONS) {
+            bean(VectorService.class).deleteWhereRatingSubZero();
+            var start = Instant.now();
             List<StrategyDto> newGen = evolve(POPULATIONS.get(currentGeneration));
             POPULATIONS.put(++currentGeneration, newGen);
             MetricsCalculator.calcRating(newGen);
@@ -179,9 +183,11 @@ public class Evolution extends CtxAware implements Runnable {
                 .map(StrategyDto::getVector)
                 .filter(v -> v.getRating() > 0)
                 .collect(Collectors.toSet());
-            bean(VectorService.class).addAll(newVectors);
+            bean(VectorService.class).save(newVectors);
             bean(VectorMergeTask.class).run();
             bean(EventDao.class).set(EVOLUTION_CURRENT_GENERATION, currentGeneration);
+            var duration = Duration.between(start, Instant.now());
+            bean(EventDao.class).set("evol-time-" + start.getEpochSecond(), duration.toSeconds());
         }
         LogU.warnEnd("DONE");
     }

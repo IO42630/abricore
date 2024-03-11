@@ -6,20 +6,21 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 public class VectorService implements IService {
 
-    private static final Set<VectorDto> VECTORS = new HashSet<>();
     private final VectorDao vectorDao;
 
     @Autowired
     public VectorService(VectorDao vectorDao) {
         this.vectorDao = vectorDao;
-        VECTORS.addAll(vectorDao.findDtos());
     }
 
     @Override
@@ -29,36 +30,33 @@ public class VectorService implements IService {
     }
 
     public void save(VectorDto vector) {
-        VECTORS.add(vector);
         vectorDao.saveDtos(Set.of(vector));
     }
 
-    public void save(List<VectorDto> vectors) {
-        VECTORS.addAll(vectors);
+    public void save(Collection<VectorDto> vectors) {
         vectorDao.saveDtos(Set.copyOf(vectors));
     }
 
-//    public void add(VectorDto vector) {
-//        VECTORS.add(vector);
-//    }
+    public void deleteWhereRatingSubZero() {
+        var subZ = vectorDao.findDtos()
+            .stream().filter(v -> v.getRating() < 0).toList();
+        vectorDao.delete(subZ);
+    }
 
     public void delete(VectorDto vector) {
-        VECTORS.remove(vector);
-        vectorDao.delete(List.of(vector));
+       delete(List.of(vector));
     }
 
     public void delete(List<VectorDto> vectors) {
-        vectors.forEach(VECTORS::remove);
         vectorDao.delete(vectors);
     }
 
-    public void addAll(Set<VectorDto> vectors) {
-        VECTORS.addAll(vectors);
-    }
 
     public Set<VectorDto> getVectors() {
-        return VECTORS;
+        return Set.copyOf(vectorDao.findDtos());
     }
+
+
 
 
 }

@@ -51,21 +51,32 @@ public class VectorMergeTask extends CtxAware implements Task {
     public void run() {
 
         List<VectorDto> vectors = new ArrayList<>(vectorService.getVectors());
-        var pair = merge(vectors);
-        var merged = pair.getA();
-        var deleted = pair.getB();
+        var mergePair = merge(vectors);
+        var merged = mergePair.getA();
+        var deleted = mergePair.getB();
         LogU.infoPlain("MERGED:   %-6d ->  %-6d  (-%d)", vectors.size(), merged.size(), deleted.size());
         vectorService.save(merged);
         vectorService.delete(deleted);
+
+        var surplus = limit(merged, 9000);
+        LogU.infoPlain("LIMITED: to 9000 deleting  %-6d", surplus.size());
+        vectorService.delete(surplus);
+
+    }
+
+    List<VectorDto> limit(List<VectorDto> input, int limit) {
+        input.sort((v1, v2) -> Long.compare(v2.getRating(), v1.getRating()));
+        return new ArrayList<>(input.subList(Math.min(limit, input.size()), input.size()));
     }
 
     Pair<List<VectorDto>> merge(List<VectorDto> originalVectors) {
         List<VectorDto> mergedL = new ArrayList<>(originalVectors);
         List<VectorDto> deletedL = new ArrayList<>();
+        int lastRemoved = 0;
         boolean wasMerged = true;
         while (wasMerged) {
             wasMerged = false;
-            for (int i = 0; i < mergedL.size(); i++) {
+            for (int i = lastRemoved; i < mergedL.size(); i++) {
                 for (int j = i + 1; j < mergedL.size(); j++) {
                     VectorDto a = mergedL.get(i);
                     VectorDto b = mergedL.get(j);
@@ -81,6 +92,7 @@ public class VectorMergeTask extends CtxAware implements Task {
                             deletedL.add(a);
                         }
                         wasMerged = true;
+                        lastRemoved = Math.min(i, mergedL.size() - 1);
                         break;
                     }
                 }
