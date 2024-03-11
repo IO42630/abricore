@@ -56,28 +56,25 @@ public final class JobKeeper extends CtxAware {
 
     @Synchronized
     private Stream<Job> streamJobs(UUID uuid) {
-        return JOBS.get(uuid).stream();
-    }
-
-    public Stream<SJob> streamStrategyAwareJobs(UUID uuid) {
-        return streamJobs(uuid)
-            .filter(SJob.class::isInstance)
-            .map(e -> (SJob) e);
-    }
-
-    private Stream<SJob> streamJobsByUUID(UUID uuid) {
-        return streamStrategyAwareJobs(uuid)
-            .filter(e -> e.getUuid().equals(uuid));
+        return new HashSet<>(JOBS.get(uuid)).parallelStream();
     }
 
     public Stream<SJob> streamJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
-        return streamJobsByUUID(uuid)
-            .filter(e -> jobTypes.contains(e.getType()));
+        return streamJobs(uuid)
+            .filter(SJob.class::isInstance)
+            .filter(e -> e.getUuid().equals(uuid))
+            .filter(e -> jobTypes.contains(e.getType()))
+            .map(SJob.class::cast);
     }
 
+
     public Stream<SJob> streamAliveJobsByUUIDAndType(UUID uuid, Set<JobType> jobTypes) {
-        return streamJobsByUUIDAndType(uuid, jobTypes)
-            .filter(e -> e.getThread().isAlive());
+        return streamJobs(uuid)
+            .filter(SJob.class::isInstance)
+            .filter(e -> e.getUuid().equals(uuid))
+            .filter(e -> jobTypes.contains(e.getType()))
+            .filter(e -> e.getThread().isAlive())
+            .map(SJob.class::cast);
     }
 
 }

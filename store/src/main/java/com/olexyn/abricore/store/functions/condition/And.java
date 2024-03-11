@@ -22,12 +22,8 @@ public class And implements TransactionCondition {
 
     @Override
     public boolean test(Series series, TradeDto trade, VectorDto vector) {
-        for (var tc : tcs) {
-            if (!tc.test(series, trade, vector)) {
-                return false;
-            }
-        }
-        return !tcs.isEmpty();
+        if (tcs.isEmpty()) { return false; }
+        return tcs.parallelStream().allMatch(tc -> tc.test(series, trade, vector));
     }
 
 }

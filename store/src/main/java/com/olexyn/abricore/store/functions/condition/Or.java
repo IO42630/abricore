@@ -31,10 +31,8 @@ public class Or implements TransactionCondition {
 
     @Override
     public boolean test(Series series, TradeDto trade, VectorDto vector) {
-        for (var tc : tcs) {
-            if (tc.test(series, trade, vector)) { return true; }
-        }
-        return false;
+        if (tcs.isEmpty()) { return false; }
+        return tcs.parallelStream().anyMatch(tc -> tc.test(series, trade, vector));
     }
 
 }

@@ -127,7 +127,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     public final void tryToPlaceBuyOrders() {
         if (isWaitBetweenTradesNOK()) { return; }
         var optionBrace = getOptionBrace();
-        OptionType.stream().forEach(optionType -> {
+        for (var optionType : OptionType.values()) {
             if (optionBrace.get(optionType) == null) { return; }
             if (isSizeNOK()) { return; }
             if (!getTimeHelper().isBuyAllowed()) { return; }
@@ -136,7 +136,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
             if (testCondition(BUY, optionType, trade)) {
                 placeBuyOrder(trade);
             }
-        });
+        }
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -26,8 +27,8 @@ import static com.olexyn.abricore.util.enums.TradeStatus.CLOSE_EXECUTED;
 @Service
 public abstract class ProtoTradeService implements DtoService<TradeDto> {
 
-    private TradeDao tradeDao;
-    private PositionDao positionDao;
+    private final TradeDao tradeDao;
+    private final PositionDao positionDao;
 
     private final TreeMap<UUID, TradeDto> TRADE_MAP = new TreeMap<>();
 
@@ -50,7 +51,7 @@ public abstract class ProtoTradeService implements DtoService<TradeDto> {
     }
 
     public Stream<TradeDto> getTradesStreamCopy() {
-        return (new ArrayList<>(getTrades().values())).stream();
+        return (new ArrayList<>(getTrades().values())).parallelStream();
     }
 
     /**
