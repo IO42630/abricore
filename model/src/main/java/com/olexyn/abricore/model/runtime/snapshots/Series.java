@@ -132,14 +132,14 @@ public class Series extends ProtoSeries implements Observable {
      */
     @Override
     public long ma(Duration offset, Duration duration) {
-        var sectionValues = getSection(offset, duration).values();
-        int overRatio = sectionValues.size() / sampleSize;
+        var tradeds = getSection(offset, duration).values().toArray(new SnapshotDto[0]);
+        int overRatio = tradeds.length / sampleSize;
         int safeOverRatio = overRatio == 0 ? 1 : overRatio;
         long sum = 0;
         int sumSize = 0;
-        for (var snap : sectionValues) {
-            if (snap.getInstant().getEpochSecond() % safeOverRatio == 0) {
-                sum = sum + snap.getTradePrice();
+        for (int i = 0; i < tradeds.length; i++) {
+            if (i % safeOverRatio == 0) {
+                sum = sum + tradeds[i].getTradePrice();
                 sumSize++;
             }
         }
@@ -148,18 +148,26 @@ public class Series extends ProtoSeries implements Observable {
 
     /**
      * Standard Deviation.
+     *
+     * section size = 20
+     * sample size = 10
+     * sumSize      overRatio   modulo              percentage
+     * 1            10/10 = 1   second * 10 % 1    100%
+     * 2            20/10 = 2   second * 10 % 2    95%
+     * 3            30/10 = 3   second * 10 % 3    33%
+     *
      */
     @Override
     public long std(Duration offset, Duration duration, Optional<Long> maO) {
         long ma = maO.orElseGet(() -> ma(offset, duration));
-        var sectionValues = getSection(offset, duration).values();
-        int overRatio = sectionValues.size() / sampleSize;
+        var tradeds = getSection(offset, duration).values().toArray(new SnapshotDto[0]);
+        int overRatio = tradeds.length / sampleSize;
         int safeOverRatio = overRatio == 0 ? 1 : overRatio;
         long sum = 0;
         int sumSize = 0;
-        for (var snap : sectionValues) {
-            if (snap.getInstant().getEpochSecond() % safeOverRatio == 0) {
-                sum = sum + square(snap.getTradePrice() - ma);
+        for (int i = 0; i < tradeds.length; i++) {
+            if (i % safeOverRatio == 0) {
+                sum = sum + square(tradeds[i].getTradePrice() - ma);
                 sumSize++;
             }
         }
@@ -272,7 +280,6 @@ public class Series extends ProtoSeries implements Observable {
 
 
     /**
-     * @param barAmount : NUM
      */
     @Override
     public long[] avgUpDown(Duration duration) {
