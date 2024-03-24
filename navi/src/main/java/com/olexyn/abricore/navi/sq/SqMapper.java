@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,12 +34,8 @@ public class SqMapper {
     private static final String PRICE = "Preis";
     private static final String TYPE = "Titelart";
     public static final String UNDERLYING = "Basiswert";
-    public static final String UNDERLYING_ISIN = "underlyingIsin";
     private static final String GELDKURS_KEY = "Geldkurs ";
-
-
-
-
+    private static final String BRIEFKURS_KEY = "Briefkurs ";
 
     /**
      * quoteMap -> OPTION <br>
@@ -49,23 +46,23 @@ public class SqMapper {
         OptionDto option = new OptionDto();
         quoteMap = simplifyKeys(quoteMap);
         // STRIKE
-        String value = quoteMap.get(STRIKE);
-        if (value.contains(SLASH)) {
-            option.setStrike(fromStr(value.substring(0, value.indexOf(SLASH)).trim()));
-        } else if (value.contains(SPACE)) {
-            option.setStrike(fromStr(value.substring(0, value.indexOf(SPACE))));
+        var strike = quoteMap.get(STRIKE);
+        if (strike.contains(SLASH)) {
+            option.setStrike(fromStr(strike.substring(0, strike.indexOf(SLASH)).trim()));
+        } else if (strike.contains(SPACE)) {
+            option.setStrike(fromStr(strike.substring(0, strike.indexOf(SPACE))));
         }
         // EXPIRY
-        value = quoteMap.get("Verfall");
+        var verfall = quoteMap.get("Verfall");
         if (
-            StringUtils.isBlank(value)
-                || value.equals(DASH)
-                || value.contains("Open-End")
-                || value.contains("Ohne Ende")
+            StringUtils.isBlank(verfall)
+                || verfall.equals(DASH)
+                || verfall.contains("Open-End")
+                || verfall.contains("Ohne Ende")
         ) {
             option.setExpiry(Instant.now().plus(Duration.ofDays(730)));
         } else {
-            option.setExpiry(Instant.parse(value));
+            option.setExpiry(Instant.parse(verfall));
         }
         // RATIO
         String ratioStr = quoteMap.get("Multiplier");
@@ -90,7 +87,7 @@ public class SqMapper {
     }
 
     public static Map<String, String> simplifyKeys(Map<String, String> quoteMap) {
-        Map<String, String> simplifiedMap = new java.util.HashMap<>(quoteMap);
+        Map<String, String> simplifiedMap = new HashMap<>(quoteMap);
         for (var entry : quoteMap.entrySet()) {
             var key = entry.getKey();
             var value = entry.getValue();
@@ -121,7 +118,7 @@ public class SqMapper {
             if (key.startsWith(GELDKURS_KEY)) {
                 snap.setBidPrice(fromStr(val));
             }
-            if (key.startsWith("Briefkurs ")) {
+            if (key.startsWith(BRIEFKURS_KEY)) {
                 snap.setAskPrice(fromStr(val));
 
             }

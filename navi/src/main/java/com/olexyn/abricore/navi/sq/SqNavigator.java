@@ -41,8 +41,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static com.olexyn.abricore.model.runtime.assets.OptionType.CALL;
+import static com.olexyn.abricore.model.runtime.assets.OptionType.PUT;
 import static com.olexyn.abricore.navi.TabPurpose.OBSERVE_SQ;
 import static com.olexyn.abricore.navi.TabPurpose.SYNC_CDF_SQ;
 import static com.olexyn.abricore.util.Constants.EMPTY;
@@ -75,35 +76,19 @@ import static com.olexyn.abricore.util.num.NumUtil.prettyStr;
 public class SqNavigator extends SqSession implements Navigator {
 
     private static final String ACCOUNT_URL = "https://trade.swissquote.ch/sqtr_account";
-    private static final String CORE_URL = "https://trade.swissquote.ch/sqb_core";
-    private final String TRADES_URL = ACCOUNT_URL + "/AccountAjaxCtrl?commandName=dailyOrders&client=" + CREDENTIALS.get(ACCOUNT_NR);
-    private final String POSITIONS_CASH_URL = ACCOUNT_URL + "/AccountCtrl?commandName=account&client=" + CREDENTIALS.get(ACCOUNT_NR) + "&hide_no_value=false";
-    private final String POSITIONS_ASSETS_URL = ACCOUNT_URL + "/AccountCtrl?commandName=assets&client=" + CREDENTIALS.get(ACCOUNT_NR);
+    private final String tradesUrl = ACCOUNT_URL + "/AccountAjaxCtrl?commandName=dailyOrders&client=" + CREDENTIALS.get(ACCOUNT_NR);
+    private final String positionsCashUrl = ACCOUNT_URL + "/AccountCtrl?commandName=account&client=" + CREDENTIALS.get(ACCOUNT_NR) + "&hide_no_value=false";
+    private final String positionsAssetsUrl = ACCOUNT_URL + "/AccountCtrl?commandName=assets&client=" + CREDENTIALS.get(ACCOUNT_NR);
 
     private final AssetService assetService;
-    private final SqMapper sqMapper;
 
     @Autowired
     public SqNavigator(
         AssetService assetService,
-        SqMapper sqMapper,
         AbricoreTabDriverConfigProvider tdConfig
     ) {
         super(new TabDriver(tdConfig));
         this.assetService = assetService;
-        this.sqMapper = sqMapper;
-    }
-
-    private void goToMainScreen() {
-        synchronized(td) {
-            td.get("https://trade.swissquote.ch/bank_security/login/RedirectAtLogin.action?l=d");
-        }
-    }
-
-    private void search(String keyword) {
-        synchronized(td) {
-            td.findElement(By.className("defaultInput")).sendKeys(keyword);
-        }
     }
 
     private void getAssetDetailScreen(AssetDto option) {
@@ -152,7 +137,7 @@ public class SqNavigator extends SqSession implements Navigator {
         LogU.infoPlain("Fetching TradeScreenSnap for [%s].", asset);
         try {
             var quoteMap = fetchPreTradeScreenTable(asset.getSqIsin());
-            return sqMapper.quoteMapToSnapShot(quoteMap);
+            return SqMapper.quoteMapToSnapShot(quoteMap);
         } catch (NoSuchElementException e) {
             // TODO timeout is slow, find a faster way.
             if (asset instanceof OptionDto) {
@@ -193,14 +178,14 @@ public class SqNavigator extends SqSession implements Navigator {
                 option.setStatus(OptionStatus.DEAD);
                 return option;
             }
-            quoteMap = sqMapper.simplifyKeys(resolveTable(td.findElement(By.className("FullquoteTable"))));
+            quoteMap = SqMapper.simplifyKeys(resolveTable(td.findElement(By.className("FullquoteTable"))));
         }
         sleep(500L);
         if (option.getUnderlying() == null) {
             String href = td.getByText(quoteMap.get(SqMapper.UNDERLYING)).getAttribute(HREF);
             option.setUnderlying(fetchUnderlyingAssetDetails(href));
         }
-        option = sqMapper.quoteMapToOption(quoteMap);
+        option = SqMapper.quoteMapToOption(quoteMap);
         option.setStatus(OptionStatus.KNOWN);
         return option;
     }
@@ -268,13 +253,13 @@ public class SqNavigator extends SqSession implements Navigator {
         synchronized(td) {
             Set<OptionDto> result = new HashSet<>();
             try {
-                result.addAll(fetchOptions(strategy, OptionType.CALL, lastTraded, minDistance, maxDistance));
+                result.addAll(fetchOptions(strategy, CALL, lastTraded, minDistance, maxDistance));
 
             } catch (Exception e) {
                 LogU.warnPlain("Failed fetching CALL Options. Nothing added. Will try again.");
             }
             try {
-                result.addAll(fetchOptions(strategy, OptionType.PUT, lastTraded, minDistance, maxDistance));
+                result.addAll(fetchOptions(strategy, PUT, lastTraded, minDistance, maxDistance));
             } catch (Exception e) {
                 LogU.warnPlain("Failed fetching PUT Options. Nothing added. Will try again.");
             }
@@ -306,7 +291,7 @@ public class SqNavigator extends SqSession implements Navigator {
 
             // 120 barrier options
             // 110 options
-            String up = optionType == OptionType.CALL ? "up" : "down";
+            String up = optionType == CALL ? "up" : "down";
             td.get("https://premium.swissquote.ch/sqi_web_search/market/equity/swissderivatives/" +
                 "SwissDerivativeSearch.action?&searchFilter.bean.trend=" +
                 up +
@@ -330,7 +315,7 @@ public class SqNavigator extends SqSession implements Navigator {
             // filter distance to lastTraded
             long minStrike;
             long maxStrike;
-            if (optionType == OptionType.CALL) {
+            if (optionType == CALL) {
                 minStrike = lastTraded - maxDistance;
                 maxStrike = lastTraded - minDistance;
             } else {
@@ -350,7 +335,7 @@ public class SqNavigator extends SqSession implements Navigator {
             List<String> cellTexts = td.findElement(By.id("results"))
                 .findElements(By.cssSelector("td"))
                 .stream().map(WebElement::getText)
-                .collect(Collectors.toList());
+                .toList();
 
             String[] errorStrings = {"Keine Produkte gefunden"};
             for (String errorString : errorStrings) {
@@ -404,7 +389,7 @@ public class SqNavigator extends SqSession implements Navigator {
         Map<Integer, List<String>> cashTable;
         LogU.infoStart("fetch CASH POSITIONS.");
         synchronized(td) {
-            td.get(POSITIONS_CASH_URL);
+            td.get(positionsCashUrl);
             cashTable = resolveTableMap(td.getByFieldValue(TABLE, ID, "account-table"));
         }
         for (var row : cashTable.entrySet()) {
@@ -430,12 +415,12 @@ public class SqNavigator extends SqSession implements Navigator {
         Set<PositionDto> positions = new HashSet<>();
         synchronized(td) {
             LogU.infoStart("fetch ASSET POSITIONS.");
-            td.get(POSITIONS_ASSETS_URL);
+            td.get(positionsAssetsUrl);
             var assetsTable = resolveTableMap(td.getByFieldValue(TABLE, ID, "assets-table"));
             for (var row : assetsTable.entrySet()) {
                 if (!row.getValue().contains("Buy")) { continue; }
                 String symbol = row.getValue().get(3);
-                td.get(POSITIONS_ASSETS_URL);
+                td.get(positionsAssetsUrl);
                 String href = td.getByText(symbol).getAttribute("href");
                 var option = getOptionData(href);
                 var position = new PositionDto();
@@ -455,7 +440,7 @@ public class SqNavigator extends SqSession implements Navigator {
         Set<TradeDto> trades = new HashSet<>();
         Map<Integer, List<String>> tradesTable;
         synchronized(td) {
-            td.get(TRADES_URL);
+            td.get(tradesUrl);
             tradesTable = resolveTableMap(td.getByFieldValue(TABLE, ID, "open-orders-table"));
         }
         var header = tradesTable.get(0);
@@ -517,7 +502,7 @@ public class SqNavigator extends SqSession implements Navigator {
     public OptionDto getOption(String symbol) {
         String href;
         synchronized(td) {
-            td.get(TRADES_URL);
+            td.get(tradesUrl);
             href = td.getByText(symbol).getAttribute("href");
         }
         return getOptionData(href);
@@ -530,13 +515,13 @@ public class SqNavigator extends SqSession implements Navigator {
      * Then use ISIN to gather data from detail page.
      */
     private OptionDto getOptionData(String href) {
-        String isin = sqMapper.hrefToIsin(href);
+        String isin = SqMapper.hrefToIsin(href);
         AssetDto asset = assetService.ofIsin(isin);
         if (asset instanceof OptionDto option) {
             return option;
         }
         LogU.warnPlain("Can't find Asset %s in AssetService. Adding as new Asset.", isin);
-        OptionDto optionFromHref = sqMapper.hrefToOption(href);
+        OptionDto optionFromHref = SqMapper.hrefToOption(href);
         OptionDto option = optionFromHref.mergeFrom(fetchOptionDetails(optionFromHref));
         assetService.addAsset(option);
         // NOTE: optionDetails also fetches the underlying asset, which may not yet be known.

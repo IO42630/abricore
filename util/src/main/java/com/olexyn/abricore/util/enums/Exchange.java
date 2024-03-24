@@ -27,6 +27,7 @@ public enum Exchange {
     SIX("4"),
     NASDAQ("67"),
     NYSE("65"),
+    OTHER_INDEXES("M8"),
     FX("10M", DataUtil.parseTime("08:00:00"), DataUtil.parseTime("22:00:00")); // COMMODITIES
     // For now we don't differentiate between SDOTS and the underlying FX in terms of trading hours.
     // This is because if the SDOTS is closed, we can't trade the underying FX anyways.
