@@ -29,15 +29,18 @@ public class UuidContext {
     /**
      * Service.class -> UUID -> Service
      */
-    @Synchronized
-    public synchronized <T> T getBean(Class<T> aClass, UUID uuid) {
-        mapUuid.computeIfAbsent(aClass, k -> new HashMap<>());
+    public <T> T getBean(Class<T> aClass, UUID uuid) {
+        synchronized(mapUuid) {
+            mapUuid.computeIfAbsent(aClass, k -> new HashMap<>());
+        }
         Object obj = null;
         try {
             obj = mapUuid.get(aClass).get(uuid);
             if (obj == null) {
                 obj = ctx.getBean(aClass);
-                mapUuid.get(aClass).put(uuid, obj);
+                synchronized(mapUuid) {
+                    mapUuid.get(aClass).put(uuid, obj);
+                }
             }
         } catch (Exception e) {
             throw new MissingException("Could not get uuid bean." + e.getMessage());
