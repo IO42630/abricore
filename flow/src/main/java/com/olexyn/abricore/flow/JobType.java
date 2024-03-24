@@ -7,7 +7,7 @@ public enum JobType {
 
     OBS_POS_SQ("obs-pos-sq"),
     DL_TW("dl-tw"),
-    READ_TO_DB("read-to-db"),
+    READ_TMP_CSV_TO_DB("read-tmp-csv-to-db"),
     SYNC_OPTIONS_SQ("sync-opt-sq"),
     OBS_TW("obs-tw"),
     PAPER_OBS_TW("paper-obs-tw"),

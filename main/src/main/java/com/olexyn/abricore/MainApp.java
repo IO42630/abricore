@@ -101,7 +101,7 @@ public class MainApp {
                     .toList();
                 startJob(new DownloadTwJob(ctx, assetsToDownload, cmdOptions));
             }
-            case READ_TO_DB -> startJob(new ReadTmpCsvToDbJob(ctx));
+            case READ_TMP_CSV_TO_DB -> startJob(new ReadTmpCsvToDbJob(ctx));
             case OBS_POS_SQ -> {
                 startJob(new SyncOptionsSqJob(ctx, strategy));
                 startJob(new ObservePositionsSqJob(ctx));

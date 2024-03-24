@@ -12,7 +12,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 
-import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 public class ReadTmpCsvToDbJob extends Job {
@@ -41,6 +40,6 @@ public class ReadTmpCsvToDbJob extends Job {
     }
 
     @Override
-    public JobType getType() { return JobType.READ_TO_DB; }
+    public JobType getType() { return JobType.READ_TMP_CSV_TO_DB; }
 
 }
