@@ -1,6 +1,5 @@
 package com.olexyn.abricore.navi.mwatch;
 
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.navi.sq.SqSession;
 import com.olexyn.abricore.navi.tw.TwSession;
 
@@ -19,7 +18,6 @@ public final class MWatch {
     private static final Map<Class<? extends MWatchable>, Boolean> map = new HashMap<>();
 
     static {
-        map.put(TabDriver.class, false);
         map.put(TwSession.class, false);
         map.put(SqSession.class, false);
     }

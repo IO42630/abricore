@@ -1,18 +1,16 @@
 package com.olexyn.abricore.navi.tw;
 
 import com.olexyn.abricore.navi.Session;
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.navi.TabPurpose;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
-import org.openqa.selenium.By;
+import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.olexyn.abricore.navi.tw.TwUrls.TW_SIGNIN;
 
@@ -33,16 +31,15 @@ public abstract class TwSession extends Session implements MWatchable {
             if (MWatch.isAlive(TwSession.class)) { return; }
             LogU.infoStart("new Tw Session.");
             Map<String, String> credentials = fetchCredentials();
-            td.newTab(TabPurpose.TW_SESSION);
+            td.newTab(TabPurpose.TW_SESSION.name());
             td.get(TW_SIGNIN);
-            td.findByCss("button[class*='email']").click();
+            td.findByCss("button[class*='email']").orElseThrow().click();
             TabDriver.sleep(500);
-            td.findByCss("input[name*='username']").sendKeys(credentials.get("user"));
-            td.findByCss("input[name*='password']").sendKeys(credentials.get("pwd"));
-            td.findByCss("form[action*='sign']").submit();
+            td.findByCss("input[name*='username']").orElseThrow().sendKeys(credentials.get("user"));
+            td.findByCss("input[name*='password']").orElseThrow().sendKeys(credentials.get("pwd"));
+            td.findByCss("form[action*='sign']").orElseThrow().submit();
             TabDriver.sleep(1000);
-            Optional.ofNullable(td.getWhereClassName("tv-button", TabDriver.CRITERIA.ID, "email-signin__submit-button"))
-                .ifPresent(WebElement::click);
+            td.findByCss("button.tv-button#email-signin").ifPresent(WebElement::click);
             MWatch.setAlive(TwSession.class);
         }
     }

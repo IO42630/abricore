@@ -1,6 +1,5 @@
 package com.olexyn.abricore;
 
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.abricore.navi.sq.SqSession;
@@ -19,12 +18,6 @@ public final class MainUtil {
     public static void logout(ConfigurableApplicationContext ctx) {
         LogU.infoPlain("LOGOUT the Navigators.");
 
-        if (MWatch.isDead(TabDriver.class)) { return; }
-
-        synchronized(ctx.getBean(TabDriver.class)) {
-            ctx.getBean(TabDriver.class).quit();
-            MWatch.setDead(TabDriver.class);
-        }
         List<Class<? extends MWatchable>> navs = List.of(SqSession.class, TwSession.class);
         for (var nav : navs) {
             if (MWatch.isAlive(nav)) { MWatch.setDead(nav); }

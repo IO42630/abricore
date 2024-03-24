@@ -2,12 +2,13 @@ package com.olexyn.abricore.navi.tw;
 
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
+import com.olexyn.abricore.navi.AbricoreTabDriverConfigProvider;
 import com.olexyn.abricore.navi.Navigator;
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
+import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -44,12 +45,14 @@ public class TwNavigator extends TwSession implements Navigator {
     static boolean timeSkipDone = false;
     protected static boolean cookieAccepted = false;
 
-    private static final long TIMEFRAME_OF_DOWNLOAD =PropConf.getLong("tw.download.timeframe.hours");
+    private static final long TIMEFRAME_OF_DOWNLOAD = PropConf.getLong("tw.download.timeframe.hours");
     private static final long WAIT_TO_LOAD = PropConf.getLong("tw.download.timeframe.wait.to.load.seconds");
 
     @Autowired
-    public TwNavigator(TabDriver td) {
-        super(td);
+    public TwNavigator(
+        AbricoreTabDriverConfigProvider tdConfig
+    ) {
+        super(new TabDriver(tdConfig));
     }
 
     public void fetchHistoricalData(
@@ -86,7 +89,7 @@ public class TwNavigator extends TwSession implements Navigator {
     public void fetchHistoricalData(AssetDto asset, Interval interval) {
 
         synchronized(td) {
-            td.switchToTab(DOWNLOAD_TW);
+            td.switchToTab(DOWNLOAD_TW.name());
             sleep(1000);
 
             String url = asset.getTwSymbol().replace(":", "%3A");
@@ -136,7 +139,7 @@ public class TwNavigator extends TwSession implements Navigator {
         sleep(WAIT_TO_LOAD * Constants.SECONDS);
 
         synchronized(td) {
-            td.switchToTab(DOWNLOAD_TW);
+            td.switchToTab(DOWNLOAD_TW.name());
             sleep(1000);
             download();
         }
@@ -145,7 +148,7 @@ public class TwNavigator extends TwSession implements Navigator {
 
     public Set<SnapshotDto> fetchQuotes(List<AssetDto> assets) {
         synchronized(td) {
-            td.switchToTab(OBSERVE_TW);
+            td.switchToTab(OBSERVE_TW.name());
             Set<SnapshotDto> snapshotDtos = new HashSet<>();
 
             sleep(1000);
@@ -176,9 +179,11 @@ public class TwNavigator extends TwSession implements Navigator {
     }
 
     private void download() {
-        td.clickByFieldValue(BUTTON, "data-name", "save-load-menu");
+        td.findByCss("button[data-name*='save-load']").orElseThrow().click();
         td.getByText("Export chart data…").click();
-        td.clickByFieldValue(BUTTON, "name", "submit");
+        td.findByCss("button[name='submit']").orElseThrow().click();
     }
 
 }
+
+

@@ -1,13 +1,14 @@
 package com.olexyn.abricore.navi.sq;
 
 import com.olexyn.abricore.navi.Session;
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.navi.TabPurpose;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
+import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +34,12 @@ public abstract class SqSession extends Session implements MWatchable {
         synchronized(td) {
             if (MWatch.isAlive(SqSession.class)) { return; }
             LogU.infoStart("new Sq Session.");
-            td.newTab(TabPurpose.SQ_SESSION);
-            td.get("https://www.swissquote.ch/url/login_bank?l=de");
+            td.newTab(TabPurpose.SQ_SESSION.name());
+            td.get("https://trade.swissquote.ch");
+            TabDriver.sleep(1000);
+            td.findByCss("dbutiv[class='SmartL3']").ifPresent(WebElement::click);
+
+
             td.findElement(By.name("username")).sendKeys(CREDENTIALS.get("user"));
             TabDriver.sleep(1000);
             td.findElement(By.name("password")).sendKeys(CREDENTIALS.get("pwd"));
@@ -42,7 +47,15 @@ public abstract class SqSession extends Session implements MWatchable {
             td.findElement(By.id("loginText")).click();
             TabDriver.sleep(1000);
             try {
-                var confirmPwdPage = td.getWhereClassName("Confirm-password");
+                var mobileConfirm = td.findByCss("div[class='SmartL3']");
+                if (Objects.nonNull(mobileConfirm)) {
+                    td.findByCss("div[class='SmartL3__l3CodeAuthContainer']").ifPresent(WebElement::click);
+                }
+            } catch (Exception e) {
+                // NOP
+            }
+            try {
+                var confirmPwdPage = td.findByCss("div[class='Confirm-password']");
                 if (Objects.nonNull(confirmPwdPage)) {
                     td.findElement(By.id("password")).sendKeys(CREDENTIALS.get("pwd"));
                     td.findElement(By.className("Button--primary")).click();
@@ -50,11 +63,10 @@ public abstract class SqSession extends Session implements MWatchable {
             } catch (Exception e) {
                 // NOP
             }
-            var keyHolder = td.getWhereClassName("L3Code__l3Element");
-            String key = null;
-            if (Objects.nonNull(keyHolder)) {
-                key = keyHolder.getText();
-            }
+
+
+
+            String key = td.findByCss("div[class='L3Code__l3Element']").orElseThrow().getText();
             TabDriver.sleep(1000);
             td.findElement(By.className("L3Code__l3Input")).sendKeys(CREDENTIALS.get(key));
             TabDriver.sleep(1000);

@@ -19,6 +19,7 @@ import com.olexyn.abricore.util.enums.PositionStatus;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
+import com.olexyn.tabdriver.TabDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.By;
@@ -83,9 +84,9 @@ public class SqNavigator extends SqSession implements Navigator {
     public SqNavigator(
         AssetService assetService,
         SqMapper sqMapper,
-        TabDriver td
+        AbricoreTabDriverConfigProvider tdConfig
     ) {
-        super(td);
+        super(new TabDriver(tdConfig));
         this.assetService = assetService;
         this.sqMapper = sqMapper;
     }
@@ -129,7 +130,7 @@ public class SqNavigator extends SqSession implements Navigator {
 
     private Map<String, String> fetchPreTradeScreenTable(String isin) {
         synchronized(td) {
-            td.switchToTab(OBSERVE_SQ);
+            td.switchToTab(OBSERVE_SQ.name());
             getPreTradeScreen(isin);
             if (td.getCurrentUrl().contains("sqtr_disclaimer")) {
                 td.findElement(By.id("disclaimerAcceptCheckbox")).click();
@@ -168,7 +169,7 @@ public class SqNavigator extends SqSession implements Navigator {
     public OptionDto fetchAssetDetails(OptionDto option) {
         Map<String, String> quoteMap;
         synchronized(td) {
-            td.switchToTab(OBSERVE_SQ);
+            td.switchToTab(OBSERVE_SQ.name());
             getAssetDetailScreen(option);
             if (td.getCurrentUrl().contains("sqi_web_search")) {
                 option.setStatus(OptionStatus.DEAD);
@@ -268,7 +269,7 @@ public class SqNavigator extends SqSession implements Navigator {
 
         synchronized(td) {
             LogU.infoStart("fetch %s options for %s", optionType, asset);
-            td.switchToTab(SYNC_CDF_SQ);
+            td.switchToTab(SYNC_CDF_SQ.name());
             Set<OptionDto> result = new HashSet<>();
             if (asset.getSqIsin() == null || asset.getSqIsin().isEmpty()) {
                 LogU.warnPlain("Requested Asset has no ISIN. Returning empty Set");
@@ -286,10 +287,10 @@ public class SqNavigator extends SqSession implements Navigator {
                 "&searchFilter.bean.productClass=120\n");
 
             // mono underlying
-            td.setRadio(By.id("searchFilter.bean.monoUnderlying1"), true);
+            td.setRadio(td.findByCss("#searchFilter.bean.monoUnderlying1").orElseThrow(), true);
 
             // sdots
-            td.setRadio(By.id("searchFilter.bean.exchangeId2"), true);
+            td.setRadio(td.findByCss("#searchFilter.bean.exchangeId2").orElseThrow(), true);
 
             // set CHF
             td.setComboByDataValue(By.id("searchFilter.bean.currencyFilter"), Currency.CHF.name());
@@ -533,8 +534,7 @@ public class SqNavigator extends SqSession implements Navigator {
                 .sendKeys(String.valueOf(num(trade.getAmount())));
             td.getByFieldValue(INPUT, "name", "orderDescription.limit")
                 .sendKeys(prettyStr(trade.getBuyPrice(), 2));
-            td.findByCss("a[id*='button.continueTrade']")
-                .click();
+            td.findByCss("a[id*='button.continueTrade']").orElseThrow().click();
             td.getByFieldValue("a", ID, "button.placeOrder").click();
             trade.setBuyId(td.getByFieldValue(SPAN, ID, "orderNumber").getText());
         }
