@@ -17,7 +17,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.time.Duration;
 import java.util.stream.Stream;
 
-import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 /**
@@ -78,13 +77,18 @@ public class SyncOptionsSqJob extends Job {
     }
 
     private OptionDto fillDetails(OptionDto option) {
-        var existing = bean(AssetService.class).ofName(option.getName());
-        if (existing != null) {
+        var existingAsset = bean(AssetService.class).ofName(option.getName());
+        if (existingAsset instanceof OptionDto existingOption) {
             // with some option types, the strike changes, thus we need to update.
             // but no need for fetchAssetDetails since strike is part of basic data.
-            return ((OptionDto) existing).mergeFrom(option);
+            return existingOption.mergeFrom(option);
         }
-        return option.mergeFrom(bean(SqNavigator.class).fetchAssetDetails(option));
+        option = option.mergeFrom(bean(SqNavigator.class).fetchOptionDetails(option));
+        var ulFromIsin = bean(AssetService.class).ofIsin(option.getUnderlying().getSqIsin());
+        if (ulFromIsin == null) {
+            bean(AssetService.class).addAsset(option.getUnderlying());
+        }
+        return option;
     }
 
     @Override
