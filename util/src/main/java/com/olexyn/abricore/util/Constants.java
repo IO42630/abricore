@@ -20,6 +20,7 @@ public interface Constants {
     String NULL_STR = "null";
     String ZERO_STR = "0";
     String UL = "_";
+    String EQ = "=";
     String SLASH = "/";
     String DASH = "-";
     char DASH_C = '-';
@@ -28,6 +29,7 @@ public interface Constants {
     Long SECONDS = 1000L;
     Long MINUTES = 60L;
     Long HOURS = 60L;
+    String HREF = "href";
     String HOME = "data.home";
     String WORKING_DIR = "user.dir";
     String BUTTON = "button";
