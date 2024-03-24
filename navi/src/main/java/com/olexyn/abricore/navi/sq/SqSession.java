@@ -64,13 +64,11 @@ public abstract class SqSession extends Session implements MWatchable {
                 // NOP
             }
 
-
-
-            String key = td.findByCss("div[class='L3Code__l3Element']").orElseThrow().getText();
+            String key = td.findByCss("[class*='L3Code__l3Element']").orElseThrow().getText();
             TabDriver.sleep(1000);
-            td.findElement(By.className("L3Code__l3Input")).sendKeys(CREDENTIALS.get(key));
+            td.findByCss("[class*='-L3Code__l3Input']").orElseThrow().sendKeys(CREDENTIALS.get(key));
             TabDriver.sleep(1000);
-            td.findElement(By.className("L3Code__l3Button")).click();
+            td.findByCss("[class*='-L3Code__l3Button']").orElseThrow().click();
             TabDriver.sleep(1000);
             MWatch.setAlive(SqSession.class);
         }
