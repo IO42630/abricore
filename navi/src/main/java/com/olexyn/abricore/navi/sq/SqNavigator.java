@@ -1,14 +1,17 @@
 package com.olexyn.abricore.navi.sq;
 
 import com.olexyn.abricore.model.runtime.PositionDto;
+import com.olexyn.abricore.model.runtime.SqDetail;
 import com.olexyn.abricore.model.runtime.TradeDto;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
+import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
 import com.olexyn.abricore.model.runtime.assets.OptionType;
+import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
+import com.olexyn.abricore.navi.AbricoreTabDriverConfigProvider;
 import com.olexyn.abricore.navi.Navigator;
-import com.olexyn.abricore.navi.TabDriver;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.DataUtil;
@@ -43,6 +46,7 @@ import java.util.stream.Collectors;
 import static com.olexyn.abricore.navi.TabPurpose.OBSERVE_SQ;
 import static com.olexyn.abricore.navi.TabPurpose.SYNC_CDF_SQ;
 import static com.olexyn.abricore.util.Constants.EMPTY;
+import static com.olexyn.abricore.util.Constants.HREF;
 import static com.olexyn.abricore.util.Constants.ID;
 import static com.olexyn.abricore.util.Constants.INPUT;
 import static com.olexyn.abricore.util.Constants.NULL_INPUT_MESSAGE;
@@ -103,13 +107,11 @@ public class SqNavigator extends SqSession implements Navigator {
         }
     }
 
-    private void getAssetDetailScreen(OptionDto option) {
+    private void getAssetDetailScreen(AssetDto option) {
         String isin = option.getSqIsin();
         Exchange exchange = option.getExchange();
         Currency currency = option.getCurrency();
-        String baseUrl = "https://premium.swissquote.ch/sq_mi/market/Detail.action";
-        String isinParam = "?s=" + isin + '_' + exchange.getCode() + '_' + currency.name();
-        get(StringUtils.join(baseUrl, isinParam));
+        get(SqMapper.encodeSqDetailHref(new SqDetail(isin, exchange, currency)));
     }
 
     /**
@@ -161,12 +163,29 @@ public class SqNavigator extends SqSession implements Navigator {
         }
     }
 
+    public UnderlyingAssetDto fetchUnderlyingAssetDetails(String href) {
+        var sqDetails = SqMapper.decodeSqDetailHref(href);
+        var ul = new UnderlyingAssetDto(EMPTY);
+        ul.setSqIsin(sqDetails.getIsin());
+        ul.setExchange(sqDetails.getExchange());
+        ul.setCurrency(sqDetails.getCurrency());
+        ul.setAssetType(AssetType.UNKNOWN); // for now set to unknown
+        synchronized(td) {
+            td.switchToTab(OBSERVE_SQ.name());
+            getAssetDetailScreen(ul);
+            td.findByCss("span[class*='Breadcrumbs__current']")
+                .ifPresent(x -> ul.setName(x.getText()));
+        }
+        sleep(500L);
+        return ul;
+    }
+
     /**
      * Fetch option data from the AssetDetails screen. <br>
      * This creates a complete data set. <br>
      * However the data is probably delayed, thus e.g. price will need to be updated via PreTrade screen.
      */
-    public OptionDto fetchAssetDetails(OptionDto option) {
+    public OptionDto fetchOptionDetails(OptionDto option) {
         Map<String, String> quoteMap;
         synchronized(td) {
             td.switchToTab(OBSERVE_SQ.name());
@@ -176,11 +195,12 @@ public class SqNavigator extends SqSession implements Navigator {
                 return option;
             }
             quoteMap = sqMapper.simplifyKeys(resolveTable(td.findElement(By.className("FullquoteTable"))));
-            String href = td.getByText(quoteMap.get(sqMapper.UNDERLYING)).getAttribute("href");
-            String underlyingIsin = DataUtil.resolveHrefParams(href).get("s").split(UL)[0];
-            quoteMap.put(sqMapper.UNDERLYING_ISIN, underlyingIsin);
         }
         sleep(500L);
+        if (option.getUnderlying() == null) {
+            String href = td.getByText(quoteMap.get(SqMapper.UNDERLYING)).getAttribute(HREF);
+            option.setUnderlying(fetchUnderlyingAssetDetails(href));
+        }
         option = sqMapper.quoteMapToOption(quoteMap);
         option.setStatus(OptionStatus.KNOWN);
         return option;
@@ -504,13 +524,18 @@ public class SqNavigator extends SqSession implements Navigator {
     private OptionDto getOptionData(String href) {
         String isin = sqMapper.hrefToIsin(href);
         AssetDto asset = assetService.ofIsin(isin);
-        if (asset != null) {
-            return (OptionDto) asset;
+        if (asset instanceof OptionDto option) {
+            return option;
         }
         LogU.warnPlain("Can't find Asset %s in AssetService. Adding as new Asset.", isin);
         OptionDto optionFromHref = sqMapper.hrefToOption(href);
-        OptionDto option = optionFromHref.mergeFrom(fetchAssetDetails(optionFromHref));
+        OptionDto option = optionFromHref.mergeFrom(fetchOptionDetails(optionFromHref));
         assetService.addAsset(option);
+        // NOTE: optionDetails also fetches the underlying asset, which may not yet be known.
+        var ulFromIsin = assetService.ofIsin(option.getUnderlying().getSqIsin());
+        if (ulFromIsin == null) {
+            assetService.addAsset(option.getUnderlying());
+        }
         return option;
     }
 
