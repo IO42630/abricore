@@ -41,13 +41,22 @@
     </table>
 
 
-    <div th:each="jobType : ${jobTypes}">
-        <form th:action="@{/start-job}" method="post">
-            <label th:text="${jobType.getCommand()}"></label>
-            <input type="hidden" th:name="jobType" th:value="${jobType.getCommand()}">
-            <button type="submit">Start</button>
-        </form>
+    <div style="display: flex; flex-wrap: wrap;">
+        <div th:each="jobType : ${jobTypes}" style="width: 50%;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label th:text="${jobType.getCommand()}" style="margin-right: auto;"></label>
+                <form th:action="@{/start-job}" method="post">
+                    <input type="hidden" th:name="jobType" th:value="${jobType.getCommand()}">
+                    <button type="submit" style="margin-left: auto;">Start</button>
+                </form>
+                <form th:action="@{/stop-job}" method="post">
+                    <input type="hidden" th:name="jobType" th:value="${jobType.getCommand()}">
+                    <button type="submit" style="margin-left: auto;">Stop</button>
+                </form>
+            </div>
+        </div>
     </div>
+
     <div th:each="taskType : ${taskTypes}">
         <form th:action="@{/run-task}" method="post">
             <label th:text="${taskType.getCommand()}"></label>

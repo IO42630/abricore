@@ -77,8 +77,8 @@ public class AppController {
         return ROOT;
     }
 
-    @PostMapping("/end-job")
-    public String endJob(@RequestParam String jobType) {
+    @PostMapping("/stop-job")
+    public String stopJob(@RequestParam String jobType) {
         MainApp.cancelJob(jobType);
         return ROOT;
     }
