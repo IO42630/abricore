@@ -1,17 +1,16 @@
 package com.olexyn.abricore.navi.sq;
 
+import com.olexyn.abricore.model.runtime.SqDetail;
 import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.OptionDto;
 import com.olexyn.abricore.model.runtime.assets.OptionType;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
-import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.Currency;
 import com.olexyn.abricore.util.enums.Exchange;
 import com.olexyn.abricore.util.enums.OptionStatus;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,9 +23,10 @@ import static com.olexyn.abricore.util.Constants.DASH;
 import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.Constants.SLASH;
 import static com.olexyn.abricore.util.Constants.SPACE;
+import static com.olexyn.abricore.util.Constants.UL;
 import static com.olexyn.abricore.util.num.NumSerialize.fromStr;
 
-@Component
+@UtilityClass
 public class SqMapper {
 
     private static final String STRIKE = "Strike";
@@ -37,23 +37,17 @@ public class SqMapper {
     private static final String GELDKURS_KEY = "Geldkurs ";
 
 
-    private final AssetService assetService;
 
-    @Autowired
-    private SqMapper(AssetService assetService) {
-        this.assetService = assetService;
-    }
+
 
     /**
      * quoteMap -> OPTION <br>
      * Result is not meant to be complete. <br>
      * Use Option.merge() and Option.isComplete() to complete the Option data.
      */
-    public OptionDto quoteMapToOption(Map<String, String> quoteMap) {
+    public static OptionDto quoteMapToOption(Map<String, String> quoteMap) {
         OptionDto option = new OptionDto();
         quoteMap = simplifyKeys(quoteMap);
-        // UNDERLYING
-        option.setUnderlying(assetService.ofIsin(quoteMap.get(UNDERLYING_ISIN)));
         // STRIKE
         String value = quoteMap.get(STRIKE);
         if (value.contains(SLASH)) {
@@ -95,7 +89,7 @@ public class SqMapper {
         return option;
     }
 
-    public Map<String, String> simplifyKeys(Map<String, String> quoteMap) {
+    public static Map<String, String> simplifyKeys(Map<String, String> quoteMap) {
         Map<String, String> simplifiedMap = new java.util.HashMap<>(quoteMap);
         for (var entry : quoteMap.entrySet()) {
             var key = entry.getKey();
@@ -119,7 +113,7 @@ public class SqMapper {
     /**
      * quoteMap -> SNAPSHOT
      */
-    public SnapshotDto quoteMapToSnapShot(Map<String, String> quoteMap) {
+    public static SnapshotDto quoteMapToSnapShot(Map<String, String> quoteMap) {
         var snap = new SnapshotDto();
         for (Entry<String, String> entry : quoteMap.entrySet()) {
             String key = entry.getKey();
@@ -151,11 +145,11 @@ public class SqMapper {
         return snap;
     }
 
-    public String hrefToIsin(String href) {
+    public static String hrefToIsin(String href) {
         return DataUtil.resolveHrefParams(href).get("isin");
     }
 
-    public OptionDto hrefToOption(String href) {
+    public static OptionDto hrefToOption(String href) {
         Map<String, String> paramMap = DataUtil.resolveHrefParams(href);
         String isin = paramMap.get("isin");
         OptionDto option = new OptionDto(isin);
@@ -164,5 +158,23 @@ public class SqMapper {
         if (paramMap.containsKey("currency")) { option.setCurrency(Currency.valueOf(paramMap.get("currency"))); }
         return option;
     }
+
+    // <a href="https://premium.swissquote.ch/sq_mi/market/Detail.action?s=US0000000000_67_USD">...</a>
+    private static final String SQ_DETAIL_QUERY = "https://premium.swissquote.ch/sq_mi/market/Detail.action?s=";
+
+    public static String encodeSqDetailHref(SqDetail sqDetail) {
+        return SQ_DETAIL_QUERY + sqDetail.getIsin() + UL + sqDetail.getExchange().getCode() + UL + sqDetail.getCurrency().name();
+    }
+
+    public static SqDetail decodeSqDetailHref(String encodedHref) {
+        var trimmed = encodedHref.replace(SQ_DETAIL_QUERY, EMPTY);
+        var parts = trimmed.split(UL);
+        return new SqDetail(
+            parts[0],
+            Exchange.ofCode(parts[1]),
+            Currency.valueOf(parts[2])
+        );
+    }
+
 
 }
