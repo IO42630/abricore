@@ -52,7 +52,6 @@ import static com.olexyn.abricore.util.Constants.INPUT;
 import static com.olexyn.abricore.util.Constants.NULL_INPUT_MESSAGE;
 import static com.olexyn.abricore.util.Constants.SPAN;
 import static com.olexyn.abricore.util.Constants.TABLE;
-import static com.olexyn.abricore.util.Constants.UL;
 import static com.olexyn.abricore.util.Constants.VALUE;
 import static com.olexyn.abricore.util.enums.TradeStatus.CLOSE_EXECUTED;
 import static com.olexyn.abricore.util.enums.TradeStatus.CLOSE_ISSUED;
@@ -268,8 +267,17 @@ public class SqNavigator extends SqSession implements Navigator {
     public Set<OptionDto> fetchOptions(StrategyDto strategy, long lastTraded, long minDistance, long maxDistance) {
         synchronized(td) {
             Set<OptionDto> result = new HashSet<>();
-            result.addAll(fetchOptions(strategy, OptionType.CALL, lastTraded, minDistance, maxDistance));
-            result.addAll(fetchOptions(strategy, OptionType.PUT, lastTraded, minDistance, maxDistance));
+            try {
+                result.addAll(fetchOptions(strategy, OptionType.CALL, lastTraded, minDistance, maxDistance));
+
+            } catch (Exception e) {
+                LogU.warnPlain("Failed fetching CALL Options. Nothing added. Will try again.");
+            }
+            try {
+                result.addAll(fetchOptions(strategy, OptionType.PUT, lastTraded, minDistance, maxDistance));
+            } catch (Exception e) {
+                LogU.warnPlain("Failed fetching PUT Options. Nothing added. Will try again.");
+            }
             return result;
         }
     }
