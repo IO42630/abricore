@@ -20,7 +20,7 @@ And `Jobs` which move data between resources, such as:
 | File | Description
 | link:doc/Data.adoc[Data.adoc] |
 | link:doc/Hierarchy.adoc[Hierarchy.adoc] | structural / UML class view.
-| link:doc/Jobs.adoc[Jobs.adoc] | List of `Job`, their flow and dependencies.
+| link:doc/Jobs+Tasks.adoc[Jobs.adoc] | List of `Job`, their flow and dependencies.
 | link:doc/LockFlows.adoc[LockFlows.adoc] | ?
 | link:doc/Strategy.adoc[Strategy.adoc] | ?
 | link:doc/UUID.adoc[UUID.adoc] | usage of UUID in _abricore_.
@@ -31,7 +31,7 @@ And `Jobs` which move data between resources, such as:
 
 [cols="1,2"]
 |===
-| `start <job name>` | see link:doc/Jobs.adoc[Jobs.adoc] for job names.
+| `start <job name>` | see link:doc/Jobs+Tasks.adoc[Jobs.adoc] for job names.
 | `e` | Exit (soft ~ persist data).
 | `is <resource>` | Request status of some resource.
 | `is temp` | Status of the `quotes.dir.tmp` directory.

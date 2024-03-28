@@ -178,7 +178,7 @@ lw=1.4</panel_attributes>
       <h>32</h>
     </coordinates>
     <panel_attributes>halign=left
-read-to-db
+read-tmp-csv-to-db
 bg=#1565C0
 transparency=80
 valign=center</panel_attributes>

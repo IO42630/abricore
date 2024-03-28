@@ -154,16 +154,17 @@ public class TwNavigator extends TwSession implements Navigator {
             sleep(1000);
             ensureUrl(TW_HOME);
 
-            WebElement watchlist = td.findElement(By.className("widgetbar-widget-watchlist"));
+            WebElement watchlist = td.findByCss("[class*='widgetbar-widget-watchlist']").orElseThrow();
             if (!watchlist.isDisplayed()) {
-                WebElement watchlistButton = td.findElement(By.cssSelector("div[data-name='base']"));
-                watchlistButton.click();
+                td.findByCss("[aria-label*='Watchlist']").orElseThrow().click();
             }
 
             for (var asset : assets) {
-                String dataSymbolFull = String.format("div[data-symbol-full='%s']", asset.getTwSymbol());
-                WebElement symbol = td.findElement(By.cssSelector(dataSymbolFull));
-                WebElement last = td.getByFieldValue(symbol, "span", "class*", " last-");
+
+                var symbolRow = td.findByCss(String.format("[data-symbol-full*='%s']", asset.getTwSymbol()))
+                    .orElseThrow();
+
+                WebElement last = td.findByCss(symbolRow, "span[class*='last-']").orElseThrow();
                 SnapshotDto snapshotDto = new SnapshotDto(asset);
                 snapshotDto.setInstant(Instant.now());
                 snapshotDto.setTradePrice(fromStr(last.getText()));

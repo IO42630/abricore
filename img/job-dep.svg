@@ -42,7 +42,7 @@
         </g>
         <g transform="translate(540,520)">
             <rect fill="none" x="0.5" width="88.5" height="18.5" y="0.5" clip-path="url(#clipPath3)"/>
-            <text x="5" font-size="14px" y="15.0547" clip-path="url(#clipPath3)" font-family="sans-serif" stroke="none" xml:space="preserve">read-to-db</text>
+            <text x="5" font-size="14px" y="15.0547" clip-path="url(#clipPath3)" font-family="sans-serif" stroke="none" xml:space="preserve">read-tmp-csv-to-db</text>
         </g>
         <g fill="rgb(154,106,27)" fill-opacity="0.2" transform="translate(690,480)" stroke-opacity="0.2" stroke="rgb(154,106,27)">
             <rect x="0.5" width="88.5" height="98.5" y="0.5" clip-path="url(#clipPath4)" stroke="none"/>

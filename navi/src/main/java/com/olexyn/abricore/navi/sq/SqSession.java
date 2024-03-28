@@ -37,7 +37,7 @@ public abstract class SqSession extends Session implements MWatchable {
             td.newTab(TabPurpose.SQ_SESSION.name());
             td.get("https://trade.swissquote.ch");
             TabDriver.sleep(1000);
-            td.findByCss("dbutiv[class='SmartL3']").ifPresent(WebElement::click);
+            td.findByCss("div[class='SmartL3']").ifPresent(WebElement::click);
 
 
             td.findElement(By.name("username")).sendKeys(CREDENTIALS.get("user"));
