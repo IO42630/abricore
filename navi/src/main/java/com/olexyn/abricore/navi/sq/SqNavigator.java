@@ -427,7 +427,7 @@ public class SqNavigator extends SqSession implements Navigator {
                 position.setAsset(option);
                 position.setStatus(PositionStatus.CONFIRMED);
                 position.setAmount(fromStr(row.getValue().get(4)));
-                position.setPrice(fromStr(row.getValue().get(5)));
+                position.setPrice(fromStr(row.getValue().get(8)));
                 positions.add(position);
             }
             LogU.infoEnd("fetched %s ASSET POSITIONS.", positions.size());
