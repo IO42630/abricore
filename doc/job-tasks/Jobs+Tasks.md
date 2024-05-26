@@ -1,9 +1,16 @@
 # Jobs+Tasks
 
-## Disambiguation
+## Types
 
 * `Job` : a `Runnable` that loops while it is not cancelled.
 * `Task` : a `Runnable` that is executed once.
+
+## Lifecycle
+
+* `ready` :
+    * set by the job itself, to indicate it is ready to be consumed
+    * used by dependants
+* `cancelled` : used by `main` to indicate _terminate upon completion of next loop_
 
 ## Jobs
 
@@ -32,7 +39,7 @@ Full lines indicate a _runtime_ dependency
 | Components   | `read-tmp-csv-to-db` |
 | Last Checked | 2024-03-24           |
 
-![dl-tw](img/dl-tw.svg)
+<img alt="dl-tw" src="img/dl-tw.svg"/>
 
 #### read-tmp-csv-to-db
 
@@ -75,7 +82,7 @@ Full lines indicate a _runtime_ dependency
 
 ![obs-pos-sq](img/obs-pos-sq.svg)
 
-{empty} +
+
 
 ##### 6. Observe TW : `obs-tw`  🆗
 
