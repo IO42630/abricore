@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker compose down abricore-db -d &&
+docker compose down abricore-db  &&
 echo "DONE"
