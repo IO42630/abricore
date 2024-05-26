@@ -119,8 +119,8 @@ public class SqNavigator extends SqSession implements Navigator {
             td.switchToTab(OBSERVE_SQ.name());
             getPreTradeScreen(isin);
             if (td.getCurrentUrl().contains("sqtr_disclaimer")) {
-                td.findElement(By.id("disclaimerAcceptCheckbox")).click();
-                td.executeScript("javascript:disclaimerModule.accept()");
+                td.findByCss("#disclaimerAcceptCheckbox").orElseThrow().click();
+                td.findByCss("a[class*='acceptBtn']").orElseThrow().click();
             }
             return resolveTable(td.findElement(By.className("tableContent")));
         }
