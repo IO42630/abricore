@@ -35,6 +35,7 @@ public class TradeEntity implements Serializable, AbstractEntity {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    // corresponds to ASSET.NAME
     @Column(name = "ASSET", nullable = false, length = 30)
     private String asset;
 

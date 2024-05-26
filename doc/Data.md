@@ -69,7 +69,16 @@ To build our 1S grid we patch this gap with the last known value.
 ** `OPEN` : currently not used.
 ** `CONFIRMED` : set when a  Positon is _fetched_.
 
-== Trade
+## Trade
+
+* we decided to group buy/sell into one obj _trade_ for tracebility.
+* however we need some additonal rules:
+    * if a position in an asset is open, no further position may be opened
+    * if a position is closed, it must be closed in its entirety
+* overall we will take `{ amount, asset }` as KEY
+    * the remaining values are just metadata
+
+* ID :
 * TradeStatus
 ** `OPEN_PREPARED`
 ** `OPEN_ISSUED`

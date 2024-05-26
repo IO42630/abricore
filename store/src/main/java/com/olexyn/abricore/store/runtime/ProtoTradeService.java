@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -54,24 +54,16 @@ public abstract class ProtoTradeService implements DtoService<TradeDto> {
         return (new ArrayList<>(getTrades().values())).parallelStream();
     }
 
-    /**
-     * Key is the BuyId of the TradeDto.
-     */
-    public synchronized TradeDto of(UUID uuid) {
-        return getTrades().get(uuid);
+
+
+    public synchronized @Nullable TradeDto of(TradeDto candiate) {
+        return getTradesStream()
+            .filter(t -> t.getAsset().getName().equals(candiate.getAsset().getName()))
+            .filter(t -> t.getAmount() == candiate.getAmount())
+            .max(Comparator.comparing(TradeDto::getId))
+            .orElse(null);
     }
 
-    public synchronized @Nullable TradeDto ofBuyId(String buyId) {
-        return getTradesStream()
-            .filter(trade -> trade.getBuyId() != null && trade.getBuyId().equals(buyId))
-            .findFirst().orElse(null);
-    }
-
-    public synchronized @Nullable TradeDto ofSellId(String sellId) {
-        return getTradesStream()
-            .filter(trade -> trade.getSellId() != null && trade.getSellId().equals(sellId))
-            .findFirst().orElse(null);
-    }
 
     /**
      * Key is the BuyId of the TradeDto.
@@ -84,9 +76,7 @@ public abstract class ProtoTradeService implements DtoService<TradeDto> {
     public synchronized ProtoTradeService update(Set<TradeDto> trades) {
         Set<TradeDto> toAdd = new HashSet<>();
         trades.forEach(trade -> {
-            var existingTrade = of(trade.getUuid());
-            if (existingTrade == null) { existingTrade = ofBuyId(trade.getBuyId()); }
-            if (existingTrade == null) { existingTrade = ofSellId(trade.getSellId()); }
+            var existingTrade = of(trade);
             if (existingTrade == null) { toAdd.add(trade); } else { existingTrade.mergeFrom(trade); }
         });
         toAdd.forEach(trade -> getTrades().put(trade.getUuid(), trade));
