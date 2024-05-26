@@ -61,7 +61,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
 
     private final PositionService positionService;
     private final AssetService assetService;
-    private final SqNavigator sqNavigator;
+    private final SqNavigator nav;
     @Getter
     private final ProtoTradeService tradeService;
 
@@ -85,7 +85,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         super(ctx, strategy);
         this.positionService = ctx.getBean(PositionService.class);
         this.assetService = ctx.getBean(AssetService.class);
-        this.sqNavigator = ctx.getBean(SqNavigator.class);
+        this.nav = ctx.getBean(SqNavigator.class);
         this.tradeService = ctx.getBean(UuidContext.class).getBean(TradeService.class, getUuid());
         setTimeHelper(bean(TimeHelper.class).init(strategy));
         setJobDependencyTypes(Set.of(OBS_TW));
@@ -155,13 +155,13 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     @Override
     public void placeBuyOrder(TradeDto trade) {
         if (trade == null || trade.getAsset() == null) { return; }
-        var snap = sqNavigator.fetchPreTradeScreenSnap(trade.getAsset());
+        var snap = nav.fetchPreTradeScreenSnap(trade.getAsset());
         if (snap == null) { return; }
         long expectedPrice = snap.getAskPrice();
         trade.setBuyPrice(expectedPrice);
         trade.setAmount(div(getSize(), expectedPrice));
         trade.setStatus(OPEN_PREPARED);
-        trade = sqNavigator.placeBuyOrder(trade);
+        trade = nav.placeBuyOrder(trade);
         getTradeService().put(trade);
     }
 
@@ -185,11 +185,11 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
                 break;
             case OPEN_EXECUTED:
                 // SELL
-                var snap = sqNavigator.fetchPreTradeScreenSnap(trade.getAsset());
+                var snap = nav.fetchPreTradeScreenSnap(trade.getAsset());
                 if (snap == null) { return; }
                 trade.setSellPrice(getStrategy().getSellDistance().generate(getObservedSeries()));
                 trade.setStatus(TradeStatus.CLOSE_PREPARED);
-                trade = sqNavigator.placeSellOrder(trade);
+                trade = nav.placeSellOrder(trade);
                 getTradeService().put(trade);
                 break;
             default:

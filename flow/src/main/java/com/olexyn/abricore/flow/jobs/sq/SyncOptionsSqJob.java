@@ -27,17 +27,19 @@ public class SyncOptionsSqJob extends Job {
 
     private final StrategyDto strategy;
     private final AssetDto underlyingAsset;
+    private final SqNavigator nav;
 
     public SyncOptionsSqJob(ConfigurableApplicationContext ctx, StrategyDto strategy) {
         super(ctx);
         this.strategy = strategy;
+        this.nav = ctx.getBean(SqNavigator.class);
         this.underlyingAsset = strategy.getUnderlying();
         this.sleepMilliPropertyKey = "sync.options.sq.interval.milli";
     }
 
     @Override
     public void nestedRun() {
-        bean(SqNavigator.class).doLogin();
+        nav.doLogin();
         while (!isCancelled()) {
             fetchData();
             setReady(true);
@@ -66,7 +68,7 @@ public class SyncOptionsSqJob extends Job {
         if (series == null) { return Stream.empty(); }
         long minOptionDistance = strategy.getMinOptionDistance().generate(series);
         long maxOptionDistance = strategy.getMaxOptionDistance().generate(series);
-        var foundOptions = bean(SqNavigator.class).fetchOptions(
+        var foundOptions = nav.fetchOptions(
             strategy,
             bean(SeriesService.class).getLastTraded(underlyingAsset),
             minOptionDistance,
@@ -83,7 +85,7 @@ public class SyncOptionsSqJob extends Job {
             // but no need for fetchAssetDetails since strike is part of basic data.
             return existingOption.mergeFrom(option);
         }
-        option = option.mergeFrom(bean(SqNavigator.class).fetchOptionDetails(option));
+        option = option.mergeFrom(nav.fetchOptionDetails(option));
         var ulFromIsin = bean(AssetService.class).ofIsin(option.getUnderlying().getSqIsin());
         if (ulFromIsin == null) {
             bean(AssetService.class).addAsset(option.getUnderlying());
