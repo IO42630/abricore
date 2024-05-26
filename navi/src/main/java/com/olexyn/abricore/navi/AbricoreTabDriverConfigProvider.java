@@ -6,7 +6,6 @@ import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriverConfigProvider;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -23,7 +22,7 @@ import static com.olexyn.abricore.util.Constants.WORKING_DIR;
 @Service
 public class AbricoreTabDriverConfigProvider extends CtxAware implements TabDriverConfigProvider {
 
-    private static final String CHROME_DRIVER = "chromedriver_119";
+    private static final String CHROME_DRIVER = "chromedriver_124";
 
 
     @Autowired
@@ -48,11 +47,10 @@ public class AbricoreTabDriverConfigProvider extends CtxAware implements TabDriv
     }
 
     @Override
-    public DesiredCapabilities getCapabilities() {
-        var cap = DesiredCapabilities.chrome();
-        cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+    public ChromeOptions getOptions() {
 
         ChromeOptions options = new ChromeOptions();
+        options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         options.addArguments("--start-maximized");
         if (isHeadless()) {
             options.addArguments("--window-size=1920,1080");
@@ -64,8 +62,7 @@ public class AbricoreTabDriverConfigProvider extends CtxAware implements TabDriv
         chromePrefs.put("download.default_directory", getDownloadDir());
         chromePrefs.put("download.prompt_for_download", false);
         options.setExperimentalOption("prefs", chromePrefs);
-        cap.setCapability(ChromeOptions.CAPABILITY, options);
-        return cap;
+        return options;
     }
 
 }
