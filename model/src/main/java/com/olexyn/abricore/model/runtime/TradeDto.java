@@ -49,7 +49,8 @@ public class TradeDto implements Serializable, Dto<TradeDto>, AssetHolder {
     }
 
     public void setId(Long id) {
-        if (this.id == null) { this.id = id; }
+        if (id == null || this.id != null) { return; }
+        this.id = id;
     }
 
     @Override
@@ -107,13 +108,13 @@ public class TradeDto implements Serializable, Dto<TradeDto>, AssetHolder {
     }
 
     public void setUuid(@Nullable UUID uuid) {
-        if (uuid == null) { return; }
+        if (uuid == null || this.uuid != null) { return; }
         this.uuid = uuid;
     }
 
     @Override
     public TradeDto mergeFrom(TradeDto other) {
-        this.id = other.getId();
+        setId(other.getId());
         this.asset = other.getAsset();
         this.status = other.getStatus();
         this.buyInstant = other.getBuyInstant();
