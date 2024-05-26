@@ -7,8 +7,6 @@ import com.olexyn.abricore.model.runtime.strategy.functions.DistanceGenerator;
 import com.olexyn.abricore.model.runtime.strategy.functions.SizingCondition;
 import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition;
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
-import com.olexyn.abricore.store.functions.condition.HasBolTailSize;
-import com.olexyn.abricore.store.functions.condition.IgnoreFalse;
 import com.olexyn.abricore.store.functions.condition.IgnoreTrue;
 import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.num.NumSerialize;
@@ -66,10 +64,10 @@ public class StrategyBuilder extends CtxAware {
     }
 
     public StrategyBuilder alwaysBuySell() {
-        strategy.setCallBuyCondition(bean(IgnoreTrue.class));
-        strategy.setPutBuyCondition(bean(IgnoreTrue.class));
-        strategy.setCallSellCondition(bean(IgnoreTrue.class));
-        strategy.setPutSellCondition(bean(IgnoreTrue.class));
+        strategy.setCallBuyCondition(new IgnoreTrue());
+        strategy.setPutBuyCondition(new IgnoreTrue());
+        strategy.setCallSellCondition(new IgnoreTrue());
+        strategy.setPutSellCondition(new IgnoreTrue());
         return this;
     }
 
@@ -77,25 +75,7 @@ public class StrategyBuilder extends CtxAware {
 
 
 
-    public StrategyBuilder callTailSizeCondition() {
-        strategy.setCallBuyCondition(
-            bean(HasBolTailSize.class)
-        );
-        strategy.setCallSellCondition(
-            bean(HasBolTailSize.class)
-        );
-        return this;
-    }
 
-    public StrategyBuilder ignorePuts() {
-        strategy.setPutBuyCondition(
-            bean(IgnoreFalse.class)
-        );
-        strategy.setPutSellCondition(
-            bean(IgnoreFalse.class)
-        );
-        return this;
-    }
 
     public StrategyDto build() {
         return strategy;
