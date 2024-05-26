@@ -300,10 +300,10 @@ public class SqNavigator extends SqSession implements Navigator {
                 "&searchFilter.bean.productClass=120\n");
 
             // mono underlying
-            td.setRadio(td.findByCss("#searchFilter.bean.monoUnderlying1").orElseThrow(), true);
+            td.setRadio(td.findByCss("#searchFilter\\.bean\\.monoUnderlying1").orElseThrow(), true);
 
             // sdots
-            td.setRadio(td.findByCss("#searchFilter.bean.exchangeId2").orElseThrow(), true);
+            td.setRadio(td.findByCss("#searchFilter\\.bean\\.exchangeId2").orElseThrow(), true);
 
             // set CHF
             td.setComboByDataValue(By.id("searchFilter.bean.currencyFilter"), Currency.CHF.name());
