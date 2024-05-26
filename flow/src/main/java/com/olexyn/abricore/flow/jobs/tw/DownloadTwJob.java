@@ -6,11 +6,9 @@ import com.olexyn.abricore.flow.jobs.store.ReadTmpCsvToDbJob;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.dao.EventDao;
-import com.olexyn.abricore.store.repo.EventRepo;
+import com.olexyn.abricore.util.enums.CmdOptions;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.enums.Interval;
-import com.olexyn.abricore.util.enums.CmdOptions;
-import com.olexyn.abricore.util.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -20,9 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.olexyn.abricore.flow.jobs.JobStarter.startJob;
-import static com.olexyn.abricore.util.Constants.EMPTY;
-import static com.olexyn.abricore.util.enums.FlowHint.OK;
 import static com.olexyn.abricore.util.enums.CmdOptions.FORCE;
+import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 public class DownloadTwJob extends Job {
 

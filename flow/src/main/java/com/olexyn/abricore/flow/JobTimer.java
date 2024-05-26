@@ -1,7 +1,7 @@
 package com.olexyn.abricore.flow;
 
 import com.olexyn.abricore.flow.jobs.Job;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 
 public class JobTimer {

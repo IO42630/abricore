@@ -10,7 +10,7 @@ import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.enums.FlowHint;
 import com.olexyn.abricore.util.enums.OptionStatus;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.springframework.context.ConfigurableApplicationContext;
 

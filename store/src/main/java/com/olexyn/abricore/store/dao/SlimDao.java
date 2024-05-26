@@ -3,7 +3,7 @@ package com.olexyn.abricore.store.dao;
 import com.olexyn.abricore.model.data.AbstractEntity;
 import com.olexyn.abricore.model.runtime.Dto;
 import com.olexyn.abricore.store.Mapper;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

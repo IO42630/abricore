@@ -19,7 +19,7 @@ import com.olexyn.abricore.store.functions.condition.StopLossAtMa;
 import com.olexyn.abricore.store.functions.generator.FactorDistance;
 import com.olexyn.abricore.store.functions.generator.FixedSize;
 import com.olexyn.abricore.util.exception.DataCorruptionException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import lombok.experimental.UtilityClass;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

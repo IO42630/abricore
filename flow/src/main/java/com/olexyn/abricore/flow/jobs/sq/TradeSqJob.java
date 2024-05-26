@@ -23,7 +23,7 @@ import com.olexyn.abricore.util.UuidContext;
 import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import lombok.Setter;
@@ -131,7 +131,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
             if (optionBrace.get(optionType) == null) { return; }
             if (isSizeNOK()) { return; }
             if (!getTimeHelper().isBuyAllowed()) { return; }
-            LogU.finePlain("BUY - " + optionType.name() + " - Checking conditions.");
+            LogU.infoPlain("BUY - " + optionType.name() + " - Checking conditions.");
             var trade = new TradeDto(optionBrace.get(optionType));
             if (testCondition(BUY, optionType, trade)) {
                 placeBuyOrder(trade);
@@ -281,22 +281,22 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         synchronized(getLock()) {
             getObservedSeries().removeObserver(this);
             getLock().notifyAll();
-            LogU.finePlain("Removing this observer.");
+            LogU.infoPlain("Removing this observer.");
         }
     }
 
     protected boolean shouldStart() {
         var allDepsPresent = hasAllDepsPresent();
         var underlyingNonEmpty = isUnderlyingNonEmpty();
-        if (!allDepsPresent) { LogU.finePlain("Dep Jobs not Ready. WAIT."); }
-        if (!underlyingNonEmpty) { LogU.finePlain("Underlying empty. WAIT."); }
+        if (!allDepsPresent) { LogU.infoPlain("Dep Jobs not Ready. WAIT."); }
+        if (!underlyingNonEmpty) { LogU.infoPlain("Underlying empty. WAIT."); }
         return allDepsPresent && underlyingNonEmpty;
     }
 
     private boolean shouldStop() {
         if (isCancelled()) { return true; }
         if (!hasAliveDependencies()) {
-            LogU.finePlain("%s no ALIVE dependencies.", getType());
+            LogU.infoPlain("%s no ALIVE dependencies.", getType());
             setCancelled(true);
             return true;
         }
@@ -307,7 +307,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         }
         Instant safeShutdownTime = getStrategy().getTo().minus(Duration.ofMinutes(3));
         if (lastPaperSnap.getInstant().isAfter(safeShutdownTime)) {
-            LogU.finePlain("%s   Safe shutdown time reached.", getUuid());
+            LogU.infoPlain("%s   Safe shutdown time reached.", getUuid());
             setCancelled(true);
             return true;
         }
@@ -330,7 +330,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         boolean cashMissing = getCash() < getSize();
         boolean isSizeNOK = totalSizeExceeded || cashMissing;
         if (isSizeNOK) {
-            LogU.finePlain("Size is NOK. No orders will be placed.");
+            LogU.infoPlain("Size is NOK. No orders will be placed.");
         }
         return isSizeNOK;
     }

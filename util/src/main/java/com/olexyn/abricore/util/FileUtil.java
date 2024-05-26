@@ -1,6 +1,6 @@
 package com.olexyn.abricore.util;
 
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;

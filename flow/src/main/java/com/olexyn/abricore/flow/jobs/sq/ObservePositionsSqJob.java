@@ -6,10 +6,8 @@ import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.TradeService;
 import com.olexyn.abricore.util.enums.FlowHint;
-import com.olexyn.abricore.util.log.LogU;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 

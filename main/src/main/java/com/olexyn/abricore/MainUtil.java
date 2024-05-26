@@ -4,7 +4,7 @@ import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.abricore.navi.sq.SqSession;
 import com.olexyn.abricore.navi.tw.TwSession;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import lombok.experimental.UtilityClass;
 import org.springframework.context.ConfigurableApplicationContext;
 

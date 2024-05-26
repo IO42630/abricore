@@ -1,7 +1,6 @@
 package com.olexyn.abricore.model.runtime.snapshots;
 
-import com.olexyn.abricore.model.runtime.assets.AssetDto;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.Nullable;

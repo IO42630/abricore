@@ -7,7 +7,7 @@ import com.olexyn.abricore.store.csv.TmpCsvStore;
 import com.olexyn.abricore.store.dao.SnapshotDao;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.enums.FlowHint;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;

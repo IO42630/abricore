@@ -4,7 +4,7 @@ import com.olexyn.abricore.navi.Session;
 import com.olexyn.abricore.navi.TabPurpose;
 import com.olexyn.abricore.navi.mwatch.MWatch;
 import com.olexyn.abricore.navi.mwatch.MWatchable;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.By;

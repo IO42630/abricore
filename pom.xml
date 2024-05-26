@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.olexyn</groupId>
-        <artifactId>min-root</artifactId>
-        <version>jdk17-spring-0.1</version>
+        <artifactId>min-root-spring</artifactId>
+        <version>17.0.0</version>
     </parent>
     <groupId>com.olexyn.abricore</groupId>
     <artifactId>abricore</artifactId>
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.olexyn</groupId>
                 <artifactId>min-bom</artifactId>
-                <version>jdk17-0.3</version>
+                <version>17.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -70,6 +70,10 @@
         <dependency>
             <groupId>com.olexyn</groupId>
             <artifactId>min-prop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.olexyn</groupId>
+            <artifactId>min-log</artifactId>
         </dependency>
         <dependency>
             <groupId>com.olexyn</groupId>

@@ -26,7 +26,7 @@ import com.olexyn.abricore.store.runtime.TradeService;
 import com.olexyn.abricore.store.runtime.VectorService;
 import com.olexyn.abricore.util.MemState;
 import com.olexyn.abricore.util.enums.CmdOptions;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

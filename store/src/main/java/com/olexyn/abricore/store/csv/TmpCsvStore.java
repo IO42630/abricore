@@ -7,7 +7,7 @@ import com.olexyn.abricore.store.dao.SnapshotDao;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.abricore.util.exception.StoreException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;

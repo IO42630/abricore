@@ -20,7 +20,7 @@ import com.olexyn.abricore.util.enums.Exchange;
 import com.olexyn.abricore.util.enums.OptionStatus;
 import com.olexyn.abricore.util.enums.PositionStatus;
 import com.olexyn.abricore.util.exception.WebException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriver;
 import org.apache.commons.lang3.StringUtils;

@@ -5,7 +5,7 @@ import com.olexyn.abricore.model.runtime.snapshots.Series;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.store.dao.SnapshotDao;
 import com.olexyn.abricore.util.exception.MissingException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

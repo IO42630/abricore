@@ -7,7 +7,7 @@ import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
 import com.olexyn.abricore.store.runtime.PaperSeriesService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.enums.FlowHint;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +20,6 @@ import java.util.List;
 import static com.olexyn.abricore.util.Constants.RNG;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 import static com.olexyn.abricore.util.enums.FlowHint.STOP;
-import static com.olexyn.abricore.util.enums.TransactionType.BUY;
-import static com.olexyn.abricore.util.enums.TransactionType.SELL;
 
 public class PaperObserveTwJob extends ObserveTwJob {
 
@@ -73,7 +71,7 @@ public class PaperObserveTwJob extends ObserveTwJob {
                 if (nextI == null) { return STOP; }
                 var realSnapshot = realSeries.getSnapshot(nextI);
                 fakeSeries.put(realSnapshot);
-            } catch (Exception e) { LogU.finePlain(e.getMessage(), e); }
+            } catch (Exception e) { LogU.infoPlain(e.getMessage(), e); }
         }
         return OK;
     }

@@ -6,12 +6,11 @@ import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
 import com.olexyn.abricore.util.exception.MissingException;
 import com.olexyn.abricore.util.exception.SoftCalcException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
-
 
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_BOL_TAIL_SIZE_BARS;
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_BOL_TAIL_SIZE_BOL_TIMES;
@@ -20,8 +19,6 @@ import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_B
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_BOL_TAIL_SIZE_BOL_TIMES;
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.SELL_BOL_TAIL_SIZE_SIZE;
 import static com.olexyn.abricore.util.Constants.S0;
-import static com.olexyn.abricore.util.enums.TransactionType.BUY;
-import static com.olexyn.abricore.util.enums.TransactionType.SELL;
 import static com.olexyn.abricore.util.num.NumUtil.toInt;
 
 

@@ -7,7 +7,7 @@ import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.store.Mapper;
 import com.olexyn.abricore.store.repo.SnapshotRepo;
 import com.olexyn.abricore.store.runtime.AssetService;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.olexyn.abricore.util.log.LogPrint.PLAIN;
+import static com.olexyn.min.log.LogPrint.PLAIN;
 import static java.util.logging.Level.INFO;
 
 @Service

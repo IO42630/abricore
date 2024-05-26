@@ -6,12 +6,11 @@ import com.olexyn.abricore.model.runtime.strategy.functions.TransactionCondition
 import com.olexyn.abricore.model.runtime.strategy.vector.VectorDto;
 import com.olexyn.abricore.util.exception.MissingException;
 import com.olexyn.abricore.util.exception.SoftCalcException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
-
 
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_RSI_BARS;
 import static com.olexyn.abricore.model.runtime.strategy.vector.VectorKey.BUY_RSI_RADIUS;

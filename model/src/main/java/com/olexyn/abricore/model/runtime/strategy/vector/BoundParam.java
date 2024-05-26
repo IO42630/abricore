@@ -1,7 +1,7 @@
 package com.olexyn.abricore.model.runtime.strategy.vector;
 
 import com.olexyn.abricore.util.exception.SoftCalcException;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import lombok.Getter;
 
 import java.util.Objects;

@@ -4,16 +4,14 @@ import com.olexyn.abricore.flow.JobTimer;
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.util.CtxAware;
 import com.olexyn.abricore.util.enums.FlowHint;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Objects;
 
 import static com.olexyn.abricore.flow.JobType.UNKNOWN;
-import static com.olexyn.abricore.util.Constants.EMPTY;
 import static com.olexyn.abricore.util.enums.FlowHint.OK;
 
 

@@ -1,7 +1,7 @@
 package com.olexyn.abricore.store.runtime;
 
 import com.olexyn.abricore.store.dao.EventDao;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

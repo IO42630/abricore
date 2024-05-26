@@ -6,7 +6,7 @@ import com.olexyn.abricore.navi.AbricoreTabDriverConfigProvider;
 import com.olexyn.abricore.navi.Navigator;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.enums.Interval;
-import com.olexyn.abricore.util.log.LogU;
+import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.Alert;
