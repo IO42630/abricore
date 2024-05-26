@@ -55,7 +55,9 @@ public abstract class ProtoTradeService implements DtoService<TradeDto> {
     }
 
 
-
+    /**
+     * ABC-1
+     */
     public synchronized @Nullable TradeDto of(TradeDto candiate) {
         return getTradesStream()
             .filter(t -> t.getAsset().getName().equals(candiate.getAsset().getName()))
@@ -106,6 +108,9 @@ public abstract class ProtoTradeService implements DtoService<TradeDto> {
             .filter(trade -> trade.getStatus() != CANCEL_EXECUTED);
     }
 
+    /**
+     * ABC-2
+     */
     private void addPreExistingTrades() {
         Set<PositionDto> preExistingPositions = new HashSet<>();
         positionDao.findDtos().stream()

@@ -73,7 +73,7 @@ Full lines indicate a _runtime_ dependency
 | Last Checked | 2024-03-24                        |
 | Description  | Observe Positions & Transactions. |
 
-image::../img/job-flows/obs-pos-sq.svg[,120%]
+![obs-pos-sq](img/obs-pos-sq.svg)
 
 {empty} +
 

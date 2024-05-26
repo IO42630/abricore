@@ -1,59 +1,45 @@
-= Abricore
-:toc:
-:toclevels: 4
-:stylesheet: ../shared/adoc-styles.css
+# Abricore
 
 {empty} +
 
-== Introduction
+## Introduction
 
-=== About
+### About
 
 A `JPA` / `POJO` / `Selenium` investing bot.
 It has `Services` which hold runtime data.
 And `Jobs` which move data between resources, such as:
 `DB` / `WEB` / `CSV`.
 
-== Other `README`
+## Other `README`
 
-|===
-| File | Description
-| link:doc/Data.adoc[Data.adoc] |
-| link:doc/Hierarchy.adoc[Hierarchy.adoc] | structural / UML class view.
-| link:doc/Jobs+Tasks.adoc[Jobs.adoc] | List of `Job`, their flow and dependencies.
-| link:doc/LockFlows.adoc[LockFlows.adoc] | ?
-| link:doc/Strategy.adoc[Strategy.adoc] | ?
-| link:doc/UUID.adoc[UUID.adoc] | usage of UUID in _abricore_.
-|===
+* see `./doc/*`
 
-== Queries
-* See also `MainApp` for query listeners.
 
-[cols="1,2"]
-|===
-| `start <job name>` | see link:doc/Jobs+Tasks.adoc[Jobs.adoc] for job names.
-| `e` | Exit (soft ~ persist data).
-| `is <resource>` | Request status of some resource.
-| `is temp` | Status of the `quotes.dir.tmp` directory.
-| `...` | TODO.
-|===
 
-== Overview
+## Queries
 
-==== Generic Template
+* See also `MainApp` for query listeners, or use the web-ui (http://0.0.0.0:24002/)
+
+
+
+### Overview
+
+#### Generic Template
 
 If we were to add a new `Service` we would need to implement the blue Template Objects. +
 If adding a `Job` implement the red Template Object instead.
 
-image::img/generic-job-template.png[]
+![](img/generic-job-template.png)
 
-{empty} +
 
-====  Modules
+
+#### Modules
 
 Here is an overview of the modules and the types they exchange.
 
-image::img/module-dep.png[]
+![](img/module-dep.png)
+
 
 [cols="2,4"]
 |===
@@ -71,7 +57,7 @@ Issues update / stop commands to `Series`.
 
 {empty} +
 
-== Logic Flow
+## Logic Flow
 
 The image below shows the flow between `Stores` and `Services`:
 
