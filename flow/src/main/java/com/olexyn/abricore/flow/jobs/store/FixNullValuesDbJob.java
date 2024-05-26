@@ -28,6 +28,7 @@ public class FixNullValuesDbJob extends Job {
 
     @Override
     public void nestedRun() {
+        setReady(true);
         fixPositionRepo();
         fixSnapshotRepo();
         fixSymbolRepo();

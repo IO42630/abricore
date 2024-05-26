@@ -33,9 +33,10 @@ public class ObservePositionsSqJob extends Job {
     @Override
     public void nestedRun() {
         nav.doLogin();
+
         while (!isCancelled()) {
             fetchData();
-            loopCount++;
+            setReady(true);
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
         }
     }

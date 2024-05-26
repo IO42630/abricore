@@ -40,7 +40,7 @@ public class SyncOptionsSqJob extends Job {
         bean(SqNavigator.class).doLogin();
         while (!isCancelled()) {
             fetchData();
-            loopCount++;
+            setReady(true);
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
         }
     }

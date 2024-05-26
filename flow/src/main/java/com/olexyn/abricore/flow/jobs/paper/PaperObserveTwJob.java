@@ -50,6 +50,7 @@ public class PaperObserveTwJob extends ObserveTwJob {
         var fetchState = OK;
         while (fetchState == OK && current.isBefore(getStrategy().getTo())) {
             fetchState = fetchData();
+            setReady(true);
             fetchCount++;
             setCurrent(getNextGrid(getCurrent()));
         }

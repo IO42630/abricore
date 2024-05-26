@@ -24,9 +24,12 @@ public class Job extends CtxAware implements Runnable {
 
     @Getter
     @Setter
+    private boolean ready = false;
+
+    @Getter
+    @Setter
     private boolean cancelled = false;
 
-    public int loopCount = 0;
     public String sleepMilliPropertyKey;
 
     @Getter

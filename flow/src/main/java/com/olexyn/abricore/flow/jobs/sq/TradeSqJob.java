@@ -99,6 +99,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
             getObservedSeries().addObverser(this);
             getLock().notifyAll();
         }
+        setReady(true);
         while (!shouldStart()) {
             synchronized(getLock()) {
                 getLock().safeWait(PropConf.getDuration("trade.wait.for.dependencies.milli"));
@@ -262,7 +263,7 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         var allDepsPresent = true;
         for (var depType : getJobDependencyTypes()) {
             var depTypePresent = getDependencies()
-                .anyMatch(job -> job.getType() == depType);
+                .anyMatch(job -> job.getType() == depType && job.isReady());
             if (!depTypePresent) {
                 allDepsPresent = false;
             }

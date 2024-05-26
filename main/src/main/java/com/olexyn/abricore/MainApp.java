@@ -124,10 +124,8 @@ public class MainApp {
                 if (PropConf.isNot("trade.is.test")) {
                     strategy = ctx.getBean(StrategyTemplates.class).tradeSq();
                 }
-                var syncOptionsSqJob = (SyncOptionsSqJob) startJob(new SyncOptionsSqJob(ctx, strategy));
-                var observePositionsSqJob = (ObservePositionsSqJob) startJob(new ObservePositionsSqJob(ctx));
-                MainUtil.sleepWhile(syncOptionsSqJob, x -> x.loopCount == 0);
-                MainUtil.sleepWhile(observePositionsSqJob, x -> x.loopCount == 0);
+                startJob(new SyncOptionsSqJob(ctx, strategy));
+                startJob(new ObservePositionsSqJob(ctx));
                 startJob(new TradeSqJob(ctx, strategy));
                 Thread.sleep(1000L);
                 var assetsToObserve = List.of(strategy.getUnderlying());

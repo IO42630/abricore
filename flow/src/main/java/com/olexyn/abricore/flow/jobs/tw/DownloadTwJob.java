@@ -45,6 +45,7 @@ public class DownloadTwJob extends Job {
     @Override
     public void nestedRun() {
         bean(TwNavigator.class).doLogin();
+        setReady(true);
         while (!isCancelled()) {
             var lastTwDownload = bean(EventDao.class).getInstant("tw.last.download");
             if (options.contains(FORCE) || lastTwDownload.plus(Duration.ofMinutes(INTERVAL_BETWEEN_DOWNLOADS)).isBefore(Instant.now())) {

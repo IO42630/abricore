@@ -22,6 +22,7 @@ public class ReadTmpCsvToDbJob extends Job {
 
     @Override
     public void nestedRun() {
+        setReady(true);
         try {
             new TmpCsvStore(
                 bean(SnapshotDao.class),

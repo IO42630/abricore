@@ -33,6 +33,7 @@ public class ObserveTwJob extends SJob {
         nav.doLogin();
         while (!isCancelled()) {
             fetchData();
+            setReady(true);
             getJobTimer().sleepMilli(this, sleepMilliPropertyKey);
         }
         synchronized(getLock()) {
