@@ -2,8 +2,6 @@ package com.olexyn.abricore.navi.sq;
 
 import com.olexyn.abricore.navi.Session;
 import com.olexyn.abricore.navi.TabPurpose;
-import com.olexyn.abricore.navi.mwatch.MWatch;
-import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriver;
@@ -14,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class SqSession extends Session implements MWatchable {
+public abstract class SqSession extends Session {
 
     private static final String PREFIX = "swiss_iol_";
     private static final String USER = "user";
@@ -31,8 +29,8 @@ public abstract class SqSession extends Session implements MWatchable {
 
     @Override
     public void doLogin() {
+        if (isLoggedIn()) { return; }
         synchronized(td) {
-            if (MWatch.isAlive(SqSession.class)) { return; }
             LogU.infoStart("new Sq Session.");
             td.newTab(TabPurpose.SQ_SESSION.name());
             td.get("https://trade.swissquote.ch");
@@ -70,7 +68,7 @@ public abstract class SqSession extends Session implements MWatchable {
             TabDriver.sleep(1000);
             td.findByCss("[class*='-L3Code__l3Button']").orElseThrow().click();
             TabDriver.sleep(1000);
-            MWatch.setAlive(SqSession.class);
+            setLoggedIn(true);
         }
     }
 

@@ -10,8 +10,8 @@ import com.olexyn.abricore.model.runtime.assets.OptionType;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
 import com.olexyn.abricore.model.runtime.strategy.StrategyDto;
-import com.olexyn.abricore.navi.AbricoreTabDriverConfigProvider;
 import com.olexyn.abricore.navi.Navigator;
+import com.olexyn.abricore.navi.TabDriverHolder;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.DataUtil;
@@ -22,7 +22,6 @@ import com.olexyn.abricore.util.enums.PositionStatus;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
-import com.olexyn.tabdriver.TabDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.By;
@@ -85,9 +84,9 @@ public class SqNavigator extends SqSession implements Navigator {
     @Autowired
     public SqNavigator(
         AssetService assetService,
-        AbricoreTabDriverConfigProvider tdConfig
+        TabDriverHolder tdh
     ) {
-        super(new TabDriver(tdConfig));
+        super(tdh.getTd());
         this.assetService = assetService;
     }
 

@@ -3,6 +3,7 @@ package com.olexyn.abricore;
 import com.olexyn.abricore.flow.JobType;
 import com.olexyn.abricore.flow.TaskType;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDistanceDto;
+import com.olexyn.abricore.navi.TabDriverHolder;
 import com.olexyn.abricore.navi.sq.SqNavigator;
 import com.olexyn.abricore.navi.tw.TwNavigator;
 import com.olexyn.abricore.store.dao.EventDao;
@@ -10,6 +11,7 @@ import com.olexyn.abricore.store.dao.SnapshotDistanceDao;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.util.DataUtil;
 import com.olexyn.abricore.util.enums.SnapshotDistanceType;
+import com.olexyn.tabdriver.TabDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -109,7 +111,8 @@ public class AppController {
 
     @PostMapping("/logout")
     public String logout() {
-        MainUtil.logout(ctx);
+        ctx.getBean(TabDriverHolder.class)
+            .getTdOpt().ifPresent(TabDriver::quit);
         return ROOT;
     }
 

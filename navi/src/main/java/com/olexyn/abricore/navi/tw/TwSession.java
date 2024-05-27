@@ -2,8 +2,6 @@ package com.olexyn.abricore.navi.tw;
 
 import com.olexyn.abricore.navi.Session;
 import com.olexyn.abricore.navi.TabPurpose;
-import com.olexyn.abricore.navi.mwatch.MWatch;
-import com.olexyn.abricore.navi.mwatch.MWatchable;
 import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
 import com.olexyn.tabdriver.TabDriver;
@@ -14,7 +12,7 @@ import java.util.Map;
 
 import static com.olexyn.abricore.navi.tw.TwUrls.TW_SIGNIN;
 
-public abstract class TwSession extends Session implements MWatchable {
+public abstract class TwSession extends Session {
 
 
     private static final String PREFIX = "tw_iol_";
@@ -27,8 +25,9 @@ public abstract class TwSession extends Session implements MWatchable {
 
     @Override
     public void doLogin() {
+        if (isLoggedIn()) { return; }
+
         synchronized(td) {
-            if (MWatch.isAlive(TwSession.class)) { return; }
             LogU.infoStart("new Tw Session.");
             Map<String, String> credentials = fetchCredentials();
             td.newTab(TabPurpose.TW_SESSION.name());
@@ -40,7 +39,7 @@ public abstract class TwSession extends Session implements MWatchable {
             td.findByCss("form[action*='sign']").orElseThrow().submit();
             TabDriver.sleep(1000);
             td.findByCss("button.tv-button#email-signin").ifPresent(WebElement::click);
-            MWatch.setAlive(TwSession.class);
+            setLoggedIn(true);
         }
     }
 

@@ -2,13 +2,12 @@ package com.olexyn.abricore.navi.tw;
 
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.snapshots.SnapshotDto;
-import com.olexyn.abricore.navi.AbricoreTabDriverConfigProvider;
 import com.olexyn.abricore.navi.Navigator;
+import com.olexyn.abricore.navi.TabDriverHolder;
 import com.olexyn.abricore.util.Constants;
 import com.olexyn.abricore.util.enums.Interval;
 import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
-import com.olexyn.tabdriver.TabDriver;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -50,9 +49,9 @@ public class TwNavigator extends TwSession implements Navigator {
 
     @Autowired
     public TwNavigator(
-        AbricoreTabDriverConfigProvider tdConfig
+        TabDriverHolder tdh
     ) {
-        super(new TabDriver(tdConfig));
+        super(tdh.getTd());
     }
 
     public void fetchHistoricalData(
@@ -116,6 +115,7 @@ public class TwNavigator extends TwSession implements Navigator {
                 var dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
                 String startDateStr = startDateTime.toLocalDate().format(dateFormatter);
                 String nowDateStr = LocalDate.now().format(dateFormatter);
+                sleep(100);
                 WebElement dateField = td.getByFieldValue(INPUT, "value", nowDateStr);
                 td.sendDeleteKeys(dateField, 10);
                 dateField.sendKeys(startDateStr);

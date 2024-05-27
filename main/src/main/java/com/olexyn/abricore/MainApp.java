@@ -19,6 +19,7 @@ import com.olexyn.abricore.flow.tools.PaperOptionTools;
 import com.olexyn.abricore.model.runtime.assets.AssetDto;
 import com.olexyn.abricore.model.runtime.assets.AssetType;
 import com.olexyn.abricore.model.runtime.assets.UnderlyingAssetDto;
+import com.olexyn.abricore.navi.TabDriverHolder;
 import com.olexyn.abricore.store.runtime.AssetService;
 import com.olexyn.abricore.store.runtime.PositionService;
 import com.olexyn.abricore.store.runtime.SeriesService;
@@ -28,6 +29,7 @@ import com.olexyn.abricore.util.MemState;
 import com.olexyn.abricore.util.enums.CmdOptions;
 import com.olexyn.min.log.LogU;
 import com.olexyn.propconf.PropConf;
+import com.olexyn.tabdriver.TabDriver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -77,7 +79,10 @@ public class MainApp {
         }
         INPUT.close();
 
-        MainUtil.logout(ctx);
+
+        ctx.getBean(TabDriverHolder.class)
+            .getTdOpt().ifPresent(TabDriver::quit);
+
 
         assetService.save();
         ctx.getBean(SeriesService.class).save();

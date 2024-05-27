@@ -3,6 +3,8 @@ package com.olexyn.abricore.navi;
 import com.olexyn.abricore.util.FileUtil;
 import com.olexyn.min.log.LogU;
 import com.olexyn.tabdriver.TabDriver;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +15,10 @@ import java.util.Map;
 public abstract class Session {
 
     public final TabDriver td;
+
+    @Getter
+    @Setter
+    private boolean loggedIn = false;
 
     public Session(TabDriver td) {
         this.td = td;
