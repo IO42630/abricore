@@ -20,7 +20,6 @@ import com.olexyn.abricore.store.runtime.ProtoTradeService;
 import com.olexyn.abricore.store.runtime.SeriesService;
 import com.olexyn.abricore.store.runtime.TradeService;
 import com.olexyn.abricore.util.UuidContext;
-import com.olexyn.abricore.util.enums.TradeStatus;
 import com.olexyn.abricore.util.enums.TransactionType;
 import com.olexyn.abricore.util.exception.WebException;
 import com.olexyn.min.log.LogU;
@@ -38,7 +37,6 @@ import static com.olexyn.abricore.flow.JobType.OBS_TW;
 import static com.olexyn.abricore.flow.strategy.StrategyUtil.resolveCondition;
 import static com.olexyn.abricore.util.Constants.CHF;
 import static com.olexyn.abricore.util.enums.TradeStatus.OPENING_POS;
-import static com.olexyn.abricore.util.enums.TradeStatus.OPEN_PREPARED;
 import static com.olexyn.abricore.util.enums.TransactionType.BUY;
 import static com.olexyn.abricore.util.enums.TransactionType.SELL;
 import static com.olexyn.abricore.util.num.NumCalc.div;
@@ -160,7 +158,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
         long expectedPrice = snap.getAskPrice();
         trade.setBuyPrice(expectedPrice);
         trade.setAmount(div(getSize(), expectedPrice));
-        trade.setStatus(OPEN_PREPARED);
         trade = nav.placeBuyOrder(trade);
         getTradeService().put(trade);
     }
@@ -171,14 +168,12 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
     @Override
     public void placeSellOrder(TradeDto trade) {
         switch (trade.getStatus()) {
-            case CLOSE_PREPARED:
             case CLOSE_ISSUED:
             case CLOSE_PENDING:
                 // TODO maybe need to re-submit with lower limit.
                 break;
             case CLOSE_EXECUTED:
                 break;
-            case OPEN_PREPARED:
             case OPEN_ISSUED:
             case OPEN_PENDING:
                 // TODO cancel order
@@ -188,7 +183,6 @@ public class TradeSqJob extends TradeJob implements AObserver, MainTradeBlock {
                 var snap = nav.fetchPreTradeScreenSnap(trade.getAsset());
                 if (snap == null) { return; }
                 trade.setSellPrice(getStrategy().getSellDistance().generate(getObservedSeries()));
-                trade.setStatus(TradeStatus.CLOSE_PREPARED);
                 trade = nav.placeSellOrder(trade);
                 getTradeService().put(trade);
                 break;

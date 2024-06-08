@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>18</zoom_level>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>684</x>
+      <y>486</y>
+      <w>198</w>
+      <h>324</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>846</x>
+      <y>468</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>OPEN_ISSUED
+bg=#B4DC64
+transparency=90</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>846</x>
+      <y>774</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>OPEN_PENDING
+bg=#B4DC64
+transparency=90</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>846</x>
+      <y>1026</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>OPEN_EXECUTED
+bg=#B4DC64
+transparency=60</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>954</x>
+      <y>522</y>
+      <w>180</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+observe in
+WEB
+dashboard</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>954</x>
+      <y>828</y>
+      <w>180</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+observe in
+WEB
+dashboard</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1404</x>
+      <y>1026</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>CLOSE_ISSUED
+bg=#B4DC64
+transparency=90</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1404</x>
+      <y>774</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>CLOSE_PENDING
+bg=#B4DC64
+transparency=90</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1404</x>
+      <y>468</y>
+      <w>270</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>CLOSE_EXECUTED</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1098</x>
+      <y>486</y>
+      <w>144</w>
+      <h>540</h>
+    </coordinates>
+    <panel_attributes>lt=-
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes>60.0;280.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>684</x>
+      <y>828</y>
+      <w>108</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#B4DC64
+BUY
+lw=2</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>630</x>
+      <y>774</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>NULL</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1098</x>
+      <y>432</y>
+      <w>126</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=..
+lw=3
+</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1098</x>
+      <y>1044</y>
+      <w>342</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes>170.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1098</x>
+      <y>792</y>
+      <w>342</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes>170.0;150.0;60.0;150.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1512</x>
+      <y>828</y>
+      <w>180</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+observe in
+WEB
+dashboard</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1512</x>
+      <y>522</y>
+      <w>180</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+observe in
+WEB
+dashboard</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>792</y>
+      <w>180</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>lt=-
+fg=#DC64B4
+
+lw=2</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>972</y>
+      <w>216</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=-
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;10.0;100.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>702</x>
+      <y>612</y>
+      <w>198</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>submit the
+WEB form</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>1116</x>
+      <y>1062</y>
+      <w>108</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>SELL
+fg=#DC64B4
+
+
+SELL
+lw=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>1206</x>
+      <y>594</y>
+      <w>144</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>CANCEL
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>1278</x>
+      <y>900</y>
+      <w>270</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>RESUBMIT
+(with lower limit)
+fg=#DC64B4
+lw=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>1188</x>
+      <y>414</y>
+      <w>198</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>put into
+TradeService</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>594</x>
+      <y>396</y>
+      <w>1116</w>
+      <h>738</h>
+    </coordinates>
+    <panel_attributes>halign=left
+fg=white
+bg=white
+layer=-3
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

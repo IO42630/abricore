@@ -3,26 +3,28 @@
   <ID>JAVA</ID>
   <OriginalElement>com.olexyn.abricore.model.runtime.snapshots.Series</OriginalElement>
   <nodes>
-    <node x="-82.0" y="-15.499999999999986">com.olexyn.abricore.model.runtime.snapshots.Observable</node>
-    <node x="-55.5" y="66.50000000000001">com.olexyn.abricore.model.runtime.snapshots.Series</node>
-    <node x="-84.0" y="148.5">com.olexyn.abricore.store.runtime.PaperSeries</node>
+    <node x="117.0" y="-19.0">com.olexyn.abricore.model.runtime.snapshots.Observable</node>
+    <node x="-98.0" y="-19.0">com.olexyn.abricore.model.runtime.snapshots.ProtoSeries</node>
+    <node x="36.5" y="68.0">com.olexyn.abricore.model.runtime.snapshots.Series</node>
   </nodes>
   <notes />
   <edges>
     <edge source="com.olexyn.abricore.model.runtime.snapshots.Series" target="com.olexyn.abricore.model.runtime.snapshots.Observable" relationship="REALIZATION">
-      <point x="0.0" y="-16.0" />
-      <point x="0.0" y="16.0" />
+      <point x="33.75" y="-18.5" />
+      <point x="137.75" y="43.0" />
+      <point x="208.5" y="43.0" />
+      <point x="0.0" y="18.5" />
     </edge>
-    <edge source="com.olexyn.abricore.store.runtime.PaperSeries" target="com.olexyn.abricore.model.runtime.snapshots.Series" relationship="GENERALIZATION">
-      <point x="0.0" y="-16.0" />
-      <point x="0.0" y="16.0" />
+    <edge source="com.olexyn.abricore.model.runtime.snapshots.Series" target="com.olexyn.abricore.model.runtime.snapshots.ProtoSeries" relationship="GENERALIZATION">
+      <point x="-33.75" y="-18.5" />
+      <point x="70.25" y="43.0" />
+      <point x="-0.5" y="43.0" />
+      <point x="0.0" y="18.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic" zoom="1.5" showDependencies="false" x="10.0" y="92.0" />
+  <settings layout="Hierarchic" zoom="1.5" showDependencies="false" x="111.0" y="53.0" />
   <SelectedNodes>
-    <node>com.olexyn.abricore.store.runtime.PaperSeries</node>
-    <node>com.olexyn.abricore.model.runtime.snapshots.Series</node>
-    <node>com.olexyn.abricore.model.runtime.snapshots.Observable</node>
+    <node>com.olexyn.abricore.model.runtime.snapshots.ProtoSeries</node>
   </SelectedNodes>
   <Categories />
   <SCOPE>All</SCOPE>

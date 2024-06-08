@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.3.0">
+<diagram program="umlet" version="13.3">
   <zoom_level>20</zoom_level>
   <element>
     <id>UMLClass</id>
@@ -245,7 +245,7 @@ fg=gray</panel_attributes>
   <element>
     <id>Text</id>
     <coordinates>
-      <x>380</x>
+      <x>400</x>
       <y>580</y>
       <w>180</w>
       <h>80</h>
@@ -257,7 +257,7 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Text</id>
     <coordinates>
-      <x>1260</x>
+      <x>1240</x>
       <y>560</y>
       <w>380</w>
       <h>140</h>
@@ -307,10 +307,25 @@ style=wordwrap</panel_attributes>
     <coordinates>
       <x>1100</x>
       <y>580</y>
-      <w>200</w>
+      <w>180</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>80.0;20.0;10.0;10.0</additional_attributes>
+    <additional_attributes>70.0;20.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>220</y>
+      <w>1180</w>
+      <h>580</h>
+    </coordinates>
+    <panel_attributes>halign=left
+fg=white
+bg=white
+layer=-3
+transparency=0</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

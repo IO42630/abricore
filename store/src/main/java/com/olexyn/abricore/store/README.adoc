@@ -1,6 +1,0 @@
-==== `com.olexyn.abricore.store`
-
-* `csv` : access to CSV files.
-* `json` : access to JSON files.
-* `repo` : access to H2 DB.
-* `runtime` : Services managing Dto Collections.

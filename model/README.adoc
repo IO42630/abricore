@@ -1,4 +1,0 @@
-=== `model`
-
-* In case IDEA compains about being unable to find `QSnapshotEntity`, +
-mark `target/generated-sources` as generated sources root in IDE.
